@@ -8,6 +8,9 @@ import open.gateway.common.utils.JSON;
 import org.open.gateway.portal.service.GatewayAccessLogsService;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
+import org.springframework.util.StopWatch;
+
+import java.util.List;
 
 /**
  * Created by miko on 2020/7/21.
@@ -26,14 +29,17 @@ public class AccessLogListener {
                     key = MqConstants.ROUTING_KEY_GATEWAY_ACCESS_LOGS,
                     value = @Queue(value = MqConstants.QUEUE_GATEWAY_ACCESS_LOGS), //注意这里不要定义队列名称,系统会随机产生
                     exchange = @Exchange(value = MqConstants.EXCHANGE_GATEWAY_ACCESS_LOGS, type = ExchangeTypes.DIRECT)
-            )
+            ),containerFactory = "batchQueueRabbitListenerContainerFactory"
     )
-    public void onAccess(AccessLogs msg) {
-        log.info("Received access log is:{}", JSON.toJSONString(msg));
+    public void onAccess(List<AccessLogs> msg) {
+        log.info("Received access log size: {}", msg.size());
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         try {
             // 存入数据库
             this.accessLogsService.saveAccessLogs(msg);
-            log.info("Save access log finished");
+            stopWatch.stop();
+            log.info("Save access log finished end: {} ms",stopWatch.getTotalTimeMillis());
         } catch (RuntimeException e) {
             log.error("Save access log failed:{}", e.getMessage());
         }

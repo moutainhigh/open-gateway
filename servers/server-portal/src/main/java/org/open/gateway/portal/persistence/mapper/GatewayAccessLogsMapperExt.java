@@ -19,4 +19,6 @@ public interface GatewayAccessLogsMapperExt extends GatewayAccessLogsMapper {
                                        @Param("requestTimeBegin") Date requestTimeBegin, @Param("requestTimeEnd") Date requestTimeEnd,
                                        @Param("usedTimeBegin") Long usedTimeBegin, @Param("usedTimeEnd") Long usedTimeEnd);
 
+
+    int insertListSelective(List<GatewayAccessLogs> logs);
 }

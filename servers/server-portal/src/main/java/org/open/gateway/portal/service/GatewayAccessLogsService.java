@@ -2,6 +2,8 @@ package org.open.gateway.portal.service;
 
 import open.gateway.common.base.entity.AccessLogs;
 
+import java.util.List;
+
 /**
  * Created by miko on 2020/7/22.
  *
@@ -14,6 +16,6 @@ public interface GatewayAccessLogsService {
      *
      * @param log 日志
      */
-    void saveAccessLogs(AccessLogs log);
+    void saveAccessLogs(List<AccessLogs> log);
 
 }
