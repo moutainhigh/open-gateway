@@ -5,7 +5,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang.StringUtils;
+import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -67,7 +67,7 @@ public class PageRequest {
      * 开始分页
      */
     public <E> Page<E> startPage() {
-        if (!StringUtils.isBlank(sortBy)) {
+        if (StringUtils.hasText(sortBy)) {
             // 校验支持的类型
             Set<SortBy> supportedSortBys = supportedSortBys();
             if (supportedSortBys != null && !supportedSortBys.isEmpty()) {
@@ -77,7 +77,7 @@ public class PageRequest {
                         .orElseThrow(() -> new IllegalArgumentException("No supported sort by key:" + sortBy + " in " + supportedSortBys + ""));
                 String newSortBy = sort.getSortBy();
                 // 设置排序
-                if (!StringUtils.isBlank(order)) {
+                if (StringUtils.hasText(order)) {
                     PageHelper.orderBy(newSortBy + " " + SortBy.SortType.from(order).name());
                 } else {
                     PageHelper.orderBy(newSortBy);
