@@ -11,12 +11,14 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -24,6 +26,8 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Objects;
+
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR;
 
 /**
  * Created by miko on 2020/7/20.
@@ -124,13 +128,18 @@ public class AccessLogsService {
      * @return 请求body参数
      */
     private Mono<String> readRequestBody(ServerWebExchange exchange) {
-        return DataBufferUtils.join(exchange.getRequest().getBody())
+        Flux<DataBuffer> dataBufferFlux = exchange.getAttribute(CACHED_REQUEST_BODY_ATTR);
+        if (dataBufferFlux == null) {
+            return Mono.just("");
+        }
+        return DataBufferUtils.join(dataBufferFlux)
                 .doOnError(ex -> log.error("Read request body failed. error:{}", ex.getMessage()))
                 .map(dataBuffer -> {
                     CharBuffer charBuffer = Charset.defaultCharset().decode(dataBuffer.asByteBuffer());
                     DataBufferUtils.release(dataBuffer);
                     return charBuffer.toString();
-                });
+                })
+                .switchIfEmpty(Mono.just(""));
     }
 
 }

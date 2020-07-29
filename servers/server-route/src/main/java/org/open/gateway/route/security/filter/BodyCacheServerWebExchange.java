@@ -29,7 +29,7 @@ public class BodyCacheServerWebExchange extends ServerWebExchangeDecorator {
 
     public BodyCacheServerWebExchange(ServerWebExchange delegate, ServerCodecConfigurer configurer) {
         super(delegate);
-        this.request = new BodyCacheServerHttpRequestDecorator(delegate.getRequest());
+        this.request = new BodyCacheServerHttpRequestDecorator(delegate);
         this.formDataMono = initFormData(this.request, configurer, getLogPrefix());
     }
 
