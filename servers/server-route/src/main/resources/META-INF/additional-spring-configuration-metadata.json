@@ -1,0 +1,45 @@
+{
+  "properties": [
+	{
+	  "name": "jwt.issuer",
+	  "type": "java.lang.String",
+	  "description": "jwt token issuer.",
+	  "sourceType": "org.open.gateway.route.configuration.TokenJwtProperties"
+	},
+	{
+	  "name": "message.listener.type",
+	  "type": "java.lang.String",
+	  "description": "spec message listener impl type.",
+	  "defaultValue": "mq",
+	  "sourceType": "org.open.gateway.route.configuration.MessageListenerConfig"
+	},
+	{
+	  "name": "token.store.type",
+	  "type": "java.lang.String",
+	  "description": "token存储类型.",
+	  "defaultValue": "redis"
+	},
+	{
+	  "name": "access-log.enable",
+	  "type": "java.lang.Boolean",
+	  "description": "开启日志记录.",
+	  "defaultValue": true
+	},
+	{
+	  "name": "token.jwt.password",
+	  "type": "java.lang.String",
+	  "description": "生成rsa密钥的密码."
+	},
+	{
+	  "name": "token.jwt.jks-file-path",
+	  "type": "java.lang.String",
+	  "description": "密钥文件路径."
+	},
+	{
+	  "name": "token.jwt.alias",
+	  "type": "java.lang.String",
+	  "description": "别名."
+	}
+  ]
+}
+

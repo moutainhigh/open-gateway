@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.open.gateway.portal.persistence.mapper.GatewayApiClassificationMapper">
+	<resultMap id="BaseResultMap" type="org.open.gateway.portal.persistence.po.GatewayApiClassification">
+		<id column="id" jdbcType="INTEGER" property="id"/>
+		<result column="classification_name" jdbcType="VARCHAR" property="classificationName"/>
+		<result column="full_name" jdbcType="VARCHAR" property="fullName"/>
+		<result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+		<result column="sort" jdbcType="TINYINT" property="sort"/>
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+		<result column="create_person" jdbcType="VARCHAR" property="createPerson"/>
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+		<result column="update_person" jdbcType="VARCHAR" property="updatePerson"/>
+		<result column="is_del" jdbcType="TINYINT" property="isDel"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+    id, classification_name, full_name, parent_id, sort, create_time, create_person, 
+    update_time, update_person, is_del
+  </sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from gateway_api_classification
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.GatewayApiClassification">
+    insert into gateway_api_classification (id, classification_name, full_name, 
+      parent_id, sort, create_time, 
+      create_person, update_time, update_person, 
+      is_del)
+    values (#{id,jdbcType=INTEGER}, #{classificationName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, 
+      #{parentId,jdbcType=BIGINT}, #{sort,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updatePerson,jdbcType=VARCHAR}, 
+      #{isDel,jdbcType=TINYINT})
+  </insert>
+	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.GatewayApiClassification">
+		insert into gateway_api_classification
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="classificationName != null">
+				classification_name,
+			</if>
+			<if test="fullName != null">
+				full_name,
+			</if>
+			<if test="parentId != null">
+				parent_id,
+			</if>
+			<if test="sort != null">
+				sort,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createPerson != null">
+				create_person,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updatePerson != null">
+				update_person,
+			</if>
+			<if test="isDel != null">
+				is_del,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="classificationName != null">
+				#{classificationName,jdbcType=VARCHAR},
+			</if>
+			<if test="fullName != null">
+				#{fullName,jdbcType=VARCHAR},
+			</if>
+			<if test="parentId != null">
+				#{parentId,jdbcType=BIGINT},
+			</if>
+			<if test="sort != null">
+				#{sort,jdbcType=TINYINT},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createPerson != null">
+				#{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updatePerson != null">
+				#{updatePerson,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				#{isDel,jdbcType=TINYINT},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+			parameterType="org.open.gateway.portal.persistence.po.GatewayApiClassification">
+		update gateway_api_classification
+		<set>
+			<if test="classificationName != null">
+				classification_name = #{classificationName,jdbcType=VARCHAR},
+			</if>
+			<if test="fullName != null">
+				full_name = #{fullName,jdbcType=VARCHAR},
+			</if>
+			<if test="parentId != null">
+				parent_id = #{parentId,jdbcType=BIGINT},
+			</if>
+			<if test="sort != null">
+				sort = #{sort,jdbcType=TINYINT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createPerson != null">
+				create_person = #{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updatePerson != null">
+				update_person = #{updatePerson,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=TINYINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.GatewayApiClassification">
+    update gateway_api_classification
+    set classification_name = #{classificationName,jdbcType=VARCHAR},
+      full_name = #{fullName,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      sort = #{sort,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_person = #{createPerson,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_person = #{updatePerson,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

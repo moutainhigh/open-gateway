@@ -1,0 +1,82 @@
+package org.open.gateway.route.security.token.converters.jwt;
+
+import com.nimbusds.jwt.JWTClaimsSet;
+import lombok.AllArgsConstructor;
+import net.minidev.json.JSONArray;
+import open.gateway.common.base.constants.OAuth2Constants;
+import open.gateway.common.base.entity.token.TokenUser;
+import open.gateway.common.utils.jwt.JwtDecoder;
+import org.open.gateway.route.exception.InvalidTokenException;
+import org.open.gateway.route.exception.TokenExpiredException;
+import org.open.gateway.route.security.token.AuthenticationToken;
+import org.open.gateway.route.security.token.converters.AbstractBearerTokenAuthenticationConverter;
+import org.springframework.security.core.Authentication;
+import reactor.core.publisher.Mono;
+
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+/**
+ * Created by miko on 2020/7/8.
+ * 解析请求头中的token信息
+ *
+ * @author MIKO
+ */
+@AllArgsConstructor
+public class JwtTokenAuthenticationConverter extends AbstractBearerTokenAuthenticationConverter {
+
+    private final JwtDecoder jwtDecoder;
+
+    @Override
+    protected Mono<Authentication> parseToken(String token) {
+        if (token == null || token.isEmpty()) {
+            throw invalidTokenError();
+        }
+        try {
+            JWTClaimsSet jwtClaimsSet = this.jwtDecoder.parseToken(token);
+            return Mono.just(new AuthenticationToken(toTokenUser(jwtClaimsSet)));
+        } catch (IllegalArgumentException e) {
+            throw new InvalidTokenException();
+        } catch (IllegalStateException e) {
+            throw new TokenExpiredException(e.getMessage());
+        }
+    }
+
+    private TokenUser toTokenUser(JWTClaimsSet claims) {
+        if (claims == null) {
+            throw new InvalidTokenException();
+        }
+        if (claims.getClaim("sub") == null) {
+            throw new InvalidTokenException();
+        }
+        if (claims.getClaim("authorities") == null) {
+            throw new InvalidTokenException();
+        }
+        Object roles = claims.getClaim(OAuth2Constants.TokenPayloadKey.AUTHORITIES);
+        if (!(roles instanceof JSONArray)) {
+            throw new InvalidTokenException();
+        }
+        TokenUser tokenUser = new TokenUser();
+        tokenUser.setClientId(claims.getClaim("sub").toString());
+        tokenUser.setAuthorities(
+                ((JSONArray) roles).stream()
+                        .filter(Objects::nonNull)
+                        .map(Object::toString)
+                        .collect(Collectors.toList())
+        );
+        Object scopes = claims.getClaim(OAuth2Constants.TokenPayloadKey.SCOPE);
+        if (scopes != null) {
+            if (!(scopes instanceof JSONArray)) {
+                throw new InvalidTokenException();
+            }
+            tokenUser.setScopes(
+                    ((JSONArray) scopes).stream()
+                            .filter(Objects::nonNull)
+                            .map(Object::toString)
+                            .collect(Collectors.toList())
+            );
+        }
+        return tokenUser;
+    }
+
+}

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.open.gateway.portal.persistence.mapper.GatewayApiMapper">
+	<resultMap id="BaseResultMap" type="org.open.gateway.portal.persistence.po.GatewayApi">
+		<id column="id" jdbcType="INTEGER" property="id"/>
+		<result column="api_code" jdbcType="VARCHAR" property="apiCode"/>
+		<result column="api_name" jdbcType="VARCHAR" property="apiName"/>
+		<result column="api_path" jdbcType="VARCHAR" property="apiPath"/>
+		<result column="route_code" jdbcType="VARCHAR" property="routeCode"/>
+		<result column="classification_id" jdbcType="INTEGER" property="classificationId"/>
+		<result column="is_auth" jdbcType="TINYINT" property="isAuth"/>
+		<result column="is_open" jdbcType="TINYINT" property="isOpen"/>
+		<result column="status" jdbcType="TINYINT" property="status"/>
+		<result column="desc" jdbcType="VARCHAR" property="desc"/>
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+		<result column="create_person" jdbcType="VARCHAR" property="createPerson"/>
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+		<result column="update_person" jdbcType="VARCHAR" property="updatePerson"/>
+		<result column="is_del" jdbcType="TINYINT" property="isDel"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+    id, api_code, api_name, api_path, route_code, classification_id, is_auth, is_open, 
+    status, desc, create_time, create_person, update_time, update_person, is_del
+  </sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from gateway_api
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.GatewayApi">
+    insert into gateway_api (id, api_code, api_name, 
+      api_path, route_code, classification_id, 
+      is_auth, is_open, status, 
+      desc, create_time, create_person, 
+      update_time, update_person, is_del
+      )
+    values (#{id,jdbcType=INTEGER}, #{apiCode,jdbcType=VARCHAR}, #{apiName,jdbcType=VARCHAR}, 
+      #{apiPath,jdbcType=VARCHAR}, #{routeCode,jdbcType=VARCHAR}, #{classificationId,jdbcType=INTEGER}, 
+      #{isAuth,jdbcType=TINYINT}, #{isOpen,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
+      #{desc,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updatePerson,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT}
+      )
+  </insert>
+	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.GatewayApi">
+		insert into gateway_api
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="apiCode != null">
+				api_code,
+			</if>
+			<if test="apiName != null">
+				api_name,
+			</if>
+			<if test="apiPath != null">
+				api_path,
+			</if>
+			<if test="routeCode != null">
+				route_code,
+			</if>
+			<if test="classificationId != null">
+				classification_id,
+			</if>
+			<if test="isAuth != null">
+				is_auth,
+			</if>
+			<if test="isOpen != null">
+				is_open,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="desc != null">
+				desc,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createPerson != null">
+				create_person,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updatePerson != null">
+				update_person,
+			</if>
+			<if test="isDel != null">
+				is_del,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="apiCode != null">
+				#{apiCode,jdbcType=VARCHAR},
+			</if>
+			<if test="apiName != null">
+				#{apiName,jdbcType=VARCHAR},
+			</if>
+			<if test="apiPath != null">
+				#{apiPath,jdbcType=VARCHAR},
+			</if>
+			<if test="routeCode != null">
+				#{routeCode,jdbcType=VARCHAR},
+			</if>
+			<if test="classificationId != null">
+				#{classificationId,jdbcType=INTEGER},
+			</if>
+			<if test="isAuth != null">
+				#{isAuth,jdbcType=TINYINT},
+			</if>
+			<if test="isOpen != null">
+				#{isOpen,jdbcType=TINYINT},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=TINYINT},
+			</if>
+			<if test="desc != null">
+				#{desc,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createPerson != null">
+				#{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updatePerson != null">
+				#{updatePerson,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				#{isDel,jdbcType=TINYINT},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="org.open.gateway.portal.persistence.po.GatewayApi">
+		update gateway_api
+		<set>
+			<if test="apiCode != null">
+				api_code = #{apiCode,jdbcType=VARCHAR},
+			</if>
+			<if test="apiName != null">
+				api_name = #{apiName,jdbcType=VARCHAR},
+			</if>
+			<if test="apiPath != null">
+				api_path = #{apiPath,jdbcType=VARCHAR},
+			</if>
+			<if test="routeCode != null">
+				route_code = #{routeCode,jdbcType=VARCHAR},
+			</if>
+			<if test="classificationId != null">
+				classification_id = #{classificationId,jdbcType=INTEGER},
+			</if>
+			<if test="isAuth != null">
+				is_auth = #{isAuth,jdbcType=TINYINT},
+			</if>
+			<if test="isOpen != null">
+				is_open = #{isOpen,jdbcType=TINYINT},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=TINYINT},
+			</if>
+			<if test="desc != null">
+				desc = #{desc,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createPerson != null">
+				create_person = #{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updatePerson != null">
+				update_person = #{updatePerson,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=TINYINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.GatewayApi">
+    update gateway_api
+    set api_code = #{apiCode,jdbcType=VARCHAR},
+      api_name = #{apiName,jdbcType=VARCHAR},
+      api_path = #{apiPath,jdbcType=VARCHAR},
+      route_code = #{routeCode,jdbcType=VARCHAR},
+      classification_id = #{classificationId,jdbcType=INTEGER},
+      is_auth = #{isAuth,jdbcType=TINYINT},
+      is_open = #{isOpen,jdbcType=TINYINT},
+      status = #{status,jdbcType=TINYINT},
+      desc = #{desc,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_person = #{createPerson,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_person = #{updatePerson,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

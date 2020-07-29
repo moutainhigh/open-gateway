@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<artifactId>open-gateway</artifactId>
+		<groupId>org.open.gateway</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<modules>
+		<module>server-route</module>
+		<module>server-portal</module>
+	</modules>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>servers</artifactId>
+	<packaging>pom</packaging>
+
+	<properties>
+		<mysql.connertor.version>5.1.49</mysql.connertor.version>
+		<mybatis-generator.version>1.4.0</mybatis-generator.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.open.gateway</groupId>
+			<artifactId>common-base</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.open.gateway</groupId>
+			<artifactId>common-utils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter</artifactId>
+		</dependency>
+		<!--rabbitmq-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		<!--		&lt;!&ndash; zookeeper &ndash;&gt;-->
+		<!--		<dependency>-->
+		<!--			<groupId>org.springframework.cloud</groupId>-->
+		<!--			<artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>-->
+		<!--			<exclusions>-->
+		<!--				<exclusion>-->
+		<!--					<groupId>org.springframework.cloud</groupId>-->
+		<!--					<artifactId>spring-cloud-starter-netflix-ribbon</artifactId>-->
+		<!--				</exclusion>-->
+		<!--				<exclusion>-->
+		<!--					<groupId>org.springframework.cloud</groupId>-->
+		<!--					<artifactId>spring-cloud-starter-netflix-archaius</artifactId>-->
+		<!--				</exclusion>-->
+		<!--				<exclusion>-->
+		<!--					<groupId>org.springframework.cloud</groupId>-->
+		<!--					<artifactId>spring-cloud-netflix-hystrix</artifactId>-->
+		<!--				</exclusion>-->
+		<!--			</exclusions>-->
+		<!--		</dependency>-->
+		<!-- caffeine -->
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
+		</dependency>
+		<!-- spring security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<!--&lt;!&ndash;		&lt;!&ndash; spring security &ndash;&gt;&ndash;&gt;-->
+		<!--		<dependency>-->
+		<!--			<groupId>org.springframework.cloud</groupId>-->
+		<!--			<artifactId>spring-cloud-starter-security</artifactId>-->
+		<!--		</dependency>-->
+		<!--		&lt;!&ndash; spring oauth2 &ndash;&gt;-->
+		<!--		<dependency>-->
+		<!--			<groupId>org.springframework.cloud</groupId>-->
+		<!--			<artifactId>spring-cloud-starter-oauth2</artifactId>-->
+		<!--		</dependency>-->
+		<!--		&lt;!&ndash; jwt编码与解码 &ndash;&gt;-->
+		<!--		<dependency>-->
+		<!--			<groupId>org.springframework.security</groupId>-->
+		<!--			<artifactId>spring-security-oauth2-jose</artifactId>-->
+		<!--		</dependency>-->
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.open.gateway</groupId>
+				<artifactId>common</artifactId>
+				<version>${gateway.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>
