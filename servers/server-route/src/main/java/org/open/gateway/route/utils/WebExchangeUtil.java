@@ -2,9 +2,15 @@ package org.open.gateway.route.utils;
 
 import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Map;
 
@@ -97,6 +103,37 @@ public class WebExchangeUtil {
      */
     private static boolean isIpValid(String ip) {
         return ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip);
+    }
+
+    /**
+     * 获取请求路径
+     *
+     * @param exchange web路由交换信息
+     * @return 请求路径
+     */
+    public static String getRequestPath(ServerWebExchange exchange) {
+        return exchange.getRequest().getURI().getPath();
+    }
+
+    /**
+     * 写入response
+     *
+     * @param status   状态码
+     * @param exchange web交换信息
+     * @param e        异常信息
+     * @return 写入操作
+     */
+    public static Mono<Void> writeErrorResponse(HttpStatus status, ServerWebExchange exchange, Throwable e) {
+        return Mono.defer(() -> Mono.just(exchange.getResponse()))
+                .flatMap(response -> {
+                    response.setStatusCode(status);
+                    response.getHeaders().setContentType(MediaType.TEXT_PLAIN);
+                    DataBufferFactory dataBufferFactory = response.bufferFactory();
+                    DataBuffer buffer = dataBufferFactory.wrap(e.getMessage().getBytes(
+                            Charset.defaultCharset()));
+                    return response.writeWith(Mono.just(buffer))
+                            .doOnError(error -> DataBufferUtils.release(buffer));
+                });
     }
 
 }

@@ -1,4 +1,4 @@
-package org.open.gateway.route.repositories.impl;
+package org.open.gateway.route.repositories.jdbc;
 
 import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;
@@ -24,18 +24,17 @@ public class JdbcRouteDefinitionRepository extends AbstractRouteDefinitionReposi
 
     @Override
     public int refreshInterval() {
-        // 300s 刷新一次
-        return 300;
+        return 60 * 60;
     }
 
     @Override
     protected Flux<GatewayRouteDefinition> getRefreshableRouteDefinitions(Set<String> apiCodes) {
-        return this.databaseClient.execute(SQLS.QUERY_API_ROUTE_DEFINITIONS_BY_CODES(apiCodes))
+        return this.databaseClient.execute(SQLS.QUERY_API_ROUTE_DEFINITIONS.AND_IN("ga.api_code", apiCodes).getSql())
                 .map(this::rowToGatewayRouteDefinition)
                 .all()
                 .flatMap(routeDefinition ->
                         this.databaseClient
-                                .execute(SQLS.QUERY_RATE_LIMIT_BY_API_ID.format(routeDefinition.getApiId()))
+                                .execute(SQLS.QUERY_RATE_LIMIT_BY_API_ID.getSql(routeDefinition.getApiId()))
                                 .map(this::rowToGatewayRateLimitDefinition)
                                 .one()
                                 .doOnSuccess(routeDefinition::setRateLimit)

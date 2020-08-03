@@ -6,12 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.utils.CollectionUtil;
 import org.open.gateway.route.constants.SQLS;
 import org.open.gateway.route.exception.NoClientFoundException;
+import org.open.gateway.route.utils.sql.Sql;
 import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +29,7 @@ public class JdbcClientDetailsService implements ClientDetailsService {
 
     @Override
     public Mono<ClientDetails> loadClientByClientId(String clientId) {
-        return databaseClient.execute(SQLS.QUERY_CLIENT_BY_ID.format(clientId))
+        return databaseClient.execute(SQLS.QUERY_CLIENT_BY_ID.getSql(clientId))
                 .map(this::rowToBaseClientDetails)
                 .first()
                 .switchIfEmpty(Mono.error(new NoClientFoundException()));
@@ -42,9 +42,9 @@ public class JdbcClientDetailsService implements ClientDetailsService {
         result.setAccessTokenValiditySeconds(row.get("access_token_validity", Integer.class));
         result.setRefreshTokenValiditySeconds(row.get("refresh_token_validity", Integer.class));
         result.setRegisteredRedirectUri(CollectionUtil.newHashSet(row.get("web_server_redirect_uri", String.class)));
-        result.setAuthorizedGrantTypes(parseArrayField("authorized_grant_types"));
-        result.setScope(parseArrayField(row.get("scope", String.class)));
-        List<String> stringAuthorities = parseArrayField(row.get("authorities", String.class));
+        result.setAuthorizedGrantTypes(Sql.parseArrayField("authorized_grant_types"));
+        result.setScope(Sql.parseArrayField(row.get("scope", String.class)));
+        List<String> stringAuthorities = Sql.parseArrayField(row.get("authorities", String.class));
         if (stringAuthorities != null) {
             result.setAuthorities(stringAuthorities.stream()
                     .filter(authority -> !authority.isEmpty())
@@ -52,13 +52,6 @@ public class JdbcClientDetailsService implements ClientDetailsService {
                     .collect(Collectors.toList()));
         }
         return result;
-    }
-
-    private List<String> parseArrayField(String fieldValue) {
-        if (fieldValue != null) {
-            return Arrays.asList(fieldValue.split(","));
-        }
-        return null;
     }
 
 }

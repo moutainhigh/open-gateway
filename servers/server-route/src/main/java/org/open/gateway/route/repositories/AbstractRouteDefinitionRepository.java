@@ -56,7 +56,7 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
     }
 
     @Override
-    public Mono<RouteDefinition> getRouteDefinition(String path) {
+    public Mono<RouteDefinition> loadRouteDefinition(String path) {
         return Mono.justOrEmpty(routes.get(path));
     }
 

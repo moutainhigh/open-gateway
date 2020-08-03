@@ -11,6 +11,8 @@ public interface MqConstants {
     String EXCHANGE_REFRESH_ROUTES = "refresh_routes";
     // exchange-刷新客户端资源
     String EXCHANGE_REFRESH_CLIENT_RESOURCES = "refresh_client_resources";
+    // exchange-刷新黑白名单
+    String EXCHANGE_REFRESH_IP_LIMITS = "refresh_ip_limits";
     // exchange-网关访问日志
     String EXCHANGE_GATEWAY_ACCESS_LOGS = "gateway_access_logs";
     // routing_key-网关访问日志

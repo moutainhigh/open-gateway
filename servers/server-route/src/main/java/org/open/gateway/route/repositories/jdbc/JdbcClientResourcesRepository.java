@@ -1,4 +1,4 @@
-package org.open.gateway.route.repositories.impl;
+package org.open.gateway.route.repositories.jdbc;
 
 import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;
@@ -22,13 +22,13 @@ public class JdbcClientResourcesRepository extends AbstractClientResourcesReposi
 
     @Override
     public int refreshInterval() {
-        return 300;
+        return 60 * 60;
     }
 
     @Override
     protected Flux<ClientResource> getClientApiRoutes(Set<String> clientIds) {
         return this.databaseClient
-                .execute(SQLS.QUERY_API_ROUTE_BY_CLIENT_IDS(clientIds))
+                .execute(SQLS.QUERY_API_ROUTE.AND_IN("gp.client_id", clientIds).getSql())
                 .map(this::rowToClientResource)
                 .all();
     }

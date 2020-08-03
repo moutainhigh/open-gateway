@@ -3,62 +3,95 @@ package open.gateway.common.base.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import open.gateway.common.base.constants.GatewayConstants;
 
-import java.util.Date;
+import java.util.*;
 
 @Getter
-@Setter
 @ToString
 public class GatewayIpLimitDefinition {
 
     /**
-     * 黑白名单策略id
+     * 黑名单
      */
-    private Integer id;
+    private final List<IpLimit> blackList = new ArrayList<>();
 
     /**
-     * 黑白名单策略名称
+     * 白名单
      */
-    private String policyName;
+    private final List<IpLimit> whiteList = new ArrayList<>();
+
+    public GatewayIpLimitDefinition(Collection<IpLimit> ipLimits) {
+        Objects.requireNonNull(ipLimits);
+        for (IpLimit ipLimit : ipLimits) {
+            if (GatewayConstants.IpLimitPolicy.POLICY_TYPE_BLACK.equals(ipLimit.policyType)) {
+                this.blackList.add(ipLimit);
+            }
+            if (GatewayConstants.IpLimitPolicy.POLICY_TYPE_BLACK.equals(ipLimit.policyType)) {
+                this.whiteList.add(ipLimit);
+            }
+        }
+    }
 
     /**
-     * 策略类型 black-拒绝/黑名单 white-允许/白名单
+     * 是否允许访问
+     *
+     * @param ip ip地址
+     * @return true允许，false不允许
      */
-    private String policyType;
+    @SuppressWarnings("RedundantIfStatement")
+    public boolean isAccessAllowed(String ip) {
+        // 黑名单校验
+        if (this.blackList.stream().anyMatch(black -> black.isAccessDenied(ip))) {
+            return false;
+        }
+        // 白名单校验
+        if (this.whiteList.stream().anyMatch(white -> white.isAccessDenied(ip))) {
+            return false;
+        }
+        return true;
+    }
 
-    /**
-     * ip地址 多个用,隔开
-     */
-    private String ipAddresses;
+    @Getter
+    @Setter
+    @ToString
+    public static class IpLimit {
 
-    /**
-     * 状态 0-无效 1-有效
-     */
-    private Byte status;
+        /**
+         * api编码
+         */
+        private String apiCode;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
+        /**
+         * 黑白名单策略类型
+         */
+        private String policyType;
 
-    /**
-     * 创建人
-     */
-    private String createPerson;
+        /**
+         * ip地址
+         */
+        private Set<String> ipAddresses;
 
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+        /**
+         * 是否拒绝访问
+         *
+         * @param ip ip地址
+         * @return true拒绝，false允许
+         */
+        public boolean isAccessDenied(String ip) {
+            Objects.requireNonNull(this.policyType);
+            Objects.requireNonNull(this.ipAddresses);
+            if (GatewayConstants.IpLimitPolicy.POLICY_TYPE_BLACK.equals(this.policyType)) {
+                // 在黑名单中拒绝访问
+                return this.ipAddresses.contains(ip);
+            }
+            if (GatewayConstants.IpLimitPolicy.POLICY_TYPE_WHITE.equals(this.policyType)) {
+                // 不在白名单中拒绝访问
+                return !this.ipAddresses.contains(ip);
+            }
+            throw new IllegalStateException("Invalid policy type:" + this.policyType);
+        }
 
-    /**
-     * 更新人
-     */
-    private String updatePerson;
-
-    /**
-     * 是否已删除 1已删除，0未删除
-     */
-    private Byte isDel;
+    }
 
 }

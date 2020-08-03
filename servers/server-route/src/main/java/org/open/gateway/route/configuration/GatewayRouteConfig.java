@@ -1,13 +1,13 @@
 package org.open.gateway.route.configuration;
 
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
+import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRepository;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
-import org.open.gateway.route.repositories.impl.JdbcClientResourcesRepository;
-import org.open.gateway.route.repositories.impl.JdbcRouteDefinitionRepository;
+import org.open.gateway.route.repositories.jdbc.JdbcClientResourcesRepository;
+import org.open.gateway.route.repositories.jdbc.JdbcIpLimitRepository;
+import org.open.gateway.route.repositories.jdbc.JdbcRouteDefinitionRepository;
 import org.springframework.beans.BeansException;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -27,7 +27,6 @@ import java.util.Map;
  * @author MIKO
  */
 @Configuration
-@AutoConfigureAfter(RedisReactiveAutoConfiguration.class)
 public class GatewayRouteConfig implements ApplicationContextAware {
 
     @Bean
@@ -38,6 +37,11 @@ public class GatewayRouteConfig implements ApplicationContextAware {
     @Bean
     public RefreshableClientResourcesRepository clientResourcesRepository(DatabaseClient databaseClient) {
         return new JdbcClientResourcesRepository(databaseClient);
+    }
+
+    @Bean
+    public RefreshableIpLimitRepository ipLimitRepository(DatabaseClient databaseClient) {
+        return new JdbcIpLimitRepository(databaseClient);
     }
 
     @Bean

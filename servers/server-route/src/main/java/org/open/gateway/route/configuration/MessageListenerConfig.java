@@ -2,10 +2,12 @@ package org.open.gateway.route.configuration;
 
 import open.gateway.common.base.constants.GatewayConstants;
 import org.open.gateway.route.listener.mq.MqClientResourcesMessageListener;
+import org.open.gateway.route.listener.mq.MqIpLimitMessageListener;
 import org.open.gateway.route.listener.mq.MqRouteDefinitionMessageListener;
 import org.open.gateway.route.listener.redis.RedisRouteDefinitionMessageListener;
 import org.open.gateway.route.listener.redis.topic.KeyspaceTopic;
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
+import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -36,6 +38,11 @@ public class MessageListenerConfig {
         @Bean
         public MqClientResourcesMessageListener clientResourcesMessageListener(RefreshableClientResourcesRepository clientResourcesRepository) {
             return new MqClientResourcesMessageListener(clientResourcesRepository);
+        }
+
+        @Bean
+        public MqIpLimitMessageListener ipLimitMessageListener(RefreshableIpLimitRepository ipLimitRepository) {
+            return new MqIpLimitMessageListener(ipLimitRepository);
         }
 
     }

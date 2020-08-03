@@ -4,14 +4,17 @@ import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.base.entity.token.TokenUser;
 import open.gateway.common.utils.CollectionUtil;
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
+import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
 import org.open.gateway.route.utils.RouteDefinitionUtil;
+import org.open.gateway.route.utils.WebExchangeUtil;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
@@ -32,16 +35,19 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
     private final RefreshableRouteDefinitionRepository resourceRepository;
     // 客户端资源服务
     private final RefreshableClientResourcesRepository clientResourcesRepository;
+    // ip限制资源服务
+    private final RefreshableIpLimitRepository ipLimitRepository;
 
-    public AuthorizationManager(RefreshableRouteDefinitionRepository resourceRepository, RefreshableClientResourcesRepository clientResourcesRepository) {
+    public AuthorizationManager(RefreshableRouteDefinitionRepository resourceRepository,
+                                RefreshableClientResourcesRepository clientResourcesRepository,
+                                RefreshableIpLimitRepository ipLimitRepository) {
         this.resourceRepository = resourceRepository;
         this.clientResourcesRepository = clientResourcesRepository;
+        this.ipLimitRepository = ipLimitRepository;
     }
 
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> authentication, AuthorizationContext authorizationContext) {
-        // 获取请求路径
-        String requestPath = getRequestPath(authorizationContext);
         return authentication
                 .filter(auth -> auth.isAuthenticated() && auth.getPrincipal() != null)
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new AccessDeniedException("Access Denied invalid token"))))
@@ -49,20 +55,8 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
                 .filter(principal -> principal instanceof TokenUser)
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new AccessDeniedException("Access Denied invalid principal"))))
                 .cast(TokenUser.class)
-                .flatMap(user -> checkClientResourceAuthorities(requestPath, user))
+                .flatMap(user -> checkClientResourceAuthorities(authorizationContext.getExchange(), user))
                 .map(AuthorizationDecision::new);
-    }
-
-    /**
-     * 获取请求路径
-     *
-     * @param authorizationContext 认证信息
-     * @return 请求路径
-     */
-    private String getRequestPath(AuthorizationContext authorizationContext) {
-        String requestPath = authorizationContext.getExchange().getRequest().getURI().getPath();
-        log.info("Request path:{}", requestPath);
-        return requestPath;
     }
 
     /**
@@ -94,26 +88,53 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
     /**
      * 校验客户端资源权限
      *
-     * @param requestPath 请求资源路径
-     * @param user        请求的用户信息
+     * @param exchange web路由交换信息
+     * @param user     请求的用户信息
      * @return 验证结果
      */
-    private Mono<Boolean> checkClientResourceAuthorities(String requestPath, TokenUser user) {
+    private Mono<Boolean> checkClientResourceAuthorities(ServerWebExchange exchange, TokenUser user) {
+        String requestPath = WebExchangeUtil.getRequestPath(exchange);
+        String ipAddress = WebExchangeUtil.getRemoteAddress(exchange);
+        String clientId = user.getClientId();
+        Collection<String> authorities = user.getAuthorities();
+        log.info("Request path:{} ip:{} client_id:{} authorities:{}", requestPath, ipAddress, clientId, authorities);
         // 是否直接放行
         if (this.isPermit(user)) {
             return Mono.just(true);
         }
-        String clientId = user.getClientId();
-        log.debug("Request token client id:{}", clientId);
-        Collection<String> authorities = user.getAuthorities();
-        log.debug("Request token authorities:{}", authorities);
         // 清理请求路径
         String path = trimRequestPath(requestPath);
         // 获取接口资源
-        Mono<RouteDefinition> routeDefinition = resourceRepository.getRouteDefinition(path);
+        Mono<RouteDefinition> routeDefinition = resourceRepository.loadRouteDefinition(path);
         return routeDefinition
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new AccessDeniedException("Access Denied invalid path:" + path))))
-                .flatMap(r -> matchResource(r, clientId)); // 匹配账户是否拥有权限
+                .flatMap(r -> {
+                    // 匹配黑白名单
+                    return matchIpLimit(r, ipAddress)
+                            .flatMap(b -> {
+                                // 不允许访问直接认证失败
+                                if (!b) {
+                                    return Mono.just(false);
+                                }
+                                // 验证是否拥有资源权限
+                                return matchResource(r, clientId);
+                            });
+                });
+    }
+
+    /**
+     * 匹配黑白名单
+     *
+     * @param routeDefinition 路由信息
+     * @param ip              ip地址
+     * @return 匹配允许访问 true允许，false不允许
+     */
+    private Mono<Boolean> matchIpLimit(RouteDefinition routeDefinition, String ip) {
+        // 获取api编码
+        String apiCode = RouteDefinitionUtil.getApiCode(routeDefinition);
+        return ipLimitRepository.loadIpLimitByApi(apiCode)
+                .map(ipLimits -> ipLimits.isAccessAllowed(ip))
+                .switchIfEmpty(Mono.defer(() -> Mono.just(true))); // 没有黑白名单默认为true, 允许访问
     }
 
     /**

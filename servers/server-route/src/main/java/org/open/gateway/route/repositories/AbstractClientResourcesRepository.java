@@ -37,6 +37,7 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
                         getClientApiRoutes(CollectionUtil.newHashSet(clientId))
                                 .map(cr -> PathUtil.getFullPath(cr.getRoutePath(), cr.getApiPath()))
                                 .collect(Collectors.toSet())
+                                .doOnSuccess(rs -> clientResources.put(clientId, rs))
                 );
     }
 

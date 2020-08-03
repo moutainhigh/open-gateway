@@ -3,11 +3,12 @@ package org.open.gateway.route.configuration;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
+import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
+import org.open.gateway.route.security.AuthenticationEntryPoint;
 import org.open.gateway.route.security.AuthenticationManager;
+import org.open.gateway.route.security.AuthorizationDeniedHandler;
 import org.open.gateway.route.security.AuthorizationManager;
-import org.open.gateway.route.security.filter.AuthenticationEntryPoint;
-import org.open.gateway.route.security.filter.AuthorizationDeniedHandler;
 import org.open.gateway.route.security.filter.PreRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,7 @@ public class SecurityConfig {
     private final ServerAuthenticationConverter serverAuthenticationConverter;
     private final RefreshableRouteDefinitionRepository resourceService;
     private final RefreshableClientResourcesRepository clientResourceService;
+    private final RefreshableIpLimitRepository ipLimitRepository;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
@@ -45,7 +47,7 @@ public class SecurityConfig {
                 .authorizeExchange()
                 .pathMatchers("/", "/oauth/*").permitAll()
                 .anyExchange()
-                .access(reactiveAuthorizationManager()) // 使用自定义授权管理器
+                .access(authorizationManager()) // 使用自定义授权管理器
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(new AuthorizationDeniedHandler());
@@ -57,18 +59,18 @@ public class SecurityConfig {
     }
 
     private AuthenticationWebFilter authenticationFilter() {
-        AuthenticationWebFilter authenticationFilter = new AuthenticationWebFilter(reactiveAuthenticationManager());
+        AuthenticationWebFilter authenticationFilter = new AuthenticationWebFilter(authenticationManager());
         authenticationFilter.setServerAuthenticationConverter(serverAuthenticationConverter);
         authenticationFilter.setAuthenticationFailureHandler(new ServerAuthenticationEntryPointFailureHandler(new AuthenticationEntryPoint()));
         return authenticationFilter;
     }
 
-    public AuthenticationManager reactiveAuthenticationManager() {
+    public AuthenticationManager authenticationManager() {
         return new AuthenticationManager();
     }
 
-    public AuthorizationManager reactiveAuthorizationManager() {
-        return new AuthorizationManager(resourceService, clientResourceService);
+    public AuthorizationManager authorizationManager() {
+        return new AuthorizationManager(resourceService, clientResourceService, ipLimitRepository);
     }
 
 }

@@ -18,6 +18,6 @@ public interface RefreshableRouteDefinitionRepository extends RouteDefinitionRep
      * @param path 请求路径
      * @return 路由信息
      */
-    Mono<RouteDefinition> getRouteDefinition(String path);
+    Mono<RouteDefinition> loadRouteDefinition(String path);
 
 }

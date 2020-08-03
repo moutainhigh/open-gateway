@@ -81,7 +81,6 @@ public class AccessLogsService {
     private AccessLogs buildAccessLogs(ServerWebExchange exchange,
                                        @Nullable Throwable ex) {
         String requestBody = readRequestBody(exchange);
-        log.info("request body is:{}", requestBody);
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
         HttpHeaders headers = request.getHeaders();
@@ -128,7 +127,7 @@ public class AccessLogsService {
     private String readRequestBody(ServerWebExchange exchange) {
         DataBuffer dataBuffer = WebExchangeUtil.getCachedRequestBody(exchange);
         if (dataBuffer == null) {
-            log.info("Cached request body is null");
+            log.warn("Cached request body is null");
             return null;
         }
         CharBuffer charBuffer = Charset.defaultCharset().decode(dataBuffer.asByteBuffer());
