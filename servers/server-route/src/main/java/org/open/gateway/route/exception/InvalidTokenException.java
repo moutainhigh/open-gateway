@@ -1,6 +1,7 @@
 package org.open.gateway.route.exception;
 
-import open.gateway.common.base.exception.GatewayException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Created by miko on 2020/7/9.
@@ -8,14 +9,14 @@ import open.gateway.common.base.exception.GatewayException;
  *
  * @author MIKO
  */
-public class InvalidTokenException extends GatewayException {
+public class InvalidTokenException extends ResponseStatusException {
 
     public InvalidTokenException(String reason) {
-        super("Invalid token:" + reason);
+        super(HttpStatus.UNAUTHORIZED, "Invalid token:" + reason);
     }
 
     public InvalidTokenException() {
-        super("Invalid token");
+        super(HttpStatus.UNAUTHORIZED, "Invalid token");
     }
 
 }

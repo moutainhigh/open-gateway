@@ -2,14 +2,13 @@ package org.open.gateway.route.configuration;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.utils.jwt.JwtDecoder;
-import open.gateway.common.utils.jwt.JwtEncoder;
-import open.gateway.common.utils.jwt.JwtProvider;
 import org.open.gateway.route.security.token.converters.jwt.JwtTokenAuthenticationConverter;
 import org.open.gateway.route.security.token.converters.redis.RedisTokenAuthenticationConverter;
 import org.open.gateway.route.security.token.generators.TokenGeneratorManager;
 import org.open.gateway.route.security.token.generators.jwt.JwtClientCredentialsTokenGenerator;
 import org.open.gateway.route.security.token.generators.redis.RedisClientCredentialsTokenGenerator;
+import org.open.gateway.route.utils.jwt.JwtProvider;
+import org.open.gateway.route.utils.jwt.Jwts;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -53,20 +52,12 @@ public class TokenConfig {
         }
 
         @Bean
-        public JwtEncoder jwtEncoder() {
+        public Jwts jwts() {
             KeyPair keyPair = keyPair();
             return JwtProvider.builder()
                     .keyPair(keyPair)
                     .issuer(this.jwtProperties.getIssuer())
-                    .encoder();
-        }
-
-        @Bean
-        public JwtDecoder jwtDecoder() {
-            return JwtProvider.builder()
-                    .publicKey(keyPair().getPublic())
-                    .issuer(this.jwtProperties.getIssuer())
-                    .decoder();
+                    .jwts();
         }
 
         /**
@@ -74,7 +65,7 @@ public class TokenConfig {
          */
         @Bean
         public JwtClientCredentialsTokenGenerator clientCredentialsTokenGenerator() {
-            return new JwtClientCredentialsTokenGenerator(jwtEncoder());
+            return new JwtClientCredentialsTokenGenerator(jwts());
         }
 
         /**
@@ -84,7 +75,7 @@ public class TokenConfig {
          */
         @Bean
         public ServerAuthenticationConverter bearerTokenConverter() {
-            return new JwtTokenAuthenticationConverter(jwtDecoder());
+            return new JwtTokenAuthenticationConverter(jwts());
         }
     }
 

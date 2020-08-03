@@ -25,6 +25,8 @@ public class MqListenerConfig {
         factory.setConsumerBatchEnabled(true);
         //设置监听器一次批量处理的消息数量
         factory.setBatchSize(500);
+        // 设置并发消费者数量
+        factory.setConcurrentConsumers(6);
         return factory;
     }
 

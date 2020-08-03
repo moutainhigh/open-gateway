@@ -1,6 +1,7 @@
 package org.open.gateway.route.exception;
 
-import open.gateway.common.base.exception.GatewayException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Created by miko on 2020/7/9.
@@ -8,9 +9,9 @@ import open.gateway.common.base.exception.GatewayException;
  *
  * @author MIKO
  */
-public class InvalidClientSecretException extends GatewayException {
+public class InvalidClientSecretException extends ResponseStatusException {
 
     public InvalidClientSecretException(String clientSecret) {
-        super("Invalid client secret: " + clientSecret);
+        super(HttpStatus.UNAUTHORIZED, "Invalid client secret: " + clientSecret);
     }
 }

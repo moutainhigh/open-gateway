@@ -34,13 +34,17 @@
 	<insert id="insertListSelective">
 		insert into gateway_access_logs (<include refid="Base_Column_List"/>)
 		VALUES
-		<foreach collection="list" item="data"  separator="," >
-         (null, #{data.path,jdbcType=VARCHAR}, #{data.ip,jdbcType=VARCHAR},
-			#{data.httpStatus,jdbcType=INTEGER}, #{data.httpMethod,jdbcType=VARCHAR}, #{data.httpHeaders,jdbcType=VARCHAR},
-			#{data.requestQueryString,jdbcType=VARCHAR}, #{data.requestBody,jdbcType=VARCHAR}, #{data.requestTime,jdbcType=TIMESTAMP},
-			#{data.responseTime,jdbcType=TIMESTAMP}, #{data.apiCode,jdbcType=VARCHAR}, #{data.routeCode,jdbcType=VARCHAR},
+		<foreach collection="list" item="data" separator=",">
+			(null, #{data.path,jdbcType=VARCHAR}, #{data.ip,jdbcType=VARCHAR},
+			#{data.httpStatus,jdbcType=INTEGER}, #{data.httpMethod,jdbcType=VARCHAR},
+			#{data.httpHeaders,jdbcType=VARCHAR},
+			#{data.requestQueryString,jdbcType=VARCHAR}, #{data.requestBody,jdbcType=VARCHAR},
+			#{data.requestTime,jdbcType=TIMESTAMP},
+			#{data.responseTime,jdbcType=TIMESTAMP}, #{data.apiCode,jdbcType=VARCHAR},
+			#{data.routeCode,jdbcType=VARCHAR},
 			#{data.usedTime,jdbcType=INTEGER}, #{data.userAgent,jdbcType=VARCHAR}, #{data.region,jdbcType=VARCHAR},
-			#{data.error,jdbcType=VARCHAR}, #{data.createTime,jdbcType=TIMESTAMP}, #{data.createPerson,jdbcType=VARCHAR})
+			#{data.error,jdbcType=VARCHAR}, #{data.createTime,jdbcType=TIMESTAMP},
+			#{data.createPerson,jdbcType=VARCHAR})
 		</foreach>
 	</insert>
 </mapper>

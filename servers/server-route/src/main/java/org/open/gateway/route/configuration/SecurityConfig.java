@@ -6,18 +6,18 @@ import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
 import org.open.gateway.route.security.AuthenticationManager;
 import org.open.gateway.route.security.AuthorizationManager;
-import org.open.gateway.route.security.filter.AccessLogFilter;
+import org.open.gateway.route.security.filter.AuthenticationEntryPoint;
+import org.open.gateway.route.security.filter.AuthorizationDeniedHandler;
 import org.open.gateway.route.security.filter.PreRequestFilter;
-import org.open.gateway.route.service.AccessLogsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
+import org.springframework.security.web.server.authentication.ServerAuthenticationEntryPointFailureHandler;
 
 /**
  * Created by miko on 2020/7/1.
@@ -31,11 +31,9 @@ import org.springframework.security.web.server.authentication.ServerAuthenticati
 @AllArgsConstructor
 public class SecurityConfig {
 
-    private final ServerCodecConfigurer configurer;
     private final ServerAuthenticationConverter serverAuthenticationConverter;
     private final RefreshableRouteDefinitionRepository resourceService;
     private final RefreshableClientResourcesRepository clientResourceService;
-    private final AccessLogsService accessLogService;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
@@ -47,21 +45,22 @@ public class SecurityConfig {
                 .authorizeExchange()
                 .pathMatchers("/", "/oauth/*").permitAll()
                 .anyExchange()
-                .access(reactiveAuthorizationManager()); // 使用自定义授权管理器
+                .access(reactiveAuthorizationManager()) // 使用自定义授权管理器
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(new AuthorizationDeniedHandler());
 
-        // 初始化拦截器
-        http.addFilterAt(preRequestFilter(), SecurityWebFiltersOrder.FIRST);
+        http.addFilterAt(new PreRequestFilter(), SecurityWebFiltersOrder.FIRST);
         // 认证拦截器
         http.addFilterAt(authenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION);
-        // 日志拦截器
-        http.addFilterAt(accessLogFilter(), SecurityWebFiltersOrder.LAST);
         return http.build();
     }
 
     private AuthenticationWebFilter authenticationFilter() {
-        AuthenticationWebFilter oauth2 = new AuthenticationWebFilter(reactiveAuthenticationManager());
-        oauth2.setServerAuthenticationConverter(serverAuthenticationConverter);
-        return oauth2;
+        AuthenticationWebFilter authenticationFilter = new AuthenticationWebFilter(reactiveAuthenticationManager());
+        authenticationFilter.setServerAuthenticationConverter(serverAuthenticationConverter);
+        authenticationFilter.setAuthenticationFailureHandler(new ServerAuthenticationEntryPointFailureHandler(new AuthenticationEntryPoint()));
+        return authenticationFilter;
     }
 
     public AuthenticationManager reactiveAuthenticationManager() {
@@ -70,14 +69,6 @@ public class SecurityConfig {
 
     public AuthorizationManager reactiveAuthorizationManager() {
         return new AuthorizationManager(resourceService, clientResourceService);
-    }
-
-    public AccessLogFilter accessLogFilter() {
-        return new AccessLogFilter(accessLogService);
-    }
-
-    public PreRequestFilter preRequestFilter() {
-        return new PreRequestFilter(configurer);
     }
 
 }

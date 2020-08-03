@@ -1,5 +1,7 @@
 package org.open.gateway.route.utils;
 
+import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -17,6 +19,16 @@ public class WebExchangeUtil {
      * 请求时间
      */
     private static final String REQUEST_TIME = "request_time";
+
+    /**
+     * 获取请求body数据
+     *
+     * @param exchange web交换信息
+     */
+    public static DataBuffer getCachedRequestBody(ServerWebExchange exchange) {
+        return (DataBuffer) exchange.getAttributes().remove(ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR);
+//        return exchange.getAttribute(ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR);
+    }
 
     /**
      * 添加请求时间

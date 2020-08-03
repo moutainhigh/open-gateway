@@ -1,19 +1,19 @@
 package org.open.gateway.route.configuration;
 
-import org.open.gateway.route.exception.WebExceptionHandler;
+import org.open.gateway.route.security.GatewayExceptionHandler;
 import org.open.gateway.route.service.AccessLogsService;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.web.ResourceProperties;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.reactive.result.view.ViewResolver;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by miko on 2020/7/8.
@@ -35,14 +35,14 @@ public class WebServerConfig {
     /**
      * 配置统一异常处理类
      */
-    @Primary
     @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
-    public ErrorWebExceptionHandler errorWebExceptionHandler(ObjectProvider<List<ViewResolver>> viewResolversProvider,
-                                                             ServerCodecConfigurer serverCodecConfigurer,
+    public ErrorWebExceptionHandler errorWebExceptionHandler(ErrorAttributes errorAttributes,
+                                                             ResourceProperties resourceProperties, ObjectProvider<ViewResolver> viewResolvers,
+                                                             ServerCodecConfigurer serverCodecConfigurer, ApplicationContext applicationContext,
+                                                             ServerProperties serverProperties,
                                                              AccessLogsService accessLogService) {
-        WebExceptionHandler exceptionHandler = new WebExceptionHandler(accessLogService);
-        exceptionHandler.setViewResolvers(viewResolversProvider.getIfAvailable(Collections::emptyList));
+        GatewayExceptionHandler exceptionHandler = new GatewayExceptionHandler(errorAttributes, resourceProperties, serverProperties.getError(), applicationContext, accessLogService);
+        exceptionHandler.setViewResolvers(viewResolvers.orderedStream().collect(Collectors.toList()));
         exceptionHandler.setMessageWriters(serverCodecConfigurer.getWriters());
         exceptionHandler.setMessageReaders(serverCodecConfigurer.getReaders());
         return exceptionHandler;

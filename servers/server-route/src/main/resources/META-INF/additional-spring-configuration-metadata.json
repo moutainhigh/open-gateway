@@ -20,7 +20,7 @@
 	  "defaultValue": "redis"
 	},
 	{
-	  "name": "access-log.enable",
+	  "name": "gateway.log.enable",
 	  "type": "java.lang.Boolean",
 	  "description": "开启日志记录.",
 	  "defaultValue": true

@@ -1,10 +1,8 @@
-package open.gateway.common.utils.jwt;
+package org.open.gateway.route.utils.jwt;
 
 import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.crypto.RSASSASigner;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -70,21 +68,13 @@ public class JwtProvider {
         return this;
     }
 
-    public JwtDecoder decoder() {
-        JwtDecoder decoder = new JwtDecoder();
-        decoder.setIssuer(this.issuer);
-        decoder.setPublicKey(this.publicKey);
-        decoder.setVerifier(new RSASSAVerifier(this.publicKey));
-        return decoder;
-    }
-
-    public JwtEncoder encoder() {
-        JwtEncoder encoder = new JwtEncoder();
-        encoder.setHeader(this.header);
-        encoder.setIssuer(this.issuer);
-        encoder.setPrivateKey(this.privateKey);
-        encoder.setSigner(new RSASSASigner(this.privateKey));
-        return encoder;
+    public Jwts jwts() {
+        Jwts jwts = new Jwts();
+        jwts.setHeader(this.header);
+        jwts.setIssuer(this.issuer);
+        jwts.setPrivateKey(this.privateKey);
+        jwts.setPublicKey(this.publicKey);
+        return jwts;
     }
 
     public static JwtProvider builder() {

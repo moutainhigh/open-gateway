@@ -2,7 +2,6 @@ package org.open.gateway.portal.service.impl;
 
 import lombok.AllArgsConstructor;
 import open.gateway.common.base.entity.AccessLogs;
-import org.open.gateway.portal.persistence.mapper.GatewayAccessLogsMapper;
 import org.open.gateway.portal.persistence.mapper.GatewayAccessLogsMapperExt;
 import org.open.gateway.portal.persistence.po.GatewayAccessLogs;
 import org.open.gateway.portal.service.GatewayAccessLogsService;
@@ -13,7 +12,6 @@ import org.springframework.util.Assert;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -35,11 +33,12 @@ public class GatewayAccessLogsServiceImpl implements GatewayAccessLogsService {
         bean.setCreatePerson("mq");
         return bean;
     }
+
     /**
      * 保存请求日志
      *
      * @param logs 日志
-    */
+     */
     @Override
     public void saveAccessLogs(List<AccessLogs> logs) {
         Assert.notNull(logs, "access logs is null");

@@ -5,11 +5,10 @@ import lombok.AllArgsConstructor;
 import net.minidev.json.JSONArray;
 import open.gateway.common.base.constants.OAuth2Constants;
 import open.gateway.common.base.entity.token.TokenUser;
-import open.gateway.common.utils.jwt.JwtDecoder;
 import org.open.gateway.route.exception.InvalidTokenException;
-import org.open.gateway.route.exception.TokenExpiredException;
 import org.open.gateway.route.security.token.AuthenticationToken;
 import org.open.gateway.route.security.token.converters.AbstractBearerTokenAuthenticationConverter;
+import org.open.gateway.route.utils.jwt.Jwts;
 import org.springframework.security.core.Authentication;
 import reactor.core.publisher.Mono;
 
@@ -25,21 +24,15 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class JwtTokenAuthenticationConverter extends AbstractBearerTokenAuthenticationConverter {
 
-    private final JwtDecoder jwtDecoder;
+    private final Jwts jwtDecoder;
 
     @Override
     protected Mono<Authentication> parseToken(String token) {
         if (token == null || token.isEmpty()) {
             throw invalidTokenError();
         }
-        try {
-            JWTClaimsSet jwtClaimsSet = this.jwtDecoder.parseToken(token);
-            return Mono.just(new AuthenticationToken(toTokenUser(jwtClaimsSet)));
-        } catch (IllegalArgumentException e) {
-            throw new InvalidTokenException();
-        } catch (IllegalStateException e) {
-            throw new TokenExpiredException(e.getMessage());
-        }
+        JWTClaimsSet jwtClaimsSet = this.jwtDecoder.parseToken(token);
+        return Mono.just(new AuthenticationToken(toTokenUser(jwtClaimsSet)));
     }
 
     private TokenUser toTokenUser(JWTClaimsSet claims) {

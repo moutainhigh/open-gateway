@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import open.gateway.common.base.constants.OAuth2Constants;
 import open.gateway.common.base.entity.oauth2.OAuth2TokenRequest;
 import open.gateway.common.base.entity.token.AccessToken;
-import open.gateway.common.utils.jwt.JwtEncoder;
 import org.open.gateway.route.security.client.ClientDetails;
 import org.open.gateway.route.security.token.generators.TokenGenerator;
+import org.open.gateway.route.utils.jwt.Jwts;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import java.util.HashMap;
 @AllArgsConstructor
 public class JwtClientCredentialsTokenGenerator implements TokenGenerator {
 
-    private final JwtEncoder jwtEncoder;
+    private final Jwts jwtEncoder;
 
     @Override
     public boolean isSupported(String grantType) {
