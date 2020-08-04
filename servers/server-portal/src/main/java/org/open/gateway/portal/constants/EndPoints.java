@@ -11,6 +11,8 @@ public interface EndPoints {
     String GATEWAY_ROUTES_REFRESH = "/gateway/routes/refresh";
     // 网关-资源刷新
     String GATEWAY_RESOURCES_REFRESH = "/gateway/resources/refresh";
+    // 网关-限流刷新
+    String GATEWAY_IP_LIMITS_REFRESH = "/gateway/ipLimits/refresh";
 
     // 日志-分页列表
     String ACCESS_LOGS_PAGE_LIST = "/accessLogs/pageList";

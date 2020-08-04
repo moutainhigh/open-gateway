@@ -45,11 +45,11 @@ public interface SQLS {
 
     // 根据api查询ip限制策略
     Sql QUERY_IP_LIMIT = new Sql(
-            "select gil.policy_type, gil.ip_addresses, ga.api_code" +
-                    "from gateway_ip_limit gil" +
+            "select gil.policy_type, gil.ip_addresses, ga.api_code " +
+                    "from gateway_ip_limit gil " +
                     "inner join gateway_ip_limit_api gila on gil.id = gila.policy_id " +
                     "inner join gateway_api ga on ga.id = gila.api_id " +
-                    "where gil.is_del = 0 and gil.`status`  = 1"
+                    "where gil.is_del = 0 and gil.status  = 1"
     );
 
 }

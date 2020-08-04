@@ -27,7 +27,7 @@ public class GatewayIpLimitDefinition {
             if (GatewayConstants.IpLimitPolicy.POLICY_TYPE_BLACK.equals(ipLimit.policyType)) {
                 this.blackList.add(ipLimit);
             }
-            if (GatewayConstants.IpLimitPolicy.POLICY_TYPE_BLACK.equals(ipLimit.policyType)) {
+            if (GatewayConstants.IpLimitPolicy.POLICY_TYPE_WHITE.equals(ipLimit.policyType)) {
                 this.whiteList.add(ipLimit);
             }
         }

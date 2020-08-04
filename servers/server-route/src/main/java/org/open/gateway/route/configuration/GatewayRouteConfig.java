@@ -7,12 +7,14 @@ import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
 import org.open.gateway.route.repositories.jdbc.JdbcClientResourcesRepository;
 import org.open.gateway.route.repositories.jdbc.JdbcIpLimitRepository;
 import org.open.gateway.route.repositories.jdbc.JdbcRouteDefinitionRepository;
+import org.open.gateway.route.utils.WebExchangeUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.r2dbc.core.DatabaseClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -44,9 +46,25 @@ public class GatewayRouteConfig implements ApplicationContextAware {
         return new JdbcIpLimitRepository(databaseClient);
     }
 
-    @Bean
-    public KeyResolver pathKeyResolver() {
+    @Primary
+    @Bean("urlKeyResolver")
+    public KeyResolver urlKeyResolver() {
         return exchange -> Mono.just(exchange.getRequest().getPath().value());
+    }
+
+    @Bean("urlUserKeyResolver")
+    public KeyResolver urlUserKeyResolver() {
+        return exchange -> Mono.just(exchange.getRequest().getPath().value() + WebExchangeUtil.getClientId(exchange));
+    }
+
+    @Bean("userKeyResolver")
+    public KeyResolver userKeyResolver() {
+        return exchange -> Mono.just(WebExchangeUtil.getClientId(exchange));
+    }
+
+    @Bean("ipKeyResolver")
+    public KeyResolver ipKeyResolver() {
+        return exchange -> Mono.just(WebExchangeUtil.getRemoteAddress(exchange));
     }
 
     @SuppressWarnings("rawtypes")

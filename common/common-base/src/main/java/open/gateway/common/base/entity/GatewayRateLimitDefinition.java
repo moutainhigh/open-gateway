@@ -36,33 +36,19 @@ public class GatewayRateLimitDefinition {
      */
     private String intervalUnit;
 
-    // 单位时间秒
     /**
-     * 1分钟
+     * 获取每次请求耗费token的数量
      */
-    public static final long SECONDS_IN_MINUTE = 60;
-    /**
-     * 1小时
-     */
-    public static final long SECONDS_IN_HOUR = 3600;
-    /**
-     * 1天
-     */
-    public static final long SECONDS_IN_DAY = 24 * 3600;
-
-    /**
-     * 获取单位时间内刷新时长
-     */
-    public long getInterval() {
+    public long requestedTokens() {
         String timeUnit = this.intervalUnit;
         if (timeUnit.equalsIgnoreCase(TimeUnit.SECONDS.name())) {
-            return SECONDS_IN_MINUTE;
+            return 1;
         } else if (timeUnit.equalsIgnoreCase(TimeUnit.MINUTES.name())) {
-            return SECONDS_IN_MINUTE;
+            return 60;
         } else if (timeUnit.equalsIgnoreCase(TimeUnit.HOURS.name())) {
-            return SECONDS_IN_HOUR;
+            return 60 * 60;
         } else if (timeUnit.equalsIgnoreCase(TimeUnit.DAYS.name())) {
-            return SECONDS_IN_DAY;
+            return 60 * 60 * 24;
         } else {
             throw new IllegalArgumentException("Don't support this TimeUnit: " + timeUnit);
         }

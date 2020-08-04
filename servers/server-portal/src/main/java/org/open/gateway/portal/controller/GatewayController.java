@@ -32,4 +32,10 @@ public class GatewayController {
         return "ok";
     }
 
+    @PostMapping(EndPoints.GATEWAY_IP_LIMITS_REFRESH)
+    public String refreshIpLimits(@RequestParam(name = "ipLimits", required = false) Set<String> ipLimits) {
+        this.gatewayService.refreshIpLimits(ipLimits);
+        return "ok";
+    }
+
 }

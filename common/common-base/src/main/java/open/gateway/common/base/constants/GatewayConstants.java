@@ -37,10 +37,15 @@ public interface GatewayConstants {
      */
     interface RateLimitPolicy {
 
-        // 策略类型-限制任何人访问api
-        String POLICY_TYPE_ALL = "all";
-        // 策略类型-限制指定用户访问api
+        // 策略类型-根据url限制访问次数
+        String POLICY_TYPE_URL = "URL";
+        // 策略类型-根据用户限制访问次数
         String POLICY_TYPE_USER = "user";
+        // 策略类型-根据url和用户限制访问次数
+        String POLICY_TYPE_URL_USER = "url_user";
+        // 策略类型-根据ip限制访问次数
+        String POLICY_TYPE_IP = "ip";
+
         // 单位时间-秒
         String INTERVAL_UNIT_SECONDS = "seconds";
         // 单位时间-分

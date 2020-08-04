@@ -27,6 +27,11 @@ public class WebExchangeUtil {
     private static final String REQUEST_TIME = "request_time";
 
     /**
+     * 客户端id
+     */
+    private static final String CLIENT_ID = "client_id";
+
+    /**
      * 获取请求body数据
      *
      * @param exchange web交换信息
@@ -53,6 +58,26 @@ public class WebExchangeUtil {
      */
     public static Date getRequestTime(ServerWebExchange exchange) {
         return (Date) exchange.getAttributes().get(REQUEST_TIME);
+    }
+
+    /**
+     * 存放客户端id
+     *
+     * @param exchange web交换信息
+     * @param clientId 客户端id
+     */
+    public static void putClientId(ServerWebExchange exchange, String clientId) {
+        exchange.getAttributes().put(CLIENT_ID, clientId);
+    }
+
+    /**
+     * 获取客户端id
+     *
+     * @param exchange web交换信息
+     * @return 客户端id
+     */
+    public static String getClientId(ServerWebExchange exchange) {
+        return (String) exchange.getAttributes().get(CLIENT_ID);
     }
 
     /**

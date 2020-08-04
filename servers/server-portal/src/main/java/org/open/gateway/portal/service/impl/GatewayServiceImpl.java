@@ -48,4 +48,14 @@ public class GatewayServiceImpl implements GatewayService {
         log.info("Finished send refresh resources msg.");
     }
 
+    /**
+     * 刷新黑白名单
+     *
+     * @param ipLimits ip限制id
+     */
+    @Override
+    public void refreshIpLimits(Set<String> ipLimits) {
+        this.rabbitTemplate.convertAndSend(MqConstants.EXCHANGE_REFRESH_IP_LIMITS, "", new RefreshGateway(ipLimits));
+    }
+
 }

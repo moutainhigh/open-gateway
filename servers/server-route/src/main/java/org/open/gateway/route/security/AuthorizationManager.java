@@ -98,6 +98,7 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         String clientId = user.getClientId();
         Collection<String> authorities = user.getAuthorities();
         log.info("Request path:{} ip:{} client_id:{} authorities:{}", requestPath, ipAddress, clientId, authorities);
+        WebExchangeUtil.putClientId(exchange, clientId); // 存放客户端id
         // 是否直接放行
         if (this.isPermit(user)) {
             return Mono.just(true);

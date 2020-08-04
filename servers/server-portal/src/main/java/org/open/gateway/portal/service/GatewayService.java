@@ -23,4 +23,11 @@ public interface GatewayService {
      */
     void refreshResources(Set<String> clientIds);
 
+    /**
+     * 刷新黑白名单
+     *
+     * @param ipLimits ip限制id
+     */
+    void refreshIpLimits(Set<String> ipLimits);
+
 }

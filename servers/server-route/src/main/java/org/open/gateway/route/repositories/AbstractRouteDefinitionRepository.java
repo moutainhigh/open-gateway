@@ -1,6 +1,7 @@
 package org.open.gateway.route.repositories;
 
 import lombok.extern.slf4j.Slf4j;
+import open.gateway.common.base.constants.GatewayConstants;
 import open.gateway.common.base.entity.GatewayRateLimitDefinition;
 import open.gateway.common.base.entity.GatewayRouteDefinition;
 import open.gateway.common.base.entity.RefreshGateway;
@@ -30,6 +31,7 @@ import static java.util.Collections.synchronizedMap;
 @Slf4j
 public abstract class AbstractRouteDefinitionRepository implements RefreshableRouteDefinitionRepository {
 
+    private static final String DEFAULT_KEY_RESOLVER = "urlKeyResolver";
     private final Map<String, RouteDefinition> routes = synchronizedMap(new LinkedHashMap<>());
 
     @Override
@@ -191,11 +193,12 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
      * @return 限流过滤器
      */
     private FilterDefinition getRateLimitFilterDefinition(GatewayRateLimitDefinition rateLimit) {
-        long refreshInterval = rateLimit.getInterval();
+        // 获取每次请求耗费token的数量
+        long requestedTokens = rateLimit.requestedTokens();
         // 允许用户每秒处理多少个请求
-        long replenishRate = Math.max(rateLimit.getLimitQuota() / refreshInterval, 1);
-        // 令牌桶的容量，允许在一秒钟内完成的最大请求数
-        long burstCapacity = Math.max(rateLimit.getMaxLimitQuota() / refreshInterval, 1);
+        long replenishRate = rateLimit.getLimitQuota();
+        // 令牌桶的容量
+        long burstCapacity = requestedTokens * rateLimit.getMaxLimitQuota();
         // 限流
         FilterDefinition rateLimiterDefinition = new FilterDefinition();
         Map<String, String> rateLimiterParams = new HashMap<>(8);
@@ -204,10 +207,35 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
         rateLimiterParams.put("redis-rate-limiter.replenishRate", String.valueOf(replenishRate));
         //令牌桶容量
         rateLimiterParams.put("redis-rate-limiter.burstCapacity", String.valueOf(burstCapacity));
+        //请求耗费的令牌数量
+        rateLimiterParams.put("redis-rate-limiter.requestedTokens", String.valueOf(requestedTokens));
         // 限流策略(#{@BeanName})
-        rateLimiterParams.put("key-resolver", "#{@pathKeyResolver}");
+        rateLimiterParams.put("key-resolver", getKeyResolver(rateLimit.getPolicyType()));
         rateLimiterDefinition.setArgs(rateLimiterParams);
         return rateLimiterDefinition;
+    }
+
+    /**
+     * 获取限流策略实现
+     *
+     * @param policyType 限流策略
+     * @return 限流策略实现类
+     */
+    private String getKeyResolver(String policyType) {
+        if (GatewayConstants.RateLimitPolicy.POLICY_TYPE_URL.equals(policyType)) {
+            return "#{@urlKeyResolver}";
+        }
+        if (GatewayConstants.RateLimitPolicy.POLICY_TYPE_USER.equals(policyType)) {
+            return "#{@userKeyResolver}";
+        }
+        if (GatewayConstants.RateLimitPolicy.POLICY_TYPE_URL_USER.equals(policyType)) {
+            return "#{@urlUserKeyResolver}";
+        }
+        if (GatewayConstants.RateLimitPolicy.POLICY_TYPE_IP.equals(policyType)) {
+            return "#{@ipKeyResolver}";
+        }
+        log.warn("Invalid policy type:{} use default key resolver:{}", policyType, DEFAULT_KEY_RESOLVER);
+        return "#{" + DEFAULT_KEY_RESOLVER + "}";
     }
 
     /**
