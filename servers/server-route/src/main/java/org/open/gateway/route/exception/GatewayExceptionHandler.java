@@ -1,5 +1,6 @@
 package org.open.gateway.route.exception;
 
+import io.netty.channel.ConnectTimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.route.service.AccessLogsService;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
@@ -20,8 +21,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
-
-import java.net.ConnectException;
 
 /**
  * Created by miko on 2020/7/9.
@@ -63,7 +62,7 @@ public class GatewayExceptionHandler extends DefaultErrorWebExceptionHandler {
         if (error instanceof ResponseStatusException) {
             return ((ResponseStatusException) error).getStatus();
         }
-        if (error instanceof ConnectException) {
+        if (error instanceof ConnectTimeoutException) {
             return HttpStatus.GATEWAY_TIMEOUT;
         }
         return responseStatusAnnotation.getValue("code", HttpStatus.class)
@@ -81,7 +80,7 @@ public class GatewayExceptionHandler extends DefaultErrorWebExceptionHandler {
         if (StringUtils.hasText(reason)) {
             return reason;
         }
-        if (error instanceof ConnectException) {
+        if (error instanceof ConnectTimeoutException) {
             return HttpStatus.GATEWAY_TIMEOUT.getReasonPhrase();
         }
         return HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase();
