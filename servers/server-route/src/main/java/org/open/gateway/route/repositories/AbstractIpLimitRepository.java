@@ -37,23 +37,37 @@ public abstract class AbstractIpLimitRepository implements RefreshableIpLimitRep
         return clearIpLimits.then(
                 getIpLimits(refreshApiCodes)
                         .collect(Collectors.groupingBy(GatewayIpLimitDefinition.IpLimit::getApiCode))
+                        .doOnSubscribe(v -> log.info("[Refresh ip limits] starting. target api codes:{}", refreshApiCodes))
                         .doOnSuccess(group -> {
                             group.forEach((key, value) -> this.ipLimits.put(key, new GatewayIpLimitDefinition(value)));
-                            log.info("Refresh ip limits finished");
+                            log.info("[Refresh ip limits] finished");
                         })
-                        .doOnError(e -> log.error("Refresh ip limits failed reason:{}", e.getMessage()))
+                        .doOnError(e -> log.error("[Refresh ip limits] failed reason:{}", e.getMessage()))
                         .then()
         );
     }
 
+    /**
+     * 根据api代码清理黑白名单
+     *
+     * @param apiCodes api编码
+     */
     private void clearIpLimits(Set<String> apiCodes) {
         if (apiCodes == null) {
             ipLimits.clear();
+            log.info("[Refresh ip limits] clear all ip limits finished");
         } else {
             apiCodes.forEach(ipLimits::remove);
+            log.info("[Refresh ip limits] clear ip limits finished");
         }
     }
 
-    protected abstract Flux<GatewayIpLimitDefinition.IpLimit> getIpLimits(Set<String> apiCode);
+    /**
+     * 根据api代码获取黑白名单
+     *
+     * @param apiCodes api编码
+     * @return 黑白名单配置
+     */
+    protected abstract Flux<GatewayIpLimitDefinition.IpLimit> getIpLimits(Set<String> apiCodes);
 
 }

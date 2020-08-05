@@ -1,6 +1,6 @@
 package org.open.gateway.route.configuration;
 
-import org.open.gateway.route.security.GatewayExceptionHandler;
+import org.open.gateway.route.exception.GatewayExceptionHandler;
 import org.open.gateway.route.service.AccessLogsService;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;

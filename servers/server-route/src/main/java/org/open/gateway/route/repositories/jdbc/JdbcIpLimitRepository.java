@@ -24,8 +24,8 @@ public class JdbcIpLimitRepository extends AbstractIpLimitRepository {
     private final DatabaseClient databaseClient;
 
     @Override
-    protected Flux<GatewayIpLimitDefinition.IpLimit> getIpLimits(Set<String> apiCode) {
-        return this.databaseClient.execute(SQLS.QUERY_IP_LIMIT.AND_IN("ga.api_code", apiCode).getSql())
+    protected Flux<GatewayIpLimitDefinition.IpLimit> getIpLimits(Set<String> apiCodes) {
+        return this.databaseClient.execute(SQLS.QUERY_IP_LIMIT.AND_IN("ga.api_code", apiCodes).getSql())
                 .map(this::rowToIpLimit)
                 .all();
     }

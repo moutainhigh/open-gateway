@@ -43,15 +43,16 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
 
     @Override
     public Mono<Void> refresh(RefreshGateway param) {
-        Set<String> clientIds = param == null ? null : param.getArgs();
-        Mono<Void> cleanResources = Mono.fromRunnable(() -> this.clearResources(clientIds));
+        Set<String> refreshClientIds = param == null ? null : param.getArgs();
+        Mono<Void> cleanResources = Mono.fromRunnable(() -> this.clearResources(refreshClientIds));
         return cleanResources.then(
-                groupClientResource(getClientApiRoutes(clientIds))
+                groupClientResource(getClientApiRoutes(refreshClientIds))
+                        .doOnSubscribe(v -> log.info("[Refresh client resources] starting. target client ids:{}", refreshClientIds))
                         .doOnSuccess(map -> {
                             this.clientResources.putAll(map);
-                            log.info("Refresh client resources finished");
+                            log.info("[Refresh client resources] finished");
                         })
-                        .doOnError(e -> log.error("Refresh client resources failed reason:{}", e.getMessage()))
+                        .doOnError(e -> log.error("[Refresh client resources] failed reason:{}", e.getMessage()))
                         .then()
         );
     }
@@ -62,12 +63,12 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
      * @param clientIds 客户端id
      */
     protected void clearResources(Set<String> clientIds) {
-        if (clientIds != null) {
-            clientIds.forEach(this.clientResources::remove);
-            log.info("Clear client resource finished. client ids:" + clientIds);
-        } else {
+        if (clientIds == null) {
             this.clientResources.clear();
-            log.info("Clear all client resource finished");
+            log.info("[Refresh client resources] clear all client resource finished");
+        } else {
+            clientIds.forEach(this.clientResources::remove);
+            log.info("[Refresh client resources] clear client resource finished");
         }
     }
 

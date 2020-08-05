@@ -80,9 +80,9 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
                 .then();
         return clearRoutes
                 .then(readAndSaveRoute)
-                .doOnSubscribe(v -> log.info("Refresh routes starting. target api codes:{}", refreshApiCodes))
-                .doOnSuccess(v -> log.info("Refresh routes finished"))
-                .doOnError(e -> log.error("Refresh routes error:" + e.getMessage()));
+                .doOnSubscribe(v -> log.info("[Refresh routes] starting. target api codes:{}", refreshApiCodes))
+                .doOnSuccess(v -> log.info("[Refresh routes] finished"))
+                .doOnError(e -> log.error("[Refresh routes] error:" + e.getMessage()));
     }
 
     /**
@@ -91,11 +91,11 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
     private void clearRoutes(Set<String> apiCodes) {
         if (apiCodes == null) {
             this.routes.clear();
-            log.info("Clear all routes finished");
+            log.info("[Refresh routes] clear all routes finished");
         } else {
             if (!apiCodes.isEmpty()) {
                 this.routes.values().removeIf(route -> apiCodes.contains(RouteDefinitionUtil.getApiCode(route)));
-                log.info("Clear routes finished");
+                log.info("[Refresh routes] clear routes finished");
             }
         }
     }
