@@ -21,14 +21,9 @@ import java.util.Map;
  */
 public class WebExchangeUtil {
 
-    /**
-     * 请求时间
-     */
+    // 请求时间
     private static final String REQUEST_TIME = "request_time";
-
-    /**
-     * 客户端id
-     */
+    // 客户端id
     private static final String CLIENT_ID = "client_id";
 
     /**

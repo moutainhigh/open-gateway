@@ -25,4 +25,18 @@ public class PathUtil {
         return formatApiUrl;
     }
 
+    /**
+     * 清理请求url参数
+     *
+     * @param url 原始请求路径
+     * @return 清理后的请求路径
+     */
+    public static String trimUrlParameter(String url) {
+        int index = url.indexOf("?");
+        if (index == -1) {
+            return url;
+        }
+        return url.substring(0, index);
+    }
+
 }

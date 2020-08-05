@@ -26,7 +26,7 @@ public class RouteDefinitionUtil {
     }
 
     public static void setApiCode(RouteDefinition routeDefinition, String apiCode) {
-        putMetadata(METADATA_KEY_API_CODE, routeDefinition, apiCode);
+        putMetadata(routeDefinition, METADATA_KEY_API_CODE, apiCode);
     }
 
     public static String getRouteCode(RouteDefinition routeDefinition) {
@@ -38,7 +38,7 @@ public class RouteDefinitionUtil {
     }
 
     public static void setRouteCode(RouteDefinition routeDefinition, String routeCode) {
-        putMetadata(METADATA_KEY_ROUTE_CODE, routeDefinition, routeCode);
+        putMetadata(routeDefinition, METADATA_KEY_ROUTE_CODE, routeCode);
     }
 
     public static boolean getIsAuth(RouteDefinition routeDefinition) {
@@ -50,7 +50,7 @@ public class RouteDefinitionUtil {
     }
 
     public static void setIsAuth(RouteDefinition routeDefinition, boolean isOpen) {
-        putMetadata(METADATA_KEY_IS_AUTH, routeDefinition, isOpen);
+        putMetadata(routeDefinition, METADATA_KEY_IS_AUTH, isOpen);
     }
 
     public static boolean getIsOpen(RouteDefinition routeDefinition) {
@@ -62,11 +62,10 @@ public class RouteDefinitionUtil {
     }
 
     public static void setIsOpen(RouteDefinition routeDefinition, boolean isOpen) {
-        putMetadata(METADATA_KEY_IS_OPEN, routeDefinition, isOpen);
+        putMetadata(routeDefinition, METADATA_KEY_IS_OPEN, isOpen);
     }
 
-
-    private static void putMetadata(String key, RouteDefinition routeDefinition, Object arg) {
+    private static void putMetadata(RouteDefinition routeDefinition, String key, Object arg) {
         if (routeDefinition.getMetadata() == null) {
             Map<String, Object> metadata = new HashMap<>();
             metadata.put(key, arg);

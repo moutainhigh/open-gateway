@@ -16,7 +16,9 @@ import java.util.function.Supplier;
 public class Beans {
 
     // 缓存的拷贝器
-    private static final Map<String, BeanCopier> beanCopierCache = new ConcurrentHashMap<>();
+    private static final Map<String, BeanCopier> BEAN_COPIER_CACHE = new ConcurrentHashMap<>();
+    // 默认的转换器
+    private static final Converter DEFAULT_CONVERTER = new DefaultBeanConverter();
 
     /**
      * 获取拷贝器
@@ -26,11 +28,11 @@ public class Beans {
      */
     private static BeanCopier getBeanCopier(Class<?> sourceClass, Class<?> targetClass, Converter converter) {
         String beanKey = generateKey(sourceClass, targetClass);
-        if (beanCopierCache.containsKey(beanKey)) {
-            return beanCopierCache.get(beanKey);
+        if (BEAN_COPIER_CACHE.containsKey(beanKey)) {
+            return BEAN_COPIER_CACHE.get(beanKey);
         }
         BeanCopier copier = BeanCopier.create(sourceClass, targetClass, converter == null); // 生成代理类
-        beanCopierCache.put(beanKey, copier);
+        BEAN_COPIER_CACHE.put(beanKey, copier);
         return copier;
     }
 
@@ -64,7 +66,7 @@ public class Beans {
     public static class BeanCopierHelper {
 
         private Object source;
-        private Converter converter = new DefaultBeanConverter();
+        private Converter converter = DEFAULT_CONVERTER;
 
         public BeanCopierHelper source(Object source) {
             this.source = Objects.requireNonNull(source);

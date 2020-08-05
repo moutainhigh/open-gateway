@@ -48,6 +48,7 @@ public class OauthEndpoints {
     @PostMapping(EndpointsConstants.TOKEN)
     @ResponseBody
     public Mono<OAuth2TokenResponse> token(OAuth2TokenRequest tokenRequest) {
+        // TODO 从数据库查询是否已生成过token
         // 校验token请求
         checkTokenRequest(tokenRequest);
         // 根据client_id获取client信息

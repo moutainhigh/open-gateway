@@ -19,7 +19,7 @@ import java.net.URI;
 @Component
 @AllArgsConstructor
 @ConditionalOnProperty(value = "gateway.log.enable", havingValue = "true", matchIfMissing = true)
-public class RequestRecorderGlobalFilter implements GlobalFilter, Ordered {
+public class RequestRecorderGatewayFilter implements GlobalFilter, Ordered {
 
     private final AccessLogsService accessLogsService;
 

@@ -78,8 +78,7 @@ public class AccessLogsService {
      * @param ex       异常
      * @return 访问日志
      */
-    private AccessLogs buildAccessLogs(ServerWebExchange exchange,
-                                       @Nullable Throwable ex) {
+    private AccessLogs buildAccessLogs(ServerWebExchange exchange, @Nullable Throwable ex) {
         String requestBody = readRequestBody(exchange);
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
