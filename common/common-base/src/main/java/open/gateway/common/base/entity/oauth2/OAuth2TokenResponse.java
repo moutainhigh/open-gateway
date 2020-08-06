@@ -17,6 +17,5 @@ public class OAuth2TokenResponse {
     private String access_token;
     private String token_type;
     private long expire_in;
-    private String jti;
 
 }

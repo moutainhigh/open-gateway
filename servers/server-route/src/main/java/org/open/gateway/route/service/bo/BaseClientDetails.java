@@ -1,4 +1,4 @@
-package org.open.gateway.route.security.client;
+package org.open.gateway.route.service.bo;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;

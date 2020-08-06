@@ -3,7 +3,6 @@ package org.open.gateway.route.repositories.jdbc;
 import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;
 import open.gateway.common.base.entity.GatewayIpLimitDefinition;
-import org.open.gateway.route.constants.SQLS;
 import org.open.gateway.route.repositories.AbstractIpLimitRepository;
 import org.open.gateway.route.utils.sql.Sql;
 import org.springframework.data.r2dbc.core.DatabaseClient;

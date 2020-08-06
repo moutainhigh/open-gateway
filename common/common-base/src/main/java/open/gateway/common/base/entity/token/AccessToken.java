@@ -14,6 +14,7 @@ import lombok.ToString;
 @ToString
 public class AccessToken {
 
+    private String clientId;
     private String token;
     private long expire_in;
     private String jti;

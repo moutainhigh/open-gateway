@@ -3,7 +3,7 @@ package org.open.gateway.route.security.token.generators;
 import open.gateway.common.base.entity.oauth2.OAuth2TokenRequest;
 import open.gateway.common.base.entity.token.AccessToken;
 import org.open.gateway.route.exception.NoSupportedGrantTypeException;
-import org.open.gateway.route.security.client.ClientDetails;
+import org.open.gateway.route.service.bo.ClientDetails;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 

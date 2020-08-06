@@ -8,8 +8,8 @@ import open.gateway.common.base.entity.token.AccessToken;
 import open.gateway.common.base.entity.token.TokenUser;
 import open.gateway.common.utils.IdUtil;
 import open.gateway.common.utils.JSON;
-import org.open.gateway.route.security.client.ClientDetails;
 import org.open.gateway.route.security.token.generators.TokenGenerator;
+import org.open.gateway.route.service.bo.ClientDetails;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
 

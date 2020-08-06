@@ -7,11 +7,12 @@ import open.gateway.common.base.constants.OAuth2Constants;
 import open.gateway.common.base.entity.oauth2.OAuth2AuthorizeRequest;
 import open.gateway.common.base.entity.oauth2.OAuth2TokenRequest;
 import open.gateway.common.base.entity.oauth2.OAuth2TokenResponse;
-import open.gateway.common.base.entity.token.AccessToken;
+import open.gateway.common.utils.Dates;
 import org.open.gateway.route.exception.InvalidClientSecretException;
-import org.open.gateway.route.security.client.ClientDetails;
-import org.open.gateway.route.security.client.ClientDetailsService;
 import org.open.gateway.route.security.token.generators.TokenGeneratorManager;
+import org.open.gateway.route.service.ClientDetailsService;
+import org.open.gateway.route.service.TokenService;
+import org.open.gateway.route.service.bo.ClientDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,7 @@ import reactor.core.publisher.Mono;
 public class OauthEndpoints {
 
     private final ClientDetailsService clientDetailsService;
-
+    private final TokenService tokenService;
     private final TokenGeneratorManager tokenGeneratorManager;
 
     /**
@@ -48,16 +49,24 @@ public class OauthEndpoints {
     @PostMapping(EndpointsConstants.TOKEN)
     @ResponseBody
     public Mono<OAuth2TokenResponse> token(OAuth2TokenRequest tokenRequest) {
-        // TODO 从数据库查询是否已生成过token
         // 校验token请求
         checkTokenRequest(tokenRequest);
         // 根据client_id获取client信息
         Mono<ClientDetails> clientDetails = clientDetailsService.loadClientByClientId(tokenRequest.getClient_id());
         return clientDetails
                 .filter(cd -> this.checkClientSecret(tokenRequest, cd)) // 校验secret
-                .map(cd -> this.tokenGeneratorManager.generate(tokenRequest, cd)) // 生成token
-                .doOnSuccess(token -> log.info("Generated token:{} expire_in:{} with client_id:{}", token.getToken(), token.getExpire_in(), tokenRequest.getClient_id()))
-                .map(this::buildTokenResponse);
+                .flatMap(cd ->
+                        tokenService.loadClientTokenByClientId(cd.getClientId()) // 从数据库查询该客户端已经存在的token
+                                .filter(token -> !token.isExpired()) // 过滤没有过期的
+                                .map(token -> buildTokenResponse(token.getToken(), Dates.toTimestamp(token.getExpireTime())))
+                                .doOnNext(response -> log.info("Exists client id:{} has token:{} expire_in:{}", tokenRequest.getClient_id(), response.getAccess_token(), response.getExpire_in()))
+                                .switchIfEmpty(
+                                        Mono.defer(() -> Mono.just(this.tokenGeneratorManager.generate(tokenRequest, cd))) // 重新生成token
+                                                .flatMap(accessToken -> tokenService.saveClientToken(cd.getClientId(), accessToken.getToken(), accessToken.getExpire_in()).thenReturn(accessToken))
+                                                .map(accessToken -> buildTokenResponse(accessToken.getToken(), accessToken.getExpire_in()))
+                                                .doOnSuccess(response -> log.info("Generated token:{} expire_in:{} with client_id:{}", response.getAccess_token(), response.getExpire_in(), tokenRequest.getClient_id()))
+                                )
+                );
     }
 
     /**
@@ -87,15 +96,15 @@ public class OauthEndpoints {
     /**
      * 构建token返回数据
      *
-     * @param token token信息
+     * @param token    token
+     * @param expireIn 过期时间
      * @return 返回数据
      */
-    private OAuth2TokenResponse buildTokenResponse(AccessToken token) {
+    private OAuth2TokenResponse buildTokenResponse(String token, Long expireIn) {
         OAuth2TokenResponse response = new OAuth2TokenResponse();
-        response.setAccess_token(token.getToken());
+        response.setAccess_token(token);
         response.setToken_type(OAuth2Constants.TOKEN_PREFIX);
-        response.setExpire_in(token.getExpire_in());
-        response.setJti(token.getJti());
+        response.setExpire_in(expireIn);
         return response;
     }
 

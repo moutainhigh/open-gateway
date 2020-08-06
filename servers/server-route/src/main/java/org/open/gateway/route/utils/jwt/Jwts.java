@@ -85,12 +85,14 @@ public class Jwts {
     private AccessToken _generateToken(String subject, long expireTime, Map<String, Object> claims) throws JOSEException {
         // tokenId
         String jwtID = IdUtil.uuid();
+        // 过期时间
+        long expirIn = System.currentTimeMillis() + expireTime;
         // 1. 建立payload 载体
         JWTClaimsSet.Builder claimsSetBuilder = new JWTClaimsSet.Builder()
                 .issuer(this.issuer)
                 .subject(subject)
                 .jwtID(jwtID)
-                .expirationTime(new Date(System.currentTimeMillis() + expireTime));
+                .expirationTime(new Date(expirIn));
         if (claims != null) {
             claims.forEach(claimsSetBuilder::claim);
         }
@@ -101,8 +103,9 @@ public class Jwts {
         // 3. 生成token
         String tokenValue = signedJWT.serialize();
         AccessToken token = new AccessToken();
+        token.setClientId(subject);
         token.setToken(tokenValue);
-        token.setExpire_in(expireTime);
+        token.setExpire_in(expirIn);
         token.setJti(jwtID);
         return token;
     }

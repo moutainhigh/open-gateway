@@ -1,4 +1,4 @@
-package org.open.gateway.route.constants;
+package org.open.gateway.route.repositories.jdbc;
 
 import org.open.gateway.route.utils.sql.Sql;
 
@@ -15,6 +15,14 @@ public interface SQLS {
                     "from gateway_app t " +
                     "inner join oauth_client_details o on t.client_id = o.client_id " +
                     "where t.is_del = 0 and t.status = 1 and t.client_id = '%s'"
+    );
+
+    // 根据客户端id加载客户端信息
+    Sql QUERY_CLIENT_TOKEN_BY_ID = new Sql(
+            "select t.client_id, o.id, o.token, o.expire_time " +
+                    "from gateway_app t " +
+                    "inner join oauth_client_token o on t.client_id = o.client_id " +
+                    "where t.is_del = 0 and t.status = 1 and o.is_del = 0 and t.client_id = '%s'"
     );
 
     // 查询所有路由信息
@@ -50,6 +58,14 @@ public interface SQLS {
                     "inner join gateway_ip_limit_api gila on gil.id = gila.policy_id " +
                     "inner join gateway_api ga on ga.id = gila.api_id " +
                     "where gil.is_del = 0 and gil.status  = 1"
+    );
+
+    // 保存客户端token
+    Sql INSERT_CLIENT_TOKEN = new Sql(
+            "insert into oauth_client_token (id, client_id, token, " +
+                    "expire_time, create_time, create_person, " +
+                    "update_time, update_person) " +
+                    "values (null, %s, %s, %s, %s, %s, %s, %s)"
     );
 
 }

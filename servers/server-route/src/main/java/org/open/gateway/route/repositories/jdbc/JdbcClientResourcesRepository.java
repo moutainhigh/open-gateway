@@ -3,7 +3,6 @@ package org.open.gateway.route.repositories.jdbc;
 import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;
 import open.gateway.common.base.entity.ClientResource;
-import org.open.gateway.route.constants.SQLS;
 import org.open.gateway.route.repositories.AbstractClientResourcesRepository;
 import org.springframework.data.r2dbc.core.DatabaseClient;
 import reactor.core.publisher.Flux;

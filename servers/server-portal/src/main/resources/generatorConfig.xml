@@ -19,7 +19,7 @@
 		</commentGenerator>
 
 		<!--jdbc的数据库连接 -->
-		<jdbcConnection driverClass="${spring.datasource.driver-class-name}"
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
 						connectionURL="${spring.datasource.url}"
 						userId="${spring.datasource.username}"
 						password="${spring.datasource.password}">
@@ -78,12 +78,6 @@
 		<!--		<table tableName="base_role_resource" domainObjectName="" enableCountByExample="false"-->
 		<!--			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
 		<!--			   enableDeleteByPrimaryKey="false" selectByExampleQueryId="false"/>-->
-		<table tableName="gateway_access_logs" domainObjectName="" enableCountByExample="false"
-			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
-			   enableDeleteByPrimaryKey="false" selectByExampleQueryId="false">
-			<columnOverride column="http_headers" javaType="java.lang.String" jdbcType="VARCHAR"/>
-			<columnOverride column="request_body" javaType="java.lang.String" jdbcType="VARCHAR"/>
-		</table>
 		<!--		<table tableName="gateway_api" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"-->
 		<!--			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="false"-->
 		<!--			   selectByExampleQueryId="false"/>-->
@@ -111,6 +105,20 @@
 		<!--		<table tableName="gateway_route" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"-->
 		<!--			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="false"-->
 		<!--			   selectByExampleQueryId="false"/>-->
-
+		<!--		<table tableName="gateway_access_logs" domainObjectName="" enableCountByExample="false"-->
+		<!--			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
+		<!--			   enableDeleteByPrimaryKey="false" selectByExampleQueryId="false">-->
+		<!--			<columnOverride column="http_headers" javaType="java.lang.String" jdbcType="VARCHAR"/>-->
+		<!--			<columnOverride column="request_body" javaType="java.lang.String" jdbcType="VARCHAR"/>-->
+		<!--		</table>-->
+		<!--		<table tableName="oauth_client_token" domainObjectName="" enableCountByExample="false"-->
+		<!--			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
+		<!--			   enableDeleteByPrimaryKey="false" selectByExampleQueryId="false">-->
+		<!--			<columnOverride column="token" javaType="java.lang.String" jdbcType="VARCHAR"/>-->
+		<!--		</table>-->
+		<!--		<table tableName="oauth_client_details" domainObjectName="" enableCountByExample="false"-->
+		<!--			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
+		<!--			   enableDeleteByPrimaryKey="false" selectByExampleQueryId="false">-->
+		<!--		</table>-->
 	</context>
 </generatorConfiguration>

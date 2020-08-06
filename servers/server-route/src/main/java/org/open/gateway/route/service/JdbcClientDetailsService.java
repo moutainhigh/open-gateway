@@ -1,11 +1,13 @@
-package org.open.gateway.route.security.client;
+package org.open.gateway.route.service;
 
 import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.utils.CollectionUtil;
-import org.open.gateway.route.constants.SQLS;
 import org.open.gateway.route.exception.NoClientFoundException;
+import org.open.gateway.route.repositories.jdbc.SQLS;
+import org.open.gateway.route.service.bo.BaseClientDetails;
+import org.open.gateway.route.service.bo.ClientDetails;
 import org.open.gateway.route.utils.sql.Sql;
 import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,7 +33,7 @@ public class JdbcClientDetailsService implements ClientDetailsService {
     public Mono<ClientDetails> loadClientByClientId(String clientId) {
         return databaseClient.execute(SQLS.QUERY_CLIENT_BY_ID.getSql(clientId))
                 .map(this::rowToBaseClientDetails)
-                .first()
+                .one()
                 .switchIfEmpty(Mono.error(new NoClientFoundException()));
     }
 
