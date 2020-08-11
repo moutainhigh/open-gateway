@@ -6,8 +6,8 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import open.gateway.common.base.entity.token.AccessToken;
 import open.gateway.common.utils.IdUtil;
+import org.open.gateway.route.entity.token.AccessToken;
 import org.open.gateway.route.exception.InvalidTokenException;
 import org.open.gateway.route.exception.TokenExpiredException;
 
@@ -168,4 +168,5 @@ public class Jwts {
     public RSAPrivateKey getPrivateKey() {
         return privateKey;
     }
+
 }

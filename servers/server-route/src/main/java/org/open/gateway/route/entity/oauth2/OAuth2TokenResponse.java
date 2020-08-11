@@ -1,4 +1,4 @@
-package open.gateway.common.base.entity.oauth2;
+package org.open.gateway.route.entity.oauth2;
 
 import lombok.Getter;
 import lombok.Setter;

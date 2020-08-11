@@ -1,4 +1,4 @@
-package open.gateway.common.base.entity.oauth2;
+package org.open.gateway.route.entity.oauth2;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,14 +6,13 @@ import lombok.ToString;
 
 /**
  * Created by miko on 2020/7/7.
- * 认证请求
  *
  * @author MIKO
  */
 @Getter
 @Setter
 @ToString
-public class OAuth2AuthorizeRequest {
+public class OAuth2TokenRequest {
 
     /**
      * 客户端准入标识
@@ -21,14 +20,29 @@ public class OAuth2AuthorizeRequest {
     private String client_id;
 
     /**
-     * 授权码模式固定为code
+     * 客户端秘钥
      */
-    private String response_type;
+    private String client_secret;
 
     /**
-     * 客户端权限
+     * 授权类型
      */
-    private String scope;
+    private String grant_type;
+
+    /**
+     * 授权码
+     */
+    private String code;
+
+    /**
+     * 资源拥有者用户名
+     */
+    private String username;
+
+    /**
+     * 资源拥有者密码
+     */
+    private String password;
 
     /**
      * 申请授权码时的跳转url，一定和申请授权码时用的redirect_uri一致

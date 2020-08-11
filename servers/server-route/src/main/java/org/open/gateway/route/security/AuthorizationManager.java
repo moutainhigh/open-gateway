@@ -1,8 +1,8 @@
 package org.open.gateway.route.security;
 
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.base.entity.token.TokenUser;
 import open.gateway.common.utils.CollectionUtil;
+import org.open.gateway.route.entity.token.TokenUser;
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;

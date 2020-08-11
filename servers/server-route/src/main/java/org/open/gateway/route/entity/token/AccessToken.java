@@ -1,4 +1,4 @@
-package open.gateway.common.base.entity.token;
+package org.open.gateway.route.entity.token;
 
 import lombok.Getter;
 import lombok.Setter;

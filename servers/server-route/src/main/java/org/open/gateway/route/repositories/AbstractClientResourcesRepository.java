@@ -2,9 +2,9 @@ package org.open.gateway.route.repositories;
 
 import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.base.collection.LRUCache;
-import open.gateway.common.base.entity.ClientResource;
 import open.gateway.common.base.entity.RefreshGateway;
 import open.gateway.common.utils.CollectionUtil;
+import org.open.gateway.route.entity.ClientResource;
 import org.open.gateway.route.utils.PathUtil;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

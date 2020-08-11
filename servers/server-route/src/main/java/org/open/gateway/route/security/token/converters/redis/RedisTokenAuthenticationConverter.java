@@ -2,8 +2,8 @@ package org.open.gateway.route.security.token.converters.redis;
 
 import lombok.AllArgsConstructor;
 import open.gateway.common.base.constants.GatewayConstants;
-import open.gateway.common.base.entity.token.TokenUser;
 import open.gateway.common.utils.JSON;
+import org.open.gateway.route.entity.token.TokenUser;
 import org.open.gateway.route.security.token.AuthenticationToken;
 import org.open.gateway.route.security.token.converters.AbstractBearerTokenAuthenticationConverter;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;

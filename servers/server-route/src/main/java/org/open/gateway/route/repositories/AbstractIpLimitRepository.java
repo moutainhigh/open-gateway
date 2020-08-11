@@ -1,8 +1,8 @@
 package org.open.gateway.route.repositories;
 
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.base.entity.GatewayIpLimitDefinition;
 import open.gateway.common.base.entity.RefreshGateway;
+import org.open.gateway.route.entity.GatewayIpLimit;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -21,10 +21,10 @@ import static java.util.Collections.synchronizedMap;
 @Slf4j
 public abstract class AbstractIpLimitRepository implements RefreshableIpLimitRepository {
 
-    private final Map<String, GatewayIpLimitDefinition> ipLimits = synchronizedMap(new LinkedHashMap<>());
+    private final Map<String, GatewayIpLimit> ipLimits = synchronizedMap(new LinkedHashMap<>());
 
     @Override
-    public Mono<GatewayIpLimitDefinition> loadIpLimitByApi(String apiCode) {
+    public Mono<GatewayIpLimit> loadIpLimitByApi(String apiCode) {
         return Mono.justOrEmpty(ipLimits.get(apiCode));
     }
 
@@ -36,10 +36,10 @@ public abstract class AbstractIpLimitRepository implements RefreshableIpLimitRep
         Mono<Void> clearIpLimits = Mono.fromRunnable(() -> this.clearIpLimits(refreshApiCodes));
         return clearIpLimits.then(
                 getIpLimits(refreshApiCodes)
-                        .collect(Collectors.groupingBy(GatewayIpLimitDefinition.IpLimit::getApiCode))
+                        .collect(Collectors.groupingBy(GatewayIpLimit.IpLimit::getApiCode))
                         .doOnSubscribe(v -> log.info("[Refresh ip limits] starting. target api codes:{}", refreshApiCodes))
                         .doOnSuccess(group -> {
-                            group.forEach((key, value) -> this.ipLimits.put(key, new GatewayIpLimitDefinition(value)));
+                            group.forEach((key, value) -> this.ipLimits.put(key, new GatewayIpLimit(value)));
                             log.info("[Refresh ip limits] finished");
                         })
                         .doOnError(e -> log.error("[Refresh ip limits] failed reason:{}", e.getMessage()))
@@ -68,6 +68,6 @@ public abstract class AbstractIpLimitRepository implements RefreshableIpLimitRep
      * @param apiCodes api编码
      * @return 黑白名单配置
      */
-    protected abstract Flux<GatewayIpLimitDefinition.IpLimit> getIpLimits(Set<String> apiCodes);
+    protected abstract Flux<GatewayIpLimit.IpLimit> getIpLimits(Set<String> apiCodes);
 
 }

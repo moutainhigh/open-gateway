@@ -2,9 +2,9 @@ package org.open.gateway.route.repositories;
 
 import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.base.constants.GatewayConstants;
-import open.gateway.common.base.entity.GatewayRateLimitDefinition;
-import open.gateway.common.base.entity.GatewayRouteDefinition;
 import open.gateway.common.base.entity.RefreshGateway;
+import org.open.gateway.route.entity.GatewayRateLimitDefinition;
+import org.open.gateway.route.entity.GatewayRouteDefinition;
 import org.open.gateway.route.utils.PathUtil;
 import org.open.gateway.route.utils.RouteDefinitionUtil;
 import org.springframework.cloud.gateway.filter.FilterDefinition;

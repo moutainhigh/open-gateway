@@ -4,7 +4,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.AllArgsConstructor;
 import net.minidev.json.JSONArray;
 import open.gateway.common.base.constants.OAuth2Constants;
-import open.gateway.common.base.entity.token.TokenUser;
+import org.open.gateway.route.entity.token.TokenUser;
 import org.open.gateway.route.exception.InvalidTokenException;
 import org.open.gateway.route.security.token.AuthenticationToken;
 import org.open.gateway.route.security.token.converters.AbstractBearerTokenAuthenticationConverter;

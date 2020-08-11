@@ -3,11 +3,11 @@ package org.open.gateway.route.security.token.generators.redis;
 import lombok.AllArgsConstructor;
 import open.gateway.common.base.constants.GatewayConstants;
 import open.gateway.common.base.constants.OAuth2Constants;
-import open.gateway.common.base.entity.oauth2.OAuth2TokenRequest;
-import open.gateway.common.base.entity.token.AccessToken;
-import open.gateway.common.base.entity.token.TokenUser;
 import open.gateway.common.utils.IdUtil;
 import open.gateway.common.utils.JSON;
+import org.open.gateway.route.entity.oauth2.OAuth2TokenRequest;
+import org.open.gateway.route.entity.token.AccessToken;
+import org.open.gateway.route.entity.token.TokenUser;
 import org.open.gateway.route.security.token.generators.TokenGenerator;
 import org.open.gateway.route.service.bo.ClientDetails;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -43,7 +43,7 @@ public class RedisClientCredentialsTokenGenerator implements TokenGenerator {
     private AccessToken generateAccessToken(ClientDetails clientDetails) {
         AccessToken accessToken = new AccessToken();
         accessToken.setToken(IdUtil.uuid());
-        accessToken.setExpire_in(clientDetails.getAccessTokenValiditySeconds());
+        accessToken.setExpire_in(System.currentTimeMillis() + clientDetails.getAccessTokenValiditySeconds());
         return accessToken;
     }
 
