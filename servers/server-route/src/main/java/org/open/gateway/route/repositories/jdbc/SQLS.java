@@ -60,12 +60,4 @@ public interface SQLS {
                     "where gil.is_del = 0 and gil.status  = 1"
     );
 
-    // 保存客户端token
-    Sql INSERT_CLIENT_TOKEN = new Sql(
-            "insert into oauth_client_token (id, client_id, token, " +
-                    "expire_time, create_time, create_person, " +
-                    "update_time, update_person) " +
-                    "values (null, %s, %s, %s, %s, %s, %s, %s)"
-    );
-
 }
