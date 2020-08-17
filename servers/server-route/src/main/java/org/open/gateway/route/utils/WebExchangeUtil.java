@@ -106,7 +106,7 @@ public class WebExchangeUtil {
         Map<String, String> headers = request.getHeaders().toSingleValueMap();
         for (String key : IP_HEADERS) {
             String ip = headers.get(key);
-            if (isIpValid(ip)) {
+            if (ip != null && ip.length() > 0 && !"unknown".equalsIgnoreCase(ip)) {
                 return ip;
             }
         }
@@ -114,16 +114,6 @@ public class WebExchangeUtil {
             return request.getRemoteAddress().getAddress().getHostAddress();
         }
         return null;
-    }
-
-    /**
-     * ip是否有效
-     *
-     * @param ip ip地址
-     * @return true有效, false无效
-     */
-    private static boolean isIpValid(String ip) {
-        return ip != null && ip.length() > 0 && !"unknown".equalsIgnoreCase(ip);
     }
 
     /**
