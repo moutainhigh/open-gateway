@@ -4,7 +4,7 @@ import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.utils.CollectionUtil;
-import org.open.gateway.route.exception.NoClientFoundException;
+import org.open.gateway.route.exception.ClientNotFoundException;
 import org.open.gateway.route.repositories.jdbc.SQLS;
 import org.open.gateway.route.service.bo.BaseClientDetails;
 import org.open.gateway.route.service.bo.ClientDetails;
@@ -34,7 +34,7 @@ public class JdbcClientDetailsService implements ClientDetailsService {
         return databaseClient.execute(SQLS.QUERY_CLIENT_BY_ID.getSql(clientId))
                 .map(this::rowToBaseClientDetails)
                 .one()
-                .switchIfEmpty(Mono.error(new NoClientFoundException()));
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new ClientNotFoundException())));
     }
 
     private ClientDetails rowToBaseClientDetails(Row row) {

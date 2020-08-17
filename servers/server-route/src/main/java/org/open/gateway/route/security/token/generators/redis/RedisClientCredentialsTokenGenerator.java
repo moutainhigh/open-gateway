@@ -10,10 +10,11 @@ import org.open.gateway.route.entity.token.AccessToken;
 import org.open.gateway.route.entity.token.TokenUser;
 import org.open.gateway.route.security.token.generators.TokenGenerator;
 import org.open.gateway.route.service.bo.ClientDetails;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
+import reactor.core.publisher.Mono;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class RedisClientCredentialsTokenGenerator implements TokenGenerator {
 
-    private final StringRedisTemplate redisTemplate;
+    private final ReactiveStringRedisTemplate redisTemplate;
 
     @Override
     public boolean isSupported(String grantType) {
@@ -32,12 +33,13 @@ public class RedisClientCredentialsTokenGenerator implements TokenGenerator {
     }
 
     @Override
-    public AccessToken generate(OAuth2TokenRequest tokenRequest, ClientDetails clientDetails) {
+    public Mono<AccessToken> generate(OAuth2TokenRequest tokenRequest, ClientDetails clientDetails) {
         AccessToken accessToken = generateAccessToken(clientDetails);
         TokenUser tokenUser = generateTokenUser(clientDetails);
         // 生成token放入redis中
-        this.redisTemplate.opsForValue().set(GatewayConstants.RedisKey.PREFIX_ACCESS_TOKENS + accessToken.getToken(), JSON.toJSONString(tokenUser), clientDetails.getAccessTokenValiditySeconds(), TimeUnit.SECONDS);
-        return accessToken;
+        return this.redisTemplate.opsForValue()
+                .set(GatewayConstants.RedisKey.PREFIX_ACCESS_TOKENS + accessToken.getToken(), JSON.toJSONString(tokenUser), Duration.ofSeconds(clientDetails.getAccessTokenValiditySeconds()))
+                .thenReturn(accessToken);
     }
 
     private AccessToken generateAccessToken(ClientDetails clientDetails) {

@@ -3,6 +3,7 @@ package org.open.gateway.route.security.token.generators;
 import org.open.gateway.route.entity.oauth2.OAuth2TokenRequest;
 import org.open.gateway.route.entity.token.AccessToken;
 import org.open.gateway.route.service.bo.ClientDetails;
+import reactor.core.publisher.Mono;
 
 /**
  * Created by miko on 2020/7/8.
@@ -26,6 +27,6 @@ public interface TokenGenerator {
      * @param clientDetails 客户端信息
      * @return 生成的token
      */
-    AccessToken generate(OAuth2TokenRequest tokenRequest, ClientDetails clientDetails);
+    Mono<AccessToken> generate(OAuth2TokenRequest tokenRequest, ClientDetails clientDetails);
 
 }

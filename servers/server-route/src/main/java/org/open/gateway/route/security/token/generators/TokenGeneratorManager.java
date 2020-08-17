@@ -6,6 +6,7 @@ import org.open.gateway.route.exception.NoSupportedGrantTypeException;
 import org.open.gateway.route.service.bo.ClientDetails;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class TokenGeneratorManager {
      * @param clientDetails 客户端信息
      * @return access_token
      */
-    public AccessToken generate(OAuth2TokenRequest tokenRequest, ClientDetails clientDetails) {
+    public Mono<AccessToken> generate(OAuth2TokenRequest tokenRequest, ClientDetails clientDetails) {
         // 获取授权类型
         String grantType = tokenRequest.getGrant_type();
         // 获取生成器

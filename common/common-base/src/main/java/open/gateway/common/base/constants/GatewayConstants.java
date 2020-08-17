@@ -15,9 +15,10 @@ public interface GatewayConstants {
 
         // 路由表存放redis的key
         String ROUTES = "gateway_routes";
-
         // token存放redis的key的点缀
         String PREFIX_ACCESS_TOKENS = "access_token:";
+        // 授权码前缀
+        String PREFIX_AUTHORIZE_CODE = "authorize_code:";
 
     }
 

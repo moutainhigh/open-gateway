@@ -18,7 +18,7 @@ import java.util.TimeZone;
  *
  * @apiNote Jackson相关操作
  */
-public abstract class JSON {
+public class JSON {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 

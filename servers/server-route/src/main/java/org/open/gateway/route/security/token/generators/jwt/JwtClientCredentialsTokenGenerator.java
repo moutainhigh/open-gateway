@@ -8,6 +8,7 @@ import org.open.gateway.route.security.token.generators.TokenGenerator;
 import org.open.gateway.route.service.bo.ClientDetails;
 import org.open.gateway.route.utils.jwt.Jwts;
 import org.springframework.security.core.GrantedAuthority;
+import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 
@@ -28,12 +29,12 @@ public class JwtClientCredentialsTokenGenerator implements TokenGenerator {
     }
 
     @Override
-    public AccessToken generate(OAuth2TokenRequest tokenRequest, ClientDetails clientDetails) {
-        return this.jwtEncoder.generateToken(
+    public Mono<AccessToken> generate(OAuth2TokenRequest tokenRequest, ClientDetails clientDetails) {
+        return Mono.just(this.jwtEncoder.generateToken(
                 clientDetails.getClientId(),
                 clientDetails.getAccessTokenValiditySeconds() * 1000,
                 getClaims(clientDetails)
-        );
+        ));
     }
 
     /**

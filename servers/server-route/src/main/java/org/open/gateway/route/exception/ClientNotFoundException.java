@@ -9,10 +9,10 @@ import org.springframework.web.server.ResponseStatusException;
  *
  * @author MIKO
  */
-public class NoClientFoundException extends ResponseStatusException {
+public class ClientNotFoundException extends ResponseStatusException {
 
-    public NoClientFoundException() {
-        super(HttpStatus.UNAUTHORIZED, "No client found");
+    public ClientNotFoundException() {
+        super(HttpStatus.UNAUTHORIZED, "Client not found");
     }
 
 }

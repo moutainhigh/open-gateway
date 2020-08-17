@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 
@@ -88,7 +87,7 @@ public class TokenConfig {
          * redis token生成器
          */
         @Bean
-        public RedisClientCredentialsTokenGenerator clientCredentialsTokenGenerator(StringRedisTemplate redisTemplate) {
+        public RedisClientCredentialsTokenGenerator clientCredentialsTokenGenerator(ReactiveStringRedisTemplate redisTemplate) {
             return new RedisClientCredentialsTokenGenerator(redisTemplate);
         }
 
