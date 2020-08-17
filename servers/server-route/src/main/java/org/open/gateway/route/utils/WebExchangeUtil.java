@@ -25,6 +25,8 @@ public class WebExchangeUtil {
     private static final String REQUEST_TIME = "request_time";
     // 客户端id
     private static final String CLIENT_ID = "client_id";
+    // 请求头中的ip字段
+    private static final String[] IP_HEADERS = new String[]{"X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR", "X-Real-IP"};
 
     /**
      * 获取请求body数据
@@ -83,28 +85,7 @@ public class WebExchangeUtil {
      */
     public static String getRemoteAddress(ServerWebExchange exchange) {
         ServerHttpRequest request = exchange.getRequest();
-        Map<String, String> headers = request.getHeaders().toSingleValueMap();
-        String ip = headers.get("X-Forwarded-For");
-        if (isIpValid(ip)) {
-            ip = headers.get("Proxy-Client-IP");
-        }
-        if (isIpValid(ip)) {
-            ip = headers.get("WL-Proxy-Client-IP");
-        }
-        if (isIpValid(ip)) {
-            ip = headers.get("HTTP_CLIENT_IP");
-        }
-        if (isIpValid(ip)) {
-            ip = headers.get("HTTP_X_FORWARDED_FOR");
-        }
-        if (isIpValid(ip)) {
-            ip = headers.get("X-Real-IP");
-        }
-        if (isIpValid(ip)) {
-            if (request.getRemoteAddress() != null) {
-                ip = request.getRemoteAddress().getAddress().getHostAddress();
-            }
-        }
+        String ip = getIpFromRequest(request);
         //对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
         if (ip != null && ip.length() > 0) {
             String[] ips = ip.split(",");
@@ -116,13 +97,33 @@ public class WebExchangeUtil {
     }
 
     /**
+     * 从请求信息中获取ip
+     *
+     * @param request 请求信息
+     * @return ip地址
+     */
+    private static String getIpFromRequest(ServerHttpRequest request) {
+        Map<String, String> headers = request.getHeaders().toSingleValueMap();
+        for (String key : IP_HEADERS) {
+            String ip = headers.get(key);
+            if (isIpValid(ip)) {
+                return ip;
+            }
+        }
+        if (request.getRemoteAddress() != null) {
+            return request.getRemoteAddress().getAddress().getHostAddress();
+        }
+        return null;
+    }
+
+    /**
      * ip是否有效
      *
      * @param ip ip地址
      * @return true有效, false无效
      */
     private static boolean isIpValid(String ip) {
-        return ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip);
+        return ip != null && ip.length() > 0 && !"unknown".equalsIgnoreCase(ip);
     }
 
     /**
