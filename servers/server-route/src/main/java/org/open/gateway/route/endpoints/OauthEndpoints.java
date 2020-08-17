@@ -17,7 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 /**
@@ -39,7 +38,7 @@ public class OauthEndpoints {
      */
     @PostMapping(EndpointsConstants.AUTHORIZE)
     @ResponseBody
-    public Mono<ServerResponse> authorize(OAuth2AuthorizeRequest authorizeRequest) {
+    public Mono<String> authorize(OAuth2AuthorizeRequest authorizeRequest) {
         return Mono.empty();
     }
 
