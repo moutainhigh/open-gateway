@@ -19,12 +19,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 
@@ -125,22 +120,11 @@ public class TokenConfig {
     @ConditionalOnProperty(value = "token.store.type", havingValue = "redis", matchIfMissing = true)
     public static class Redis {
 
-        @Bean
-        public ReactiveRedisTemplate<String, Object> reactiveRedisTemplate(ReactiveRedisConnectionFactory reactiveRedisConnectionFactory, ResourceLoader resourceLoader) {
-            JdkSerializationRedisSerializer jdkSerializer = new JdkSerializationRedisSerializer(resourceLoader.getClassLoader());
-
-            StringRedisSerializer stringSerializer = new StringRedisSerializer();
-            RedisSerializationContext<String, Object> serializationContext = RedisSerializationContext.<String, Object>newSerializationContext()
-                    .key(stringSerializer).value(jdkSerializer).hashKey(jdkSerializer)
-                    .hashValue(jdkSerializer).build();
-            return new ReactiveRedisTemplate<>(reactiveRedisConnectionFactory, serializationContext);
-        }
-
         /**
          * redis token生成器
          */
         @Bean
-        public RedisClientCredentialsTokenGenerator clientCredentialsTokenGenerator(ReactiveRedisTemplate<String, Object> redisTemplate) {
+        public RedisClientCredentialsTokenGenerator clientCredentialsTokenGenerator(ReactiveStringRedisTemplate redisTemplate) {
             return new RedisClientCredentialsTokenGenerator(redisTemplate);
         }
 
@@ -150,7 +134,7 @@ public class TokenConfig {
          * @return token转换器
          */
         @Bean
-        public ServerAuthenticationConverter bearerTokenConverter(ReactiveRedisTemplate<String, Object> redisTemplate) {
+        public ServerAuthenticationConverter bearerTokenConverter(ReactiveStringRedisTemplate redisTemplate) {
             return new RedisTokenAuthenticationConverter(redisTemplate);
         }
 
