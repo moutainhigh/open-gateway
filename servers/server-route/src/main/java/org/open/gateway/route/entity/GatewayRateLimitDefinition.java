@@ -50,7 +50,7 @@ public class GatewayRateLimitDefinition {
         } else if (timeUnit.equalsIgnoreCase(TimeUnit.DAYS.name())) {
             return 60 * 60 * 24;
         } else {
-            throw new IllegalArgumentException("Don't support this TimeUnit: " + timeUnit);
+            throw new IllegalArgumentException("Don't support this time unit: " + timeUnit);
         }
     }
 

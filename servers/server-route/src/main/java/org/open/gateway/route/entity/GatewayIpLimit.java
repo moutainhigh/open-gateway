@@ -20,26 +20,26 @@ import java.util.Set;
 @ToString
 public class GatewayIpLimit {
 
+    // 黑名单过滤器
     private final IpMatcher blackMatcher;
+    // 白名单过滤器
     private final IpMatcher whiteMatcher;
 
     public GatewayIpLimit(Collection<IpLimit> ipLimits) {
+        Objects.requireNonNull(ipLimits);
         Set<String> blackIps = new HashSet<>();
         Set<String> whiteIps = new HashSet<>();
-        Objects.requireNonNull(ipLimits);
         for (IpLimit ipLimit : ipLimits) {
             if (GatewayConstants.IpLimitPolicy.POLICY_TYPE_BLACK.equals(ipLimit.policyType)) {
-//                blackIps.addAll(ipLimit.ipAddresses);
                 for (String ipAddress : ipLimit.ipAddresses) {
                     try {
                         blackIps.add(InetAddress.getByName(ipAddress).getHostAddress());
                     } catch (UnknownHostException e) {
-                        log.error(e.getMessage());
+                        log.error("Invalid ip address:" + ipAddress, e);
                     }
                 }
             }
             if (GatewayConstants.IpLimitPolicy.POLICY_TYPE_WHITE.equals(ipLimit.policyType)) {
-//                whiteIps.addAll(ipLimit.ipAddresses);
                 for (String ipAddress : ipLimit.ipAddresses) {
                     try {
                         blackIps.add(InetAddress.getByName(ipAddress).getHostAddress());
@@ -49,7 +49,6 @@ public class GatewayIpLimit {
                 }
             }
         }
-
         this.blackMatcher = new IpMatcher(blackIps);
         this.whiteMatcher = new IpMatcher(whiteIps);
     }

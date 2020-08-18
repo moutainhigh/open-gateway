@@ -106,7 +106,6 @@ public class Jwts {
         token.setClientId(subject);
         token.setToken(tokenValue);
         token.setExpire_in(expirIn);
-        token.setJti(jwtID);
         return token;
     }
 

@@ -14,8 +14,17 @@ import lombok.ToString;
 @ToString
 public class AccessToken {
 
+    /**
+     * 客户端id
+     */
     private String clientId;
+    /**
+     * token值
+     */
     private String token;
+    /**
+     * 过期时间
+     */
     private long expire_in;
-    private String jti;
+
 }

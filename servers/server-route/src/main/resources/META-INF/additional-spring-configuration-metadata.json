@@ -1,12 +1,6 @@
 {
   "properties": [
 	{
-	  "name": "jwt.issuer",
-	  "type": "java.lang.String",
-	  "description": "jwt token issuer.",
-	  "sourceType": "org.open.gateway.route.configuration.TokenJwtProperties"
-	},
-	{
 	  "name": "message.listener.type",
 	  "type": "java.lang.String",
 	  "description": "spec message listener impl type.",
@@ -39,6 +33,11 @@
 	  "name": "token.jwt.alias",
 	  "type": "java.lang.String",
 	  "description": "别名."
+	},
+	{
+	  "name": "token.jwt.issuer",
+	  "type": "java.lang.String",
+	  "description": "jwt token issuer."
 	}
   ]
 }

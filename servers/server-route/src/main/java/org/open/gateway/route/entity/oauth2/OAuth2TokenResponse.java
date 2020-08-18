@@ -14,8 +14,17 @@ import lombok.ToString;
 @ToString
 public class OAuth2TokenResponse {
 
+    /**
+     * token值
+     */
     private String access_token;
+    /**
+     * token类型
+     */
     private String token_type;
+    /**
+     * 过期时间
+     */
     private long expire_in;
 
 }

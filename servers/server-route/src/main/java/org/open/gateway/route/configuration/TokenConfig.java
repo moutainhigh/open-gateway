@@ -1,6 +1,9 @@
 package org.open.gateway.route.configuration;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.route.security.token.converters.jwt.JwtTokenAuthenticationConverter;
 import org.open.gateway.route.security.token.converters.redis.RedisTokenAuthenticationConverter;
@@ -10,12 +13,18 @@ import org.open.gateway.route.security.token.generators.redis.RedisClientCredent
 import org.open.gateway.route.utils.jwt.JwtProvider;
 import org.open.gateway.route.utils.jwt.Jwts;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 
@@ -38,8 +47,8 @@ public class TokenConfig {
 
     @Configuration
     @AllArgsConstructor
-    @ConditionalOnProperty(prefix = "token", value = "store.type", havingValue = "jwt")
-    @EnableConfigurationProperties(TokenJwtProperties.class)
+    @ConditionalOnProperty(value = "token.store.type", havingValue = "jwt")
+    @EnableConfigurationProperties(Jwt.TokenJwtProperties.class)
     public static class Jwt {
 
         private final TokenJwtProperties jwtProperties;
@@ -76,18 +85,62 @@ public class TokenConfig {
         public ServerAuthenticationConverter bearerTokenConverter() {
             return new JwtTokenAuthenticationConverter(jwts());
         }
+
+        /**
+         * Created by miko on 2020/7/10.
+         *
+         * @author MIKO
+         */
+        @Getter
+        @Setter
+        @ToString
+        @ConfigurationProperties(prefix = "token.jwt")
+        public static class TokenJwtProperties {
+
+            /**
+             * 密钥文件路径
+             */
+            private String jksFilePath;
+
+            /**
+             * 生成rsa密钥的密码
+             */
+            private String password;
+
+            /**
+             * 签发者
+             */
+            private String issuer;
+
+            /**
+             * 别名
+             */
+            private String alias;
+
+        }
     }
 
     @Configuration
     @AllArgsConstructor
-    @ConditionalOnProperty(prefix = "token", value = "store.type", havingValue = "redis", matchIfMissing = true)
+    @ConditionalOnProperty(value = "token.store.type", havingValue = "redis", matchIfMissing = true)
     public static class Redis {
+
+        @Bean
+        public ReactiveRedisTemplate<String, Object> reactiveRedisTemplate(ReactiveRedisConnectionFactory reactiveRedisConnectionFactory, ResourceLoader resourceLoader) {
+            JdkSerializationRedisSerializer jdkSerializer = new JdkSerializationRedisSerializer(resourceLoader.getClassLoader());
+
+            StringRedisSerializer stringSerializer = new StringRedisSerializer();
+            RedisSerializationContext<String, Object> serializationContext = RedisSerializationContext.<String, Object>newSerializationContext()
+                    .key(stringSerializer).value(jdkSerializer).hashKey(jdkSerializer)
+                    .hashValue(jdkSerializer).build();
+            return new ReactiveRedisTemplate<>(reactiveRedisConnectionFactory, serializationContext);
+        }
 
         /**
          * redis token生成器
          */
         @Bean
-        public RedisClientCredentialsTokenGenerator clientCredentialsTokenGenerator(ReactiveStringRedisTemplate redisTemplate) {
+        public RedisClientCredentialsTokenGenerator clientCredentialsTokenGenerator(ReactiveRedisTemplate<String, Object> redisTemplate) {
             return new RedisClientCredentialsTokenGenerator(redisTemplate);
         }
 
@@ -97,7 +150,7 @@ public class TokenConfig {
          * @return token转换器
          */
         @Bean
-        public ServerAuthenticationConverter bearerTokenConverter(ReactiveStringRedisTemplate redisTemplate) {
+        public ServerAuthenticationConverter bearerTokenConverter(ReactiveRedisTemplate<String, Object> redisTemplate) {
             return new RedisTokenAuthenticationConverter(redisTemplate);
         }
 

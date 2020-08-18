@@ -10,39 +10,6 @@ import java.util.*;
 public class CollectionUtil {
 
     /**
-     * 拷贝map
-     *
-     * @param source 源数据map
-     * @param target 目标map
-     * @param <K>    map的key
-     * @param <V>    map的value
-     * @param <M>    目标map的类型
-     * @return 新的map
-     */
-    public static <K, V, M extends Map<K, V>> M copy(Map<K, V> source, M target) {
-        if (target == null) {
-            throw new IllegalArgumentException("target map is null");
-        }
-        if (source == null) {
-            return null;
-        }
-        source.forEach(target::put);
-        return target;
-    }
-
-    /**
-     * 拷贝map到hashmap
-     *
-     * @param map 源数据
-     * @param <K> map的key
-     * @param <V> map的value
-     * @return 新的map
-     */
-    public static <K, V> HashMap<K, V> copyToHashMap(Map<K, V> map) {
-        return copy(map, new HashMap<>());
-    }
-
-    /**
      * 创建新的set
      *
      * @param set    集合
@@ -68,6 +35,15 @@ public class CollectionUtil {
         return newSet(new HashSet<>(), values);
     }
 
+    /**
+     * 创建map
+     *
+     * @param m   map对象
+     * @param kv  key和value数组, 每2个为一组, 第一个为key, 第二个为value
+     * @param <K> key的类型
+     * @param <V> value的类型
+     * @param <M> map类型
+     */
     @SuppressWarnings("unchecked")
     public static <K, V, M extends Map<K, V>> M newMap(M m, Object... kv) {
         if (kv != null) {
@@ -80,6 +56,13 @@ public class CollectionUtil {
         return m;
     }
 
+    /**
+     * 创建hash map
+     *
+     * @param kv  key和value数组, 每2个为一组, 第一个为key, 第二个为value
+     * @param <K> key的类型
+     * @param <V> value的类型
+     */
     public static <K, V> Map<K, V> newHashMap(Object... kv) {
         return newMap(new HashMap<>(), kv);
     }

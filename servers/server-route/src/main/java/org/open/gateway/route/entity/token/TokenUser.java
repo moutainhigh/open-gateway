@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -14,10 +15,21 @@ import java.util.Collection;
 @Getter
 @Setter
 @ToString
-public class TokenUser {
+public class TokenUser implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 客户端id
+     */
     private String clientId;
+    /**
+     * 权限
+     */
     private Collection<String> authorities;
+    /**
+     * 范围
+     */
     private Collection<String> scopes;
 
 }

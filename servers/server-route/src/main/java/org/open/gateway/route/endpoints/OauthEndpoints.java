@@ -50,32 +50,20 @@ public class OauthEndpoints {
     public Mono<OAuth2TokenResponse> token(OAuth2TokenRequest tokenRequest) {
         // 校验token请求
         checkTokenRequest(tokenRequest);
-        // 根据client_id获取client信息
-        Mono<ClientDetails> clientDetails = clientDetailsService.loadClientByClientId(tokenRequest.getClient_id());
-        return clientDetails
+        return clientDetailsService.loadClientByClientId(tokenRequest.getClient_id()) // 根据client_id获取client信息
                 .filter(cd -> this.checkClientSecret(tokenRequest, cd)) // 校验secret
                 .flatMap(cd ->
                         tokenService.loadClientTokenByClientId(cd.getClientId()) // 从数据库查询该客户端已经存在的token
                                 .filter(token -> !token.isExpired()) // 过滤没有过期的
-                                .map(token -> buildTokenResponse(token.getToken(), Dates.toTimestamp(token.getExpireTime())))
+                                .map(token -> buildTokenResponse(token.getToken(), Dates.toTimestamp(token.getExpireTime()))) // 构建返回对象
                                 .doOnNext(response -> log.info("Client id:{} exists token:{} expire_in:{}", tokenRequest.getClient_id(), response.getAccess_token(), response.getExpire_in()))
                                 .switchIfEmpty(
                                         Mono.defer(() -> this.tokenGeneratorManager.generate(tokenRequest, cd)) // 重新生成token
-                                                .flatMap(accessToken -> tokenService.saveClientToken(cd.getClientId(), accessToken.getToken(), accessToken.getExpire_in()).thenReturn(accessToken))
+                                                .flatMap(accessToken -> tokenService.saveClientToken(cd.getClientId(), accessToken.getToken(), accessToken.getExpire_in()).thenReturn(accessToken)) // 保存token
                                                 .map(accessToken -> buildTokenResponse(accessToken.getToken(), accessToken.getExpire_in()))
                                                 .doOnSuccess(response -> log.info("Generated token:{} expire_in:{} with client_id:{}", response.getAccess_token(), response.getExpire_in(), tokenRequest.getClient_id()))
-                                )
+                                ) // 没有或者过期时候生成一个token
                 );
-    }
-
-    /**
-     * 校验认证请求
-     *
-     * @param request 请求信息
-     */
-    private void checkAuthorizeRequest(OAuth2AuthorizeRequest request) {
-        Assert.notNull(request.getClient_id(), "client_id is required");
-        Assert.notNull(request.getResponse_type(), "response_type is required");
     }
 
     /**

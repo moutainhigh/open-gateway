@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class IpMatcher {
 
     private final Collection<String> requiredIps;
-    private final List<IpRange> sortedIpList = new ArrayList<>();
+    private final List<IpRange> sortedIps = new ArrayList<>();
 
     public IpMatcher(Collection<String> requiredIps) {
         this.requiredIps = requiredIps;
@@ -35,17 +35,17 @@ public class IpMatcher {
 
         int insertIndex = 0;
         for (IpRange ipRange : tempIpList) {
-            if (sortedIpList.isEmpty()) {
-                sortedIpList.add(ipRange);
+            if (sortedIps.isEmpty()) {
+                sortedIps.add(ipRange);
                 continue;
             }
 
-            IpRange beforeIpRange = sortedIpList.get(insertIndex);
+            IpRange beforeIpRange = sortedIps.get(insertIndex);
 
             if (ipRange.getFrom() <= beforeIpRange.getTo() + 1) {
                 beforeIpRange.setTo(ipRange.getTo());
             } else {
-                sortedIpList.add(ipRange);
+                sortedIps.add(ipRange);
                 ++insertIndex;
             }
         }
@@ -56,10 +56,10 @@ public class IpMatcher {
         long targetIpLong = targetIpRange.getFrom();
 
         int start = 0;
-        int end = sortedIpList.size() - 1;
+        int end = sortedIps.size() - 1;
         while (start <= end) {
             int mid = (start + end) / 2;
-            IpRange ipRange = sortedIpList.get(mid);
+            IpRange ipRange = sortedIps.get(mid);
             if (targetIpLong < ipRange.getFrom()) {
                 end = mid - 1;
             } else if (targetIpLong > ipRange.getTo()) {

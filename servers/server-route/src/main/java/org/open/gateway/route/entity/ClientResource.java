@@ -14,10 +14,17 @@ import lombok.ToString;
 @ToString
 public class ClientResource {
 
+    /**
+     * 客户端id
+     */
     private String clientId;
-
+    /**
+     * 路由路径
+     */
     private String routePath;
-
+    /**
+     * 接口路径
+     */
     private String apiPath;
 
 }

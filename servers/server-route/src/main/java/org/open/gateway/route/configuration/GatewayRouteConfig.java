@@ -47,14 +47,14 @@ public class GatewayRouteConfig implements ApplicationContextAware {
     }
 
     @Primary
-    @Bean("urlKeyResolver")
-    public KeyResolver urlKeyResolver() {
-        return exchange -> Mono.just(exchange.getRequest().getPath().value());
-    }
-
     @Bean("urlUserKeyResolver")
     public KeyResolver urlUserKeyResolver() {
         return exchange -> Mono.just(exchange.getRequest().getPath().value() + WebExchangeUtil.getClientId(exchange));
+    }
+
+    @Bean("urlKeyResolver")
+    public KeyResolver urlKeyResolver() {
+        return exchange -> Mono.just(exchange.getRequest().getPath().value());
     }
 
     @Bean("userKeyResolver")

@@ -26,8 +26,7 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 public class MessageListenerConfig {
 
     @Configuration
-    @ConditionalOnProperty(prefix = "message.listener", value = "type", havingValue = "mq",
-            matchIfMissing = true)
+    @ConditionalOnProperty(value = "message.listener.type", havingValue = "mq", matchIfMissing = true)
     public static class MqMessageListenerConfig {
 
         @Bean
@@ -48,8 +47,7 @@ public class MessageListenerConfig {
     }
 
     @Configuration
-    @ConditionalOnProperty(prefix = "message.listener", value = "type", havingValue = "redis",
-            matchIfMissing = false)
+    @ConditionalOnProperty(value = "message.listener.type", havingValue = "redis", matchIfMissing = false)
     @AutoConfigureAfter(GatewayRouteConfig.class)
     public static class RedisMessageListenerConfig {
 

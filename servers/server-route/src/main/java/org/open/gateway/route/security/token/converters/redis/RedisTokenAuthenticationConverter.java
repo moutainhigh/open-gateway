@@ -2,11 +2,10 @@ package org.open.gateway.route.security.token.converters.redis;
 
 import lombok.AllArgsConstructor;
 import open.gateway.common.base.constants.GatewayConstants;
-import open.gateway.common.utils.JSON;
 import org.open.gateway.route.entity.token.TokenUser;
 import org.open.gateway.route.security.token.AuthenticationToken;
 import org.open.gateway.route.security.token.converters.AbstractBearerTokenAuthenticationConverter;
-import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.security.core.Authentication;
 import reactor.core.publisher.Mono;
 
@@ -19,19 +18,14 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class RedisTokenAuthenticationConverter extends AbstractBearerTokenAuthenticationConverter {
 
-    private final ReactiveStringRedisTemplate redisTemplate;
+    private final ReactiveRedisTemplate<String, Object> redisTemplate;
 
     @Override
     protected Mono<Authentication> parseToken(String token) {
         return redisTemplate.opsForValue()
                 .get(GatewayConstants.RedisKey.PREFIX_ACCESS_TOKENS + token)
-                .cast(String.class)
-                .map(this::parseJson)
+                .cast(TokenUser.class)
                 .map(AuthenticationToken::new);
-    }
-
-    private TokenUser parseJson(String json) {
-        return JSON.parse(json, TokenUser.class);
     }
 
 }
