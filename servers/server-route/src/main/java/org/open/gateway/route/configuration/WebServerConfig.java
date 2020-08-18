@@ -1,5 +1,7 @@
 package org.open.gateway.route.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import open.gateway.common.utils.JSON;
 import org.open.gateway.route.exception.GatewayExceptionHandler;
 import org.open.gateway.route.service.AccessLogsService;
 import org.springframework.beans.factory.ObjectProvider;
@@ -10,6 +12,7 @@ import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.reactive.result.view.ViewResolver;
 
@@ -31,6 +34,12 @@ public class WebServerConfig {
 //    public WebClient webclient(ReactorLoadBalancerExchangeFilterFunction lbFunction) {
 //        return WebClient.builder().filter(lbFunction).build();
 //    }
+
+    @Bean
+    @Primary
+    ObjectMapper jacksonObjectMapper() {
+        return JSON.getJsonMapper();
+    }
 
     /**
      * 配置统一异常处理类

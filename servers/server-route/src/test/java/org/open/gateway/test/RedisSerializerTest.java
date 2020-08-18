@@ -10,8 +10,6 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.util.StopWatch;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -39,8 +37,8 @@ public class RedisSerializerTest {
     @Test
     public void testStringSerializer() {
         RedisSerializer<String> serializer = StringRedisSerializer.UTF_8;
-        StopWatch sw1 = new StopWatch();
-        StopWatch sw2 = new StopWatch();
+        StopWatch sw1 = StopWatchUtil.getStopWatch();
+        StopWatch sw2 = StopWatchUtil.getStopWatch();
         Stream.generate(this::newTokenUser)
                 .limit(test_count)
                 .forEach(tokenUser -> {
@@ -52,13 +50,13 @@ public class RedisSerializerTest {
                     TokenUser tu = JSON.parse(serializer.deserialize(bytes), TokenUser.class);
                     sw2.stop();
                 });
-        System.out.printf("%s序列化总耗时[%s ms] 次数[%s] 平均耗时[%s us].%n", serializer.getClass().getSimpleName(), sw1.getTotalTimeMillis(), sw1.getTaskCount(), BigDecimal.valueOf(sw1.getTotalTimeNanos()).divide(BigDecimal.valueOf(sw1.getTaskCount()), 2, RoundingMode.HALF_UP));
-        System.out.printf("%s反序列化总耗时[%s ms] 次数[%s] 平均耗时[%s us].%n", serializer.getClass().getSimpleName(), sw2.getTotalTimeMillis(), sw2.getTaskCount(), BigDecimal.valueOf(sw2.getTotalTimeNanos()).divide(BigDecimal.valueOf(sw2.getTaskCount()), 2, RoundingMode.HALF_UP));
+        StopWatchUtil.printSummary(serializer.getClass().getSimpleName() + "序列化", sw1);
+        StopWatchUtil.printSummary(serializer.getClass().getSimpleName() + "反序列化", sw2);
     }
 
     public void testSerializer(RedisSerializer serializer) {
-        StopWatch sw1 = new StopWatch();
-        StopWatch sw2 = new StopWatch();
+        StopWatch sw1 = StopWatchUtil.getStopWatch();
+        StopWatch sw2 = StopWatchUtil.getStopWatch();
         Stream.generate(this::newTokenUser)
                 .limit(test_count)
                 .forEach(tokenUser -> {
@@ -70,8 +68,8 @@ public class RedisSerializerTest {
                     TokenUser tu = (TokenUser) serializer.deserialize(bytes);
                     sw2.stop();
                 });
-        System.out.printf("%s序列化总耗时[%s ms] 次数[%s] 平均耗时[%s us].%n", serializer.getClass().getSimpleName(), sw1.getTotalTimeMillis(), sw1.getTaskCount(), BigDecimal.valueOf(sw1.getTotalTimeNanos()).divide(BigDecimal.valueOf(sw1.getTaskCount()), 2, RoundingMode.HALF_UP));
-        System.out.printf("%s反序列化总耗时[%s ms] 次数[%s] 平均耗时[%s us].%n", serializer.getClass().getSimpleName(), sw2.getTotalTimeMillis(), sw2.getTaskCount(), BigDecimal.valueOf(sw2.getTotalTimeNanos()).divide(BigDecimal.valueOf(sw2.getTaskCount()), 2, RoundingMode.HALF_UP));
+        StopWatchUtil.printSummary(serializer.getClass().getSimpleName() + "序列化", sw1);
+        StopWatchUtil.printSummary(serializer.getClass().getSimpleName() + "反序列化", sw2);
     }
 
     private TokenUser newTokenUser() {

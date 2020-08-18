@@ -34,18 +34,22 @@ public class RedisClientCredentialsTokenGenerator implements TokenGenerator {
 
     @Override
     public Mono<AccessToken> generate(OAuth2TokenRequest tokenRequest, ClientDetails clientDetails) {
-        AccessToken accessToken = generateAccessToken(clientDetails);
+        // 生成token用户信息
         TokenUser tokenUser = generateTokenUser(clientDetails);
+        // 有效时间, 单位秒
+        Duration validitySeconds = Duration.ofSeconds(clientDetails.getAccessTokenValiditySeconds());
+        // 生成授权访问token
+        AccessToken accessToken = generateAccessToken(validitySeconds);
         // 生成token放入redis中
         return this.redisTemplate.opsForValue()
-                .set(GatewayConstants.RedisKey.PREFIX_ACCESS_TOKENS + accessToken.getToken(), JSON.toJSONString(tokenUser), Duration.ofSeconds(clientDetails.getAccessTokenValiditySeconds()))
+                .set(GatewayConstants.RedisKey.PREFIX_ACCESS_TOKENS + accessToken.getToken(), JSON.toJSONString(tokenUser), validitySeconds)
                 .thenReturn(accessToken);
     }
 
-    private AccessToken generateAccessToken(ClientDetails clientDetails) {
+    private AccessToken generateAccessToken(Duration validitySeconds) {
         AccessToken accessToken = new AccessToken();
         accessToken.setToken(IdUtil.uuid());
-        accessToken.setExpire_in(System.currentTimeMillis() + clientDetails.getAccessTokenValiditySeconds());
+        accessToken.setExpire_in(System.currentTimeMillis() + validitySeconds.toMillis());
         return accessToken;
     }
 
