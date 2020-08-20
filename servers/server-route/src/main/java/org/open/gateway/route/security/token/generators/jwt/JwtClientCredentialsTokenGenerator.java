@@ -44,7 +44,7 @@ public class JwtClientCredentialsTokenGenerator implements TokenGenerator {
      * @return 自定义数据
      */
     protected HashMap<String, Object> getClaims(ClientDetails clientDetails) {
-        HashMap<String, Object> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>(3);
         map.put(OAuth2Constants.TokenPayloadKey.SCOPE, clientDetails.getScope());
         map.put(OAuth2Constants.TokenPayloadKey.REDIRECT_URI, clientDetails.getRegisteredRedirectUri());
         if (clientDetails.getAuthorities() != null) {

@@ -95,7 +95,7 @@ public class BaseClientDetails implements ClientDetails {
         }
     }
 
-
+    @Override
     public String getClientId() {
         return clientId;
     }
@@ -114,7 +114,7 @@ public class BaseClientDetails implements ClientDetails {
             return false;
         }
         for (String auto : autoApproveScopes) {
-            if (auto.equals("true") || scope.matches(auto)) {
+            if ("true".equals(auto) || scope.matches(auto)) {
                 return true;
             }
         }
@@ -126,10 +126,12 @@ public class BaseClientDetails implements ClientDetails {
         return autoApproveScopes;
     }
 
+    @Override
     public boolean isSecretRequired() {
         return this.clientSecret != null;
     }
 
+    @Override
     public String getClientSecret() {
         return clientSecret;
     }
@@ -138,10 +140,12 @@ public class BaseClientDetails implements ClientDetails {
         this.clientSecret = clientSecret;
     }
 
+    @Override
     public boolean isScoped() {
         return this.scope != null && !this.scope.isEmpty();
     }
 
+    @Override
     public Set<String> getScope() {
         return scope;
     }
@@ -151,6 +155,7 @@ public class BaseClientDetails implements ClientDetails {
                 : new LinkedHashSet<>(scope);
     }
 
+    @Override
     public Set<String> getResourceIds() {
         return resourceIds;
     }
@@ -160,6 +165,7 @@ public class BaseClientDetails implements ClientDetails {
                 .emptySet() : new LinkedHashSet<>(resourceIds);
     }
 
+    @Override
     public Set<String> getAuthorizedGrantTypes() {
         return authorizedGrantTypes;
     }
@@ -169,7 +175,7 @@ public class BaseClientDetails implements ClientDetails {
                 authorizedGrantTypes);
     }
 
-
+    @Override
     public Set<String> getRegisteredRedirectUri() {
         return registeredRedirectUris;
     }
@@ -190,7 +196,7 @@ public class BaseClientDetails implements ClientDetails {
                 .toArray(new String[values.size()])));
     }
 
-
+    @Override
     public Collection<GrantedAuthority> getAuthorities() {
         return authorities;
     }
@@ -200,7 +206,7 @@ public class BaseClientDetails implements ClientDetails {
         this.authorities = new ArrayList<>(authorities);
     }
 
-
+    @Override
     public Integer getAccessTokenValiditySeconds() {
         return accessTokenValiditySeconds;
     }
@@ -209,7 +215,7 @@ public class BaseClientDetails implements ClientDetails {
         this.accessTokenValiditySeconds = accessTokenValiditySeconds;
     }
 
-
+    @Override
     public Integer getRefreshTokenValiditySeconds() {
         return refreshTokenValiditySeconds;
     }
@@ -223,6 +229,7 @@ public class BaseClientDetails implements ClientDetails {
         this.additionalInformation = new LinkedHashMap<>(additionalInformation);
     }
 
+    @Override
     public Map<String, Object> getAdditionalInformation() {
         return Collections.unmodifiableMap(this.additionalInformation);
     }
@@ -266,63 +273,86 @@ public class BaseClientDetails implements ClientDetails {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         BaseClientDetails other = (BaseClientDetails) obj;
         if (accessTokenValiditySeconds == null) {
-            if (other.accessTokenValiditySeconds != null)
+            if (other.accessTokenValiditySeconds != null) {
                 return false;
-        } else if (!accessTokenValiditySeconds.equals(other.accessTokenValiditySeconds))
+            }
+        } else if (!accessTokenValiditySeconds.equals(other.accessTokenValiditySeconds)) {
             return false;
+        }
         if (refreshTokenValiditySeconds == null) {
-            if (other.refreshTokenValiditySeconds != null)
+            if (other.refreshTokenValiditySeconds != null) {
                 return false;
-        } else if (!refreshTokenValiditySeconds.equals(other.refreshTokenValiditySeconds))
+            }
+        } else if (!refreshTokenValiditySeconds.equals(other.refreshTokenValiditySeconds)) {
             return false;
+        }
         if (authorities == null) {
-            if (other.authorities != null)
+            if (other.authorities != null) {
                 return false;
-        } else if (!authorities.equals(other.authorities))
+            }
+        } else if (!authorities.equals(other.authorities)) {
             return false;
+        }
         if (authorizedGrantTypes == null) {
-            if (other.authorizedGrantTypes != null)
+            if (other.authorizedGrantTypes != null) {
                 return false;
-        } else if (!authorizedGrantTypes.equals(other.authorizedGrantTypes))
+            }
+        } else if (!authorizedGrantTypes.equals(other.authorizedGrantTypes)) {
             return false;
+        }
         if (clientId == null) {
-            if (other.clientId != null)
+            if (other.clientId != null) {
                 return false;
-        } else if (!clientId.equals(other.clientId))
+            }
+        } else if (!clientId.equals(other.clientId)) {
             return false;
+        }
         if (clientSecret == null) {
-            if (other.clientSecret != null)
+            if (other.clientSecret != null) {
                 return false;
-        } else if (!clientSecret.equals(other.clientSecret))
+            }
+        } else if (!clientSecret.equals(other.clientSecret)) {
             return false;
+        }
         if (registeredRedirectUris == null) {
-            if (other.registeredRedirectUris != null)
+            if (other.registeredRedirectUris != null) {
                 return false;
-        } else if (!registeredRedirectUris.equals(other.registeredRedirectUris))
+            }
+        } else if (!registeredRedirectUris.equals(other.registeredRedirectUris)) {
             return false;
+        }
         if (resourceIds == null) {
-            if (other.resourceIds != null)
+            if (other.resourceIds != null) {
                 return false;
-        } else if (!resourceIds.equals(other.resourceIds))
+            }
+        } else if (!resourceIds.equals(other.resourceIds)) {
             return false;
+        }
         if (scope == null) {
-            if (other.scope != null)
+            if (other.scope != null) {
                 return false;
-        } else if (!scope.equals(other.scope))
+            }
+        } else if (!scope.equals(other.scope)) {
             return false;
+        }
         if (additionalInformation == null) {
-            if (other.additionalInformation != null)
+            if (other.additionalInformation != null) {
                 return false;
-        } else if (!additionalInformation.equals(other.additionalInformation))
+            }
+        } else if (!additionalInformation.equals(other.additionalInformation)) {
             return false;
+        }
         return true;
     }
 

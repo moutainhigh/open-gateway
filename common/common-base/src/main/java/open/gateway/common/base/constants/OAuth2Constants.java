@@ -31,6 +31,8 @@ public interface OAuth2Constants {
 
     interface TokenPayloadKey {
 
+        String SUB = "sub";
+
         String AUTHORITIES = "authorities";
 
         String SCOPE = "scope";

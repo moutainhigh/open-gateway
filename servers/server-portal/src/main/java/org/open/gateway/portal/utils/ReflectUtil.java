@@ -20,8 +20,10 @@ import java.util.function.Function;
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ReflectUtil {
 
-    // 缓存的构造方法
-    private static final Map<String, ConstructorAccess> constructorAccessCache = new ConcurrentHashMap<>();
+    /**
+     * 缓存的构造方法
+     */
+    private static final Map<String, ConstructorAccess> CONSTRUCTOR_ACCESS_CACHE = new ConcurrentHashMap<>();
 
     /**
      * 获取构造器
@@ -29,11 +31,11 @@ public class ReflectUtil {
      * @param targetClass 目标类
      * @return 构造器
      */
-    public static <T> ConstructorAccess<T> getConstructorAccess(Class<T> targetClass) {
-        ConstructorAccess<T> constructorAccess = constructorAccessCache.get(targetClass.toString());
+    public static ConstructorAccess getConstructorAccess(Class<?> targetClass) {
+        ConstructorAccess constructorAccess = CONSTRUCTOR_ACCESS_CACHE.get(targetClass.toString());
         if (constructorAccess == null) {
             constructorAccess = ConstructorAccess.get(targetClass);
-            constructorAccessCache.put(targetClass.toString(), constructorAccess);
+            CONSTRUCTOR_ACCESS_CACHE.put(targetClass.toString(), constructorAccess);
             return constructorAccess;
         }
         return constructorAccess;
@@ -46,7 +48,7 @@ public class ReflectUtil {
      * @return 实例
      */
     public static <T> T newInstance(Class<T> targetClass) {
-        return getConstructorAccess(targetClass).newInstance();
+        return (T) getConstructorAccess(targetClass).newInstance();
     }
 
     /**

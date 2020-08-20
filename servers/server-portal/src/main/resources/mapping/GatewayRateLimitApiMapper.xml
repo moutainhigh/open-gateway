@@ -8,8 +8,8 @@
 		<result column="create_person" jdbcType="VARCHAR" property="createPerson"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-    api_id, policy_id, create_time, create_person
-  </sql>
+		api_id, policy_id, create_time, create_person
+	</sql>
 	<select id="selectByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.GatewayRateLimitApiKey"
 			resultMap="BaseResultMap">
 		select
@@ -19,11 +19,11 @@
 		and policy_id = #{policyId,jdbcType=INTEGER}
 	</select>
 	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.GatewayRateLimitApi">
-    insert into gateway_rate_limit_api (api_id, policy_id, create_time, 
-      create_person)
-    values (#{apiId,jdbcType=INTEGER}, #{policyId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{createPerson,jdbcType=VARCHAR})
-  </insert>
+		insert into gateway_rate_limit_api (api_id, policy_id, create_time,
+		create_person)
+		values (#{apiId,jdbcType=INTEGER}, #{policyId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+		#{createPerson,jdbcType=VARCHAR})
+	</insert>
 	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.GatewayRateLimitApi">
 		insert into gateway_rate_limit_api
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -69,10 +69,10 @@
 		and policy_id = #{policyId,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.GatewayRateLimitApi">
-    update gateway_rate_limit_api
-    set create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_person = #{createPerson,jdbcType=VARCHAR}
-    where api_id = #{apiId,jdbcType=INTEGER}
-      and policy_id = #{policyId,jdbcType=INTEGER}
-  </update>
+		update gateway_rate_limit_api
+		set create_time = #{createTime,jdbcType=TIMESTAMP},
+		create_person = #{createPerson,jdbcType=VARCHAR}
+		where api_id = #{apiId,jdbcType=INTEGER}
+		and policy_id = #{policyId,jdbcType=INTEGER}
+	</update>
 </mapper>

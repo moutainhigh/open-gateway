@@ -39,7 +39,8 @@ public class RequestRecorderGatewayFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
         return ServerWebExchangeUtils.cacheRequestBody(exchange, serverHttpRequest -> chain.filter(exchange.mutate().request(serverHttpRequest).build()))
-                .doOnSuccess(v -> this.accessLogsService.sendAccessLogs(exchange));
+                .doOnSuccess(v -> this.accessLogsService.sendAccessLogs(exchange))
+                .doOnError(error -> this.accessLogsService.sendAccessLogs(exchange, error));
     }
 
     @Override

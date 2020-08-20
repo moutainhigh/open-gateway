@@ -36,7 +36,7 @@ public class Jwts {
      * @throws ParseException 解析异常
      * @throws JOSEException  签名异常
      */
-    private JWTClaimsSet _parseToken(String token) throws ParseException, JOSEException {
+    private JWTClaimsSet doParseToken(String token) throws ParseException, JOSEException {
         SignedJWT jwt = SignedJWT.parse(token);
         // 校验是否有效
         if (!jwt.verify(this.verifier)) {
@@ -67,7 +67,7 @@ public class Jwts {
      */
     public JWTClaimsSet parseToken(String token) {
         try {
-            return _parseToken(token);
+            return doParseToken(token);
         } catch (ParseException | JOSEException e) {
             throw new IllegalArgumentException(e);
         }
@@ -82,7 +82,7 @@ public class Jwts {
      * @return token对象
      * @throws JOSEException 签名异常
      */
-    private AccessToken _generateToken(String subject, long expireTime, Map<String, Object> claims) throws JOSEException {
+    private AccessToken doGenerateToken(String subject, long expireTime, Map<String, Object> claims) throws JOSEException {
         // tokenId
         String jwtID = IdUtil.uuid();
         // 过期时间
@@ -105,7 +105,7 @@ public class Jwts {
         AccessToken token = new AccessToken();
         token.setClientId(subject);
         token.setToken(tokenValue);
-        token.setExpire_in(expirIn);
+        token.setExpireIn(expirIn);
         return token;
     }
 
@@ -119,7 +119,7 @@ public class Jwts {
      */
     public AccessToken generateToken(String subject, long expireTime, Map<String, Object> claims) {
         try {
-            return _generateToken(subject, expireTime, claims);
+            return doGenerateToken(subject, expireTime, claims);
         } catch (JOSEException e) {
             throw new IllegalArgumentException(e);
         }

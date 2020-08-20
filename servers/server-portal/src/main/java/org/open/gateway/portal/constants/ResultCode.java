@@ -12,6 +12,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ResultCode {
 
+    /**
+     * 成功
+     */
     SUCCESS("0000", "OK");
 
     private final String code;

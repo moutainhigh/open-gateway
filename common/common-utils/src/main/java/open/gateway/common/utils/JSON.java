@@ -25,10 +25,14 @@ public class JSON {
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     static {
-        JSON_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL); // 设置不序列化null字段
-        JSON_MAPPER.setTimeZone(TimeZone.getDefault()); // 设置时区
-        JSON_MAPPER.setDateFormat(new SimpleDateFormat(DATE_FORMAT)); // 设置日期转换格式
-        JSON_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // 设置json字符串中出现未知属性不报错
+        // 设置不序列化null字段
+        JSON_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        // 设置时区
+        JSON_MAPPER.setTimeZone(TimeZone.getDefault());
+        // 设置日期转换格式
+        JSON_MAPPER.setDateFormat(new SimpleDateFormat(DATE_FORMAT));
+        // 设置json字符串中出现未知属性不报错
+        JSON_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     public static ObjectMapper getJsonMapper() {

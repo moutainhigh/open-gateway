@@ -18,9 +18,9 @@
 		<result column="is_del" jdbcType="TINYINT" property="isDel"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-    id, account, password, salt, register_ip, status, phone, email, desc, create_time, 
-    create_person, update_time, update_person, is_del
-  </sql>
+		id, account, password, salt, register_ip, status, phone, email, desc, create_time,
+		create_person, update_time, update_person, is_del
+	</sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List"/>
@@ -28,17 +28,17 @@
 		where id = #{id,jdbcType=INTEGER}
 	</select>
 	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.BaseAccount">
-    insert into base_account (id, account, password, 
-      salt, register_ip, status, 
-      phone, email, desc, 
-      create_time, create_person, update_time, 
-      update_person, is_del)
-    values (#{id,jdbcType=INTEGER}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{salt,jdbcType=CHAR}, #{registerIp,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
-      #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{updatePerson,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT})
-  </insert>
+		insert into base_account (id, account, password,
+		salt, register_ip, status,
+		phone, email, desc,
+		create_time, create_person, update_time,
+		update_person, is_del)
+		values (#{id,jdbcType=INTEGER}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+		#{salt,jdbcType=CHAR}, #{registerIp,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+		#{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+		#{updatePerson,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT})
+	</insert>
 	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.BaseAccount">
 		insert into base_account
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -176,20 +176,20 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.BaseAccount">
-    update base_account
-    set account = #{account,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      salt = #{salt,jdbcType=CHAR},
-      register_ip = #{registerIp,jdbcType=VARCHAR},
-      status = #{status,jdbcType=TINYINT},
-      phone = #{phone,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      desc = #{desc,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_person = #{createPerson,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      update_person = #{updatePerson,jdbcType=VARCHAR},
-      is_del = #{isDel,jdbcType=TINYINT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+		update base_account
+		set account = #{account,jdbcType=VARCHAR},
+		password = #{password,jdbcType=VARCHAR},
+		salt = #{salt,jdbcType=CHAR},
+		register_ip = #{registerIp,jdbcType=VARCHAR},
+		status = #{status,jdbcType=TINYINT},
+		phone = #{phone,jdbcType=VARCHAR},
+		email = #{email,jdbcType=VARCHAR},
+		desc = #{desc,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		create_person = #{createPerson,jdbcType=VARCHAR},
+		update_time = #{updateTime,jdbcType=TIMESTAMP},
+		update_person = #{updatePerson,jdbcType=VARCHAR},
+		is_del = #{isDel,jdbcType=TINYINT}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
 </mapper>

@@ -49,7 +49,7 @@ public class RedisClientCredentialsTokenGenerator implements TokenGenerator {
     private AccessToken generateAccessToken(Duration validitySeconds) {
         AccessToken accessToken = new AccessToken();
         accessToken.setToken(IdUtil.uuid());
-        accessToken.setExpire_in(System.currentTimeMillis() + validitySeconds.toMillis());
+        accessToken.setExpireIn(System.currentTimeMillis() + validitySeconds.toMillis());
         return accessToken;
     }
 

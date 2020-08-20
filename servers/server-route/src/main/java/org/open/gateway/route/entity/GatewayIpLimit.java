@@ -20,9 +20,13 @@ import java.util.Set;
 @ToString
 public class GatewayIpLimit {
 
-    // 黑名单过滤器
+    /**
+     * 黑名单过滤器
+     */
     private final IpMatcher blackMatcher;
-    // 白名单过滤器
+    /**
+     * 白名单过滤器
+     */
     private final IpMatcher whiteMatcher;
 
     public GatewayIpLimit(Collection<IpLimit> ipLimits) {

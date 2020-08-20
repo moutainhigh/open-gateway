@@ -13,9 +13,9 @@
 		<result column="is_del" jdbcType="TINYINT" property="isDel"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-    id, client_id, token, expire_time, create_time, create_person, update_time, update_person, 
-    is_del
-  </sql>
+		id, client_id, token, expire_time, create_time, create_person, update_time, update_person,
+		is_del
+	</sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List"/>
@@ -23,15 +23,15 @@
 		where id = #{id,jdbcType=INTEGER}
 	</select>
 	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.OauthClientToken">
-    insert into oauth_client_token (id, client_id, token, 
-      expire_time, create_time, create_person, 
-      update_time, update_person, is_del
-      )
-    values (#{id,jdbcType=INTEGER}, #{clientId,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR}, 
-      #{expireTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{updatePerson,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT}
-      )
-  </insert>
+		insert into oauth_client_token (id, client_id, token,
+		expire_time, create_time, create_person,
+		update_time, update_person, is_del
+		)
+		values (#{id,jdbcType=INTEGER}, #{clientId,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR},
+		#{expireTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR},
+		#{updateTime,jdbcType=TIMESTAMP}, #{updatePerson,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT}
+		)
+	</insert>
 	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.OauthClientToken">
 		insert into oauth_client_token
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -124,15 +124,15 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.OauthClientToken">
-    update oauth_client_token
-    set client_id = #{clientId,jdbcType=VARCHAR},
-      token = #{token,jdbcType=VARCHAR},
-      expire_time = #{expireTime,jdbcType=TIMESTAMP},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_person = #{createPerson,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      update_person = #{updatePerson,jdbcType=VARCHAR},
-      is_del = #{isDel,jdbcType=TINYINT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+		update oauth_client_token
+		set client_id = #{clientId,jdbcType=VARCHAR},
+		token = #{token,jdbcType=VARCHAR},
+		expire_time = #{expireTime,jdbcType=TIMESTAMP},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		create_person = #{createPerson,jdbcType=VARCHAR},
+		update_time = #{updateTime,jdbcType=TIMESTAMP},
+		update_person = #{updatePerson,jdbcType=VARCHAR},
+		is_del = #{isDel,jdbcType=TINYINT}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
 </mapper>

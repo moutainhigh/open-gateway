@@ -59,8 +59,8 @@ public class OauthEndpoints {
                                 .doOnNext(response -> log.info("Client id:{} exists token:{} expire_in:{}", tokenRequest.getClient_id(), response.getAccess_token(), response.getExpire_in()))
                                 .switchIfEmpty(
                                         Mono.defer(() -> this.tokenGeneratorManager.generate(tokenRequest, cd)) // 重新生成token
-                                                .flatMap(accessToken -> tokenService.saveClientToken(cd.getClientId(), accessToken.getToken(), accessToken.getExpire_in()).thenReturn(accessToken)) // 保存token
-                                                .map(accessToken -> buildTokenResponse(accessToken.getToken(), accessToken.getExpire_in()))
+                                                .flatMap(accessToken -> tokenService.saveClientToken(cd.getClientId(), accessToken.getToken(), accessToken.getExpireIn()).thenReturn(accessToken)) // 保存token
+                                                .map(accessToken -> buildTokenResponse(accessToken.getToken(), accessToken.getExpireIn()))
                                                 .doOnSuccess(response -> log.info("Generated token:{} expire_in:{} with client_id:{}", response.getAccess_token(), response.getExpire_in(), tokenRequest.getClient_id()))
                                 ) // 没有或者过期时候生成一个token
                 );

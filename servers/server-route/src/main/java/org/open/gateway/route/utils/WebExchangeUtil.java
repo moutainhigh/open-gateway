@@ -21,11 +21,17 @@ import java.util.Map;
  */
 public class WebExchangeUtil {
 
-    // 请求时间
+    /**
+     * 请求时间
+     */
     private static final String REQUEST_TIME = "request_time";
-    // 客户端id
+    /**
+     * 客户端id
+     */
     private static final String CLIENT_ID = "client_id";
-    // 请求头中的ip字段
+    /**
+     * 请求头中的ip字段
+     */
     private static final String[] IP_HEADERS = new String[]{"X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR", "X-Real-IP"};
 
     /**

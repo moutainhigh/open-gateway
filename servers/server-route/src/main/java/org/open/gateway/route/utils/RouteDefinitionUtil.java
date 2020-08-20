@@ -67,7 +67,7 @@ public class RouteDefinitionUtil {
 
     private static void putMetadata(RouteDefinition routeDefinition, String key, Object arg) {
         if (routeDefinition.getMetadata() == null) {
-            Map<String, Object> metadata = new HashMap<>();
+            Map<String, Object> metadata = new HashMap<>(4);
             metadata.put(key, arg);
             routeDefinition.setMetadata(metadata);
         } else {

@@ -22,10 +22,10 @@
 		<result column="create_person" jdbcType="VARCHAR" property="createPerson"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-    id, path, ip, http_status, http_method, http_headers, request_query_string, request_body, 
-    request_time, response_time, api_code, route_code, used_time, user_agent, region, 
-    error, create_time, create_person
-  </sql>
+		id, path, ip, http_status, http_method, http_headers, request_query_string, request_body,
+		request_time, response_time, api_code, route_code, used_time, user_agent, region,
+		error, create_time, create_person
+	</sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List"/>
@@ -33,21 +33,21 @@
 		where id = #{id,jdbcType=INTEGER}
 	</select>
 	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.GatewayAccessLogs">
-    insert into gateway_access_logs (id, path, ip, 
-      http_status, http_method, http_headers, 
-      request_query_string, request_body, request_time, 
-      response_time, api_code, route_code, 
-      used_time, user_agent, region, 
-      error, create_time, create_person
-      )
-    values (#{id,jdbcType=INTEGER}, #{path,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
-      #{httpStatus,jdbcType=INTEGER}, #{httpMethod,jdbcType=VARCHAR}, #{httpHeaders,jdbcType=VARCHAR}, 
-      #{requestQueryString,jdbcType=VARCHAR}, #{requestBody,jdbcType=VARCHAR}, #{requestTime,jdbcType=TIMESTAMP}, 
-      #{responseTime,jdbcType=TIMESTAMP}, #{apiCode,jdbcType=VARCHAR}, #{routeCode,jdbcType=VARCHAR}, 
-      #{usedTime,jdbcType=INTEGER}, #{userAgent,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, 
-      #{error,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}
-      )
-  </insert>
+		insert into gateway_access_logs (id, path, ip,
+		http_status, http_method, http_headers,
+		request_query_string, request_body, request_time,
+		response_time, api_code, route_code,
+		used_time, user_agent, region,
+		error, create_time, create_person
+		)
+		values (#{id,jdbcType=INTEGER}, #{path,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR},
+		#{httpStatus,jdbcType=INTEGER}, #{httpMethod,jdbcType=VARCHAR}, #{httpHeaders,jdbcType=VARCHAR},
+		#{requestQueryString,jdbcType=VARCHAR}, #{requestBody,jdbcType=VARCHAR}, #{requestTime,jdbcType=TIMESTAMP},
+		#{responseTime,jdbcType=TIMESTAMP}, #{apiCode,jdbcType=VARCHAR}, #{routeCode,jdbcType=VARCHAR},
+		#{usedTime,jdbcType=INTEGER}, #{userAgent,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR},
+		#{error,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}
+		)
+	</insert>
 	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.GatewayAccessLogs">
 		insert into gateway_access_logs
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -221,24 +221,24 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.GatewayAccessLogs">
-    update gateway_access_logs
-    set path = #{path,jdbcType=VARCHAR},
-      ip = #{ip,jdbcType=VARCHAR},
-      http_status = #{httpStatus,jdbcType=INTEGER},
-      http_method = #{httpMethod,jdbcType=VARCHAR},
-      http_headers = #{httpHeaders,jdbcType=VARCHAR},
-      request_query_string = #{requestQueryString,jdbcType=VARCHAR},
-      request_body = #{requestBody,jdbcType=VARCHAR},
-      request_time = #{requestTime,jdbcType=TIMESTAMP},
-      response_time = #{responseTime,jdbcType=TIMESTAMP},
-      api_code = #{apiCode,jdbcType=VARCHAR},
-      route_code = #{routeCode,jdbcType=VARCHAR},
-      used_time = #{usedTime,jdbcType=INTEGER},
-      user_agent = #{userAgent,jdbcType=VARCHAR},
-      region = #{region,jdbcType=VARCHAR},
-      error = #{error,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_person = #{createPerson,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+		update gateway_access_logs
+		set path = #{path,jdbcType=VARCHAR},
+		ip = #{ip,jdbcType=VARCHAR},
+		http_status = #{httpStatus,jdbcType=INTEGER},
+		http_method = #{httpMethod,jdbcType=VARCHAR},
+		http_headers = #{httpHeaders,jdbcType=VARCHAR},
+		request_query_string = #{requestQueryString,jdbcType=VARCHAR},
+		request_body = #{requestBody,jdbcType=VARCHAR},
+		request_time = #{requestTime,jdbcType=TIMESTAMP},
+		response_time = #{responseTime,jdbcType=TIMESTAMP},
+		api_code = #{apiCode,jdbcType=VARCHAR},
+		route_code = #{routeCode,jdbcType=VARCHAR},
+		used_time = #{usedTime,jdbcType=INTEGER},
+		user_agent = #{userAgent,jdbcType=VARCHAR},
+		region = #{region,jdbcType=VARCHAR},
+		error = #{error,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		create_person = #{createPerson,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
 </mapper>

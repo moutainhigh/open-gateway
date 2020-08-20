@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  *
  * @author MIKO
  */
-public class RedisSerializerTest {
+public class RedisSerializerTest extends BaseTest {
 
     private final int test_count = 10000;
 
@@ -37,8 +37,8 @@ public class RedisSerializerTest {
     @Test
     public void testStringSerializer() {
         RedisSerializer<String> serializer = StringRedisSerializer.UTF_8;
-        StopWatch sw1 = StopWatchUtil.getStopWatch();
-        StopWatch sw2 = StopWatchUtil.getStopWatch();
+        StopWatch sw1 = newStopWatch();
+        StopWatch sw2 = newStopWatch();
         Stream.generate(this::newTokenUser)
                 .limit(test_count)
                 .forEach(tokenUser -> {
@@ -50,13 +50,13 @@ public class RedisSerializerTest {
                     TokenUser tu = JSON.parse(serializer.deserialize(bytes), TokenUser.class);
                     sw2.stop();
                 });
-        StopWatchUtil.printSummary(serializer.getClass().getSimpleName() + "序列化", sw1);
-        StopWatchUtil.printSummary(serializer.getClass().getSimpleName() + "反序列化", sw2);
+        printSummary(serializer.getClass().getSimpleName() + "序列化", sw1);
+        printSummary(serializer.getClass().getSimpleName() + "反序列化", sw2);
     }
 
     public void testSerializer(RedisSerializer serializer) {
-        StopWatch sw1 = StopWatchUtil.getStopWatch();
-        StopWatch sw2 = StopWatchUtil.getStopWatch();
+        StopWatch sw1 = newStopWatch();
+        StopWatch sw2 = newStopWatch();
         Stream.generate(this::newTokenUser)
                 .limit(test_count)
                 .forEach(tokenUser -> {
@@ -68,8 +68,8 @@ public class RedisSerializerTest {
                     TokenUser tu = (TokenUser) serializer.deserialize(bytes);
                     sw2.stop();
                 });
-        StopWatchUtil.printSummary(serializer.getClass().getSimpleName() + "序列化", sw1);
-        StopWatchUtil.printSummary(serializer.getClass().getSimpleName() + "反序列化", sw2);
+        printSummary(serializer.getClass().getSimpleName() + "序列化", sw1);
+        printSummary(serializer.getClass().getSimpleName() + "反序列化", sw2);
     }
 
     private TokenUser newTokenUser() {

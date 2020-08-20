@@ -9,10 +9,10 @@ import org.springframework.data.redis.listener.PatternTopic;
  */
 public class KeyspaceTopic extends PatternTopic {
 
-    private static final String prefix = "__keyspace@*__:";
+    private static final String PREFIX = "__keyspace@*__:";
 
     public KeyspaceTopic(String key) {
-        super(prefix + key);
+        super(PREFIX + key);
     }
 
 }

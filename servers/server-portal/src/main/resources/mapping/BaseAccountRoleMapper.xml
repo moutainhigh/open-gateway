@@ -8,8 +8,8 @@
 		<result column="create_person" jdbcType="VARCHAR" property="createPerson"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-    account_id, role_id, create_time, create_person
-  </sql>
+		account_id, role_id, create_time, create_person
+	</sql>
 	<select id="selectByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.BaseAccountRoleKey"
 			resultMap="BaseResultMap">
 		select
@@ -19,11 +19,11 @@
 		and role_id = #{roleId,jdbcType=INTEGER}
 	</select>
 	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.BaseAccountRole">
-    insert into base_account_role (account_id, role_id, create_time, 
-      create_person)
-    values (#{accountId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{createPerson,jdbcType=VARCHAR})
-  </insert>
+		insert into base_account_role (account_id, role_id, create_time,
+		create_person)
+		values (#{accountId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+		#{createPerson,jdbcType=VARCHAR})
+	</insert>
 	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.BaseAccountRole">
 		insert into base_account_role
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -69,10 +69,10 @@
 		and role_id = #{roleId,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.BaseAccountRole">
-    update base_account_role
-    set create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_person = #{createPerson,jdbcType=VARCHAR}
-    where account_id = #{accountId,jdbcType=INTEGER}
-      and role_id = #{roleId,jdbcType=INTEGER}
-  </update>
+		update base_account_role
+		set create_time = #{createTime,jdbcType=TIMESTAMP},
+		create_person = #{createPerson,jdbcType=VARCHAR}
+		where account_id = #{accountId,jdbcType=INTEGER}
+		and role_id = #{roleId,jdbcType=INTEGER}
+	</update>
 </mapper>

@@ -2,6 +2,9 @@ package org.open.gateway.route.utils.ip;
 
 import org.springframework.util.StringUtils;
 
+/**
+ * @author miko
+ */
 public class IpRange {
 
     private static final int IPV4_BIT_COUNT = 32;

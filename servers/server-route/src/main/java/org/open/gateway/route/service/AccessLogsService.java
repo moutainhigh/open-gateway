@@ -93,7 +93,7 @@ public class AccessLogsService {
         accessLogs.setRequestBody(requestBody);
         accessLogs.setRequestTime(WebExchangeUtil.getRequestTime(exchange));
         accessLogs.setResponseTime(new Date());
-        accessLogs.setUsedTime(Long.valueOf(accessLogs.getResponseTime().getTime() - accessLogs.getRequestTime().getTime()).intValue());
+        accessLogs.setUsedTime((int) (accessLogs.getResponseTime().getTime() - accessLogs.getRequestTime().getTime()));
         accessLogs.setUserAgent(headers.getFirst(HttpHeaders.USER_AGENT));
         if (ex != null) {
             accessLogs.setError(StringUtil.trimByLenLimit(ex.getMessage(), 512));
@@ -103,7 +103,7 @@ public class AccessLogsService {
             accessLogs.setApiCode(RouteDefinitionUtil.getApiCode(route.getMetadata()));
             accessLogs.setRouteCode(RouteDefinitionUtil.getRouteCode(route.getMetadata()));
         }
-        //        accessLogs.setRegion(); TODO 根据ip获取用户请求区域
+        // accessLogs.setRegion(); TODO 根据ip获取用户请求区域
         return accessLogs;
     }
 

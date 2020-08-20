@@ -1,4 +1,4 @@
-package org.open.gateway.route.service;
+package org.open.gateway.route.service.impl;
 
 import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.utils.CollectionUtil;
 import org.open.gateway.route.exception.ClientNotFoundException;
 import org.open.gateway.route.repositories.jdbc.SQLS;
+import org.open.gateway.route.service.ClientDetailsService;
 import org.open.gateway.route.service.bo.BaseClientDetails;
 import org.open.gateway.route.service.bo.ClientDetails;
 import org.open.gateway.route.utils.sql.Sql;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class JdbcClientDetailsService implements ClientDetailsService {
+public class JdbcClientDetailsServiceImpl implements ClientDetailsService {
 
     private final DatabaseClient databaseClient;
 

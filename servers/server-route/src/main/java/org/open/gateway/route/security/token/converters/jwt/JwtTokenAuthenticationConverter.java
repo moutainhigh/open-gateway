@@ -39,10 +39,10 @@ public class JwtTokenAuthenticationConverter extends AbstractBearerTokenAuthenti
         if (claims == null) {
             throw new InvalidTokenException();
         }
-        if (claims.getClaim("sub") == null) {
+        if (claims.getClaim(OAuth2Constants.TokenPayloadKey.SUB) == null) {
             throw new InvalidTokenException();
         }
-        if (claims.getClaim("authorities") == null) {
+        if (claims.getClaim(OAuth2Constants.TokenPayloadKey.AUTHORITIES) == null) {
             throw new InvalidTokenException();
         }
         Object roles = claims.getClaim(OAuth2Constants.TokenPayloadKey.AUTHORITIES);
@@ -50,7 +50,7 @@ public class JwtTokenAuthenticationConverter extends AbstractBearerTokenAuthenti
             throw new InvalidTokenException();
         }
         TokenUser tokenUser = new TokenUser();
-        tokenUser.setClientId(claims.getClaim("sub").toString());
+        tokenUser.setClientId(claims.getClaim(OAuth2Constants.TokenPayloadKey.SUB).toString());
         tokenUser.setAuthorities(
                 ((JSONArray) roles).stream()
                         .filter(Objects::nonNull)

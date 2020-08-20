@@ -102,6 +102,7 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
     /**
      * 获取网关路由配置信息
      *
+     * @param apiCodes api代码
      * @return 路由配置信息
      */
     protected abstract Flux<GatewayRouteDefinition> getRefreshableRouteDefinitions(Set<String> apiCodes);
@@ -144,7 +145,7 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
      * @param route      路由配置
      */
     private void setMetadata(RouteDefinition definition, GatewayRouteDefinition route) {
-        Map<String, Object> metadata = new HashMap<>();
+        Map<String, Object> metadata = new HashMap<>(4);
         definition.setMetadata(metadata);
         RouteDefinitionUtil.setApiCode(definition, route.getApiCode());
         RouteDefinitionUtil.setRouteCode(definition, route.getRouteCode());
@@ -161,7 +162,7 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
     private PredicateDefinition getPathPredicateDefinition(GatewayRouteDefinition route) {
         String path = PathUtil.getFullPath(route.getRoutePath(), route.getApiPath());
         PredicateDefinition predicatePath = new PredicateDefinition();
-        Map<String, String> predicatePathParams = new HashMap<>();
+        Map<String, String> predicatePathParams = new HashMap<>(3);
         predicatePathParams.put("name", route.getApiCode());
         predicatePathParams.put("pattern", path);
         predicatePathParams.put("pathPattern", path);
@@ -178,7 +179,7 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
      */
     private FilterDefinition getStripPrefixFilterDefinition(GatewayRouteDefinition route) {
         FilterDefinition stripPrefixDefinition = new FilterDefinition();
-        Map<String, String> stripPrefixParams = new HashMap<>();
+        Map<String, String> stripPrefixParams = new HashMap<>(1);
         stripPrefixParams.put(NameUtils.generateName(0), getStripPrefix(route));
         stripPrefixDefinition.setArgs(stripPrefixParams);
         stripPrefixDefinition.setName("StripPrefix");

@@ -16,6 +16,7 @@ import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
@@ -30,13 +31,21 @@ import java.util.Set;
 @Slf4j
 public class AuthorizationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
 
-    // 直接放行的权限
+    /**
+     * 直接放行的权限
+     */
     private static final Set<String> PERMIT_ROLES = CollectionUtil.newHashSet("admin");
-    // 资源服务
+    /**
+     * 资源服务
+     */
     private final RefreshableRouteDefinitionRepository resourceRepository;
-    // 客户端资源服务
+    /**
+     * 客户端资源服务
+     */
     private final RefreshableClientResourcesRepository clientResourcesRepository;
-    // ip限制资源服务
+    /**
+     * ip限制资源服务
+     */
     private final RefreshableIpLimitRepository ipLimitRepository;
 
     public AuthorizationManager(RefreshableRouteDefinitionRepository resourceRepository,
@@ -84,7 +93,8 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         String clientId = user.getClientId();
         Collection<String> authorities = user.getAuthorities();
         log.info("Request path:{} ip:{} client_id:{} authorities:{}", requestPath, ipAddress, clientId, authorities);
-        WebExchangeUtil.putClientId(exchange, clientId); // 存放客户端id
+        // 存放客户端id
+        WebExchangeUtil.putClientId(exchange, clientId);
         // 是否直接放行
         if (this.isPermit(user)) {
             return Mono.just(true);
@@ -95,18 +105,13 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         Mono<RouteDefinition> routeDefinition = resourceRepository.loadRouteDefinition(path);
         return routeDefinition
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new AccessDeniedException("Access Denied invalid path:" + path))))
-                .flatMap(r -> {
-                    // 匹配黑白名单
-                    return matchIpLimit(r, ipAddress)
-                            .flatMap(b -> {
-                                // 不允许访问直接认证失败
-                                if (!b) {
-                                    return Mono.just(false);
-                                }
-                                // 验证是否拥有资源权限
-                                return matchResource(r, clientId);
-                            });
-                });
+                .flatMap(r -> Flux.merge(
+                        // 匹配黑白名单
+                        matchIpLimit(r, ipAddress),
+                        // 验证是否拥有资源权限
+                        matchResource(r, clientId)
+                        ).all(b -> b)
+                );
     }
 
     /**

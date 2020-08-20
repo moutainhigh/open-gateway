@@ -3,7 +3,6 @@ package org.open.gateway.route.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import open.gateway.common.utils.JSON;
 import org.open.gateway.route.exception.GatewayExceptionHandler;
-import org.open.gateway.route.service.AccessLogsService;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -48,9 +47,8 @@ public class WebServerConfig {
     public ErrorWebExceptionHandler errorWebExceptionHandler(ErrorAttributes errorAttributes,
                                                              ResourceProperties resourceProperties, ObjectProvider<ViewResolver> viewResolvers,
                                                              ServerCodecConfigurer serverCodecConfigurer, ApplicationContext applicationContext,
-                                                             ServerProperties serverProperties,
-                                                             AccessLogsService accessLogService) {
-        GatewayExceptionHandler exceptionHandler = new GatewayExceptionHandler(errorAttributes, resourceProperties, serverProperties.getError(), applicationContext, accessLogService);
+                                                             ServerProperties serverProperties) {
+        GatewayExceptionHandler exceptionHandler = new GatewayExceptionHandler(errorAttributes, resourceProperties, serverProperties.getError(), applicationContext);
         exceptionHandler.setViewResolvers(viewResolvers.orderedStream().collect(Collectors.toList()));
         exceptionHandler.setMessageWriters(serverCodecConfigurer.getWriters());
         exceptionHandler.setMessageReaders(serverCodecConfigurer.getReaders());

@@ -46,8 +46,12 @@ public class SortBy {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         SortBy sortBy = (SortBy) o;
         // 这里只根据key判断重复
         return Objects.equals(key, sortBy.key);
@@ -71,10 +75,19 @@ public class SortBy {
         return new HashSet<>(Arrays.asList(sortBys));
     }
 
+    /**
+     * 排序类型
+     */
     @Getter
     public enum SortType {
 
+        /**
+         * 升序
+         */
         ASC,
+        /**
+         * 降序
+         */
         DESC;
 
         public static SortType from(String sortType) {

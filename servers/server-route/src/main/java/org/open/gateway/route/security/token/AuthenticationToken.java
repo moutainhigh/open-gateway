@@ -16,9 +16,13 @@ import java.util.stream.Collectors;
  */
 public class AuthenticationToken implements Authentication {
 
-    // 是否认证过
+    /**
+     * 是否认证过
+     */
     private boolean authenticated = false;
-    // 用户信息
+    /**
+     * 用户信息
+     */
     private final TokenUser principal;
 
     public AuthenticationToken(TokenUser tokenUser) {
@@ -53,7 +57,7 @@ public class AuthenticationToken implements Authentication {
     }
 
     @Override
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+    public void setAuthenticated(boolean isAuthenticated) {
         this.authenticated = isAuthenticated;
     }
 

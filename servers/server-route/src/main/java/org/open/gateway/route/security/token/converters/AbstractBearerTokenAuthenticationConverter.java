@@ -21,9 +21,13 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractBearerTokenAuthenticationConverter implements ServerAuthenticationConverter {
 
-    // 用于匹配请求头token的正则表达式
+    /**
+     * 用于匹配请求头token的正则表达式
+     */
     private static final Pattern AUTHORIZATION_PATTERN = Pattern.compile("^Bearer (?<token>[a-zA-Z0-9-._~+/]+)=*$", Pattern.CASE_INSENSITIVE);
-    // 是否允许从get请求的url参数中获取token
+    /**
+     * 是否允许从get请求的url参数中获取token
+     */
     private boolean allowUriQueryParameter = false;
 
     @Override

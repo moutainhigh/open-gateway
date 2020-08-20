@@ -9,10 +9,10 @@ import org.springframework.data.redis.listener.PatternTopic;
  */
 public class KeyeventTopic extends PatternTopic {
 
-    private static final String prefix = "__keyevent@0__:";
+    private static final String PREFIX = "__keyevent@0__:";
 
     public KeyeventTopic(String operate) {
-        super(prefix + operate);
+        super(PREFIX + operate);
     }
 
 }
