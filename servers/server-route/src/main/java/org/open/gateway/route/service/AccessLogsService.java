@@ -103,7 +103,7 @@ public class AccessLogsService {
             accessLogs.setApiCode(RouteDefinitionUtil.getApiCode(route.getMetadata()));
             accessLogs.setRouteCode(RouteDefinitionUtil.getRouteCode(route.getMetadata()));
         }
-        // accessLogs.setRegion(); TODO 根据ip获取用户请求区域
+        // accessLogs.setRegion(); // 根据ip获取用户请求区域
         return accessLogs;
     }
 
