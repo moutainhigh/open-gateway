@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.synchronizedMap;
-
 /**
  * Created by miko on 2020/7/17.
  *
@@ -27,7 +25,7 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
     /**
      * 客户端资源分组。 key为客户端id，value为该客户端所拥有的资源
      */
-    private final Map<String, Set<String>> clientResources = synchronizedMap(new LRUCache<>(10000));
+    private final Map<String, Set<String>> clientResources = new LRUCache<>(10000);
 
     @Override
     public Mono<Set<String>> loadResourcePathByClientId(String clientId) {
@@ -37,7 +35,11 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
                         getClientApiRoutes(CollectionUtil.newHashSet(clientId))
                                 .map(cr -> PathUtil.getFullPath(cr.getRoutePath(), cr.getApiPath()))
                                 .collect(Collectors.toSet())
-                                .doOnSuccess(rs -> clientResources.put(clientId, rs))
+                                .doOnSuccess(rs -> {
+                                    synchronized (clientResources) {
+                                        clientResources.put(clientId, rs);
+                                    }
+                                })
                 );
     }
 
@@ -49,8 +51,10 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
                 groupClientResource(getClientApiRoutes(refreshClientIds))
                         .doOnSubscribe(v -> log.info("[Refresh client resources] starting. target client ids:{}", refreshClientIds))
                         .doOnSuccess(map -> {
-                            this.clientResources.putAll(map);
-                            log.info("[Refresh client resources] finished");
+                            synchronized (clientResources) {
+                                this.clientResources.putAll(map);
+                                log.info("[Refresh client resources] finished");
+                            }
                         })
                         .doOnError(e -> log.error("[Refresh client resources] failed reason:{}", e.getMessage()))
                         .then()
@@ -63,12 +67,14 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
      * @param clientIds 客户端id
      */
     protected void clearResources(Set<String> clientIds) {
-        if (clientIds == null) {
-            this.clientResources.clear();
-            log.info("[Refresh client resources] clear all client resource finished");
-        } else {
-            clientIds.forEach(this.clientResources::remove);
-            log.info("[Refresh client resources] clear client resource finished");
+        synchronized (clientResources) {
+            if (clientIds == null) {
+                this.clientResources.clear();
+                log.info("[Refresh client resources] clear all client resource finished");
+            } else {
+                clientIds.forEach(this.clientResources::remove);
+                log.info("[Refresh client resources] clear client resource finished");
+            }
         }
     }
 

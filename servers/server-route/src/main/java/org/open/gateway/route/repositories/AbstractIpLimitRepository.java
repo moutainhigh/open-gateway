@@ -6,12 +6,10 @@ import org.open.gateway.route.entity.GatewayIpLimit;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
-import static java.util.Collections.synchronizedMap;
 
 /**
  * Created by miko on 2020/8/3.
@@ -21,7 +19,7 @@ import static java.util.Collections.synchronizedMap;
 @Slf4j
 public abstract class AbstractIpLimitRepository implements RefreshableIpLimitRepository {
 
-    private final Map<String, GatewayIpLimit> ipLimits = synchronizedMap(new LinkedHashMap<>());
+    private final Map<String, GatewayIpLimit> ipLimits = new ConcurrentHashMap<>();
 
     @Override
     public Mono<GatewayIpLimit> loadIpLimitByApi(String apiCode) {

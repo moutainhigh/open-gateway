@@ -1,6 +1,7 @@
 package open.gateway.common.utils;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by miko on 2020/7/6.
@@ -65,6 +66,17 @@ public class CollectionUtil {
      */
     public static <K, V> Map<K, V> newHashMap(Object... kv) {
         return newMap(new HashMap<>(), kv);
+    }
+
+    /**
+     * 创建concurrent hash map
+     *
+     * @param kv  key和value数组, 每2个为一组, 第一个为key, 第二个为value
+     * @param <K> key的类型
+     * @param <V> value的类型
+     */
+    public static <K, V> Map<K, V> newConcurrentHashMap(Object... kv) {
+        return newMap(new ConcurrentHashMap<>(), kv);
     }
 
 }

@@ -20,8 +20,7 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.*;
-
-import static java.util.Collections.synchronizedMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by miko on 2020/6/9.
@@ -32,7 +31,7 @@ import static java.util.Collections.synchronizedMap;
 public abstract class AbstractRouteDefinitionRepository implements RefreshableRouteDefinitionRepository {
 
     private static final String DEFAULT_KEY_RESOLVER = "urlKeyResolver";
-    private final Map<String, RouteDefinition> routes = synchronizedMap(new LinkedHashMap<>());
+    private final Map<String, RouteDefinition> routes = new ConcurrentHashMap<>();
 
     @Override
     public Mono<Void> save(Mono<RouteDefinition> route) {
