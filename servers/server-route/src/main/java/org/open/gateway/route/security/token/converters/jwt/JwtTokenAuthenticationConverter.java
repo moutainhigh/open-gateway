@@ -28,11 +28,10 @@ public class JwtTokenAuthenticationConverter extends AbstractBearerTokenAuthenti
 
     @Override
     protected Mono<Authentication> parseToken(String token) {
-        if (token == null || token.isEmpty()) {
-            throw invalidTokenError();
-        }
-        JWTClaimsSet jwtClaimsSet = this.jwtDecoder.parseToken(token);
-        return Mono.just(new AuthenticationToken(toTokenUser(jwtClaimsSet)));
+        return Mono.justOrEmpty(token)
+                .switchIfEmpty(Mono.error(invalidTokenError()))
+                .map(this.jwtDecoder::parseToken)
+                .map(jwtClaimsSet -> new AuthenticationToken(toTokenUser(jwtClaimsSet)));
     }
 
     private TokenUser toTokenUser(JWTClaimsSet claims) {

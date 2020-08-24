@@ -12,12 +12,19 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class ReactorUtil {
 
-    public static <T> Mono<T> recordUsedTime(String method, Mono<T> mono) {
+    /**
+     * 记录耗时时间
+     *
+     * @param prefix 前缀
+     * @param mono   执行逻辑
+     * @return 包装后的执行逻辑
+     */
+    public static <T> Mono<T> recordUsedTime(String prefix, Mono<T> mono) {
         StopWatch sw = new StopWatch();
         return mono.doOnSubscribe(sub -> sw.start())
                 .doOnTerminate(() -> {
                     sw.stop();
-                    log.info("方法:{} 耗时:{}", method, sw.getLastTaskInfo().getTimeMillis());
+                    log.info(">>> [{}] execute finished. spend:[{}ms.][{}ns.]", prefix, sw.getTotalTimeMillis(), sw.getTotalTimeNanos());
                 });
     }
 

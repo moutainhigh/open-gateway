@@ -74,7 +74,7 @@ public class RedisSerializerTest extends BaseTest {
 
     private TokenUser newTokenUser() {
         TokenUser tokenUser = new TokenUser();
-        tokenUser.setClientId(StringUtil.randomLetterString(6));
+        tokenUser.setClientId(StringUtil.randomLetter(6));
         tokenUser.setAuthorities(Arrays.asList("admin"));
         tokenUser.setScopes(Arrays.asList("all"));
         return tokenUser;

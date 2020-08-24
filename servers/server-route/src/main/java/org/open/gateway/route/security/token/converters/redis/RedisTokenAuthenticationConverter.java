@@ -23,7 +23,7 @@ public class RedisTokenAuthenticationConverter extends AbstractBearerTokenAuthen
 
     @Override
     protected Mono<Authentication> parseToken(String token) {
-        return redisTemplate.opsForValue()
+        return this.redisTemplate.opsForValue()
                 .get(GatewayConstants.RedisKey.PREFIX_ACCESS_TOKENS + token)
                 .cast(String.class)
                 .map(this::parseJson)

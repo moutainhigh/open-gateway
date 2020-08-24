@@ -23,6 +23,7 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 
+import javax.annotation.PostConstruct;
 import java.security.KeyPair;
 
 /**
@@ -81,6 +82,11 @@ public class TokenConfig {
             return new JwtTokenAuthenticationConverter(jwts());
         }
 
+        @PostConstruct
+        public void log(){
+            log.info("Token store type is [jwt].");
+        }
+
         /**
          * Created by miko on 2020/7/10.
          *
@@ -136,6 +142,11 @@ public class TokenConfig {
         @Bean
         public ServerAuthenticationConverter bearerTokenConverter(ReactiveStringRedisTemplate redisTemplate) {
             return new RedisTokenAuthenticationConverter(redisTemplate);
+        }
+
+        @PostConstruct
+        public void log(){
+            log.info("Token store type is [redis].");
         }
 
     }

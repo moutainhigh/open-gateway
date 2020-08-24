@@ -27,11 +27,26 @@ public class StringUtil {
      * @param len 字符串长度
      * @return 随机字符串
      */
-    public static String randomLetterString(int len) {
+    public static String randomLetter(int len) {
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
         for (int i = 0; i < len; i++) {
             sb.append(RANDOM_SEEDS_LETTER[random.nextInt(RANDOM_SEEDS_LETTER.length)]);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 生成随机英文字母字符串
+     *
+     * @param len 字符串长度
+     * @return 随机字符串
+     */
+    public static String randomNumber(int len) {
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < len; i++) {
+            sb.append(random.nextInt(10));
         }
         return sb.toString();
     }
