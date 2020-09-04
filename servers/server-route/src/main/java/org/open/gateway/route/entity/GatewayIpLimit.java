@@ -39,7 +39,7 @@ public class GatewayIpLimit {
                     try {
                         blackIps.add(InetAddress.getByName(ipAddress).getHostAddress());
                     } catch (UnknownHostException e) {
-                        log.error("Invalid ip address:" + ipAddress, e);
+                        log.error("Invalid ip limit address:" + ipAddress, e);
                     }
                 }
             }
@@ -48,7 +48,7 @@ public class GatewayIpLimit {
                     try {
                         blackIps.add(InetAddress.getByName(ipAddress).getHostAddress());
                     } catch (UnknownHostException e) {
-                        log.error(e.getMessage());
+                        log.error("Invalid ip limit address:" + ipAddress, e);
                     }
                 }
             }

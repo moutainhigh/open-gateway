@@ -60,7 +60,8 @@ public class TokenService {
                 .matching(
                         Criteria.where("client_id").is(clientId).and("is_del").is(0)
                 )
-                .fetch().rowsUpdated() // 先根据客户端id更新老的token为已删除状态
+                .fetch()
+                .rowsUpdated() // 先根据客户端id更新老的token为已删除状态
                 .then(
                         databaseClient.insert()
                                 .into("oauth_client_token")
@@ -75,8 +76,8 @@ public class TokenService {
                                 .rowsUpdated() // 添加一条新的token记录
                                 .then()
                 )
-                .as(operator::transactional)
-                .doOnSuccess(v -> log.info("Save token finished")); // 开启事务管理
+                .as(operator::transactional) // 开启事务管理
+                .doOnSuccess(v -> log.info("Save token finished"));
     }
 
     private OauthClientToken rowToClientToken(Row row) {
