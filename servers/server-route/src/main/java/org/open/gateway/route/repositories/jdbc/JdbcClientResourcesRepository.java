@@ -2,7 +2,7 @@ package org.open.gateway.route.repositories.jdbc;
 
 import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;
-import org.open.gateway.route.entity.ClientResource;
+import org.open.gateway.route.entity.GatewayClientResourceDefinition;
 import org.open.gateway.route.repositories.AbstractClientResourcesRepository;
 import org.springframework.data.r2dbc.core.DatabaseClient;
 import reactor.core.publisher.Flux;
@@ -25,16 +25,17 @@ public class JdbcClientResourcesRepository extends AbstractClientResourcesReposi
     }
 
     @Override
-    protected Flux<ClientResource> getClientApiRoutes(Set<String> clientIds) {
+    protected Flux<GatewayClientResourceDefinition.ClientResource> getClientApiRoutes(Set<String> clientIds) {
         return this.databaseClient
                 .execute(SQLS.QUERY_API_ROUTE.AND_IN("gp.client_id", clientIds).getSql())
                 .map(this::rowToClientResource)
                 .all();
     }
 
-    private ClientResource rowToClientResource(Row row) {
-        ClientResource clientResource = new ClientResource();
+    private GatewayClientResourceDefinition.ClientResource rowToClientResource(Row row) {
+        GatewayClientResourceDefinition.ClientResource clientResource = new GatewayClientResourceDefinition.ClientResource();
         clientResource.setClientId(row.get("client_id", String.class));
+        clientResource.setClientSecret(row.get("client_secret", String.class));
         clientResource.setRoutePath(row.get("route_path", String.class));
         clientResource.setApiPath(row.get("api_path", String.class));
         return clientResource;

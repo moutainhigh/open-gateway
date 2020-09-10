@@ -1,6 +1,6 @@
 package org.open.gateway.route.repositories;
 
-import org.open.gateway.route.entity.GatewayIpLimit;
+import org.open.gateway.route.entity.GatewayIpLimitDefinition;
 import reactor.core.publisher.Mono;
 
 /**
@@ -16,6 +16,6 @@ public interface RefreshableIpLimitRepository extends RefreshableRepository {
      * @param apiCode api代码
      * @return ip限制信息
      */
-    Mono<GatewayIpLimit> loadIpLimitByApi(String apiCode);
+    Mono<GatewayIpLimitDefinition> loadIpLimitByApi(String apiCode);
 
 }

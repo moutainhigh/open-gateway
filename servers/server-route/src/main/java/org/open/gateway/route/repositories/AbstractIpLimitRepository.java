@@ -2,7 +2,7 @@ package org.open.gateway.route.repositories;
 
 import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.base.entity.RefreshGateway;
-import org.open.gateway.route.entity.GatewayIpLimit;
+import org.open.gateway.route.entity.GatewayIpLimitDefinition;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class AbstractIpLimitRepository implements RefreshableIpLimitRepository {
 
-    private final Map<String, GatewayIpLimit> ipLimits = new ConcurrentHashMap<>();
+    private final Map<String, GatewayIpLimitDefinition> ipLimits = new ConcurrentHashMap<>();
 
     @Override
-    public Mono<GatewayIpLimit> loadIpLimitByApi(String apiCode) {
+    public Mono<GatewayIpLimitDefinition> loadIpLimitByApi(String apiCode) {
         return Mono.justOrEmpty(this.ipLimits.get(apiCode));
     }
 
@@ -31,11 +31,11 @@ public abstract class AbstractIpLimitRepository implements RefreshableIpLimitRep
         // 需要更新的api
         Set<String> refreshApiCodes = param.getArgs();
         return getIpLimits(refreshApiCodes)
-                .collect(Collectors.groupingBy(GatewayIpLimit.IpLimit::getApiCode))
+                .collect(Collectors.groupingBy(GatewayIpLimitDefinition.IpLimit::getApiCode))
                 .doOnNext(group -> {
                     if (group.size() > 0) {
                         this.clearIpLimits(param); // 清理ip限制
-                        group.forEach((key, value) -> this.ipLimits.put(key, new GatewayIpLimit(value)));
+                        group.forEach((key, value) -> this.ipLimits.put(key, new GatewayIpLimitDefinition(value)));
                     }
                 })
                 .doOnSubscribe(v -> log.info("[Refresh ip limits] starting. target api codes:{}", refreshApiCodes))
@@ -65,6 +65,6 @@ public abstract class AbstractIpLimitRepository implements RefreshableIpLimitRep
      * @param apiCodes api编码
      * @return 黑白名单配置
      */
-    protected abstract Flux<GatewayIpLimit.IpLimit> getIpLimits(Set<String> apiCodes);
+    protected abstract Flux<GatewayIpLimitDefinition.IpLimit> getIpLimits(Set<String> apiCodes);
 
 }

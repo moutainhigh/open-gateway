@@ -4,15 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.base.collection.LRUCache;
 import open.gateway.common.base.entity.RefreshGateway;
 import open.gateway.common.utils.CollectionUtil;
-import org.open.gateway.route.entity.ClientResource;
-import org.open.gateway.route.utils.PathUtil;
+import org.open.gateway.route.entity.GatewayClientResourceDefinition;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by miko on 2020/7/17.
@@ -25,35 +23,34 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
     /**
      * 客户端资源分组。 key为客户端id，value为该客户端所拥有的资源
      */
-    private final Map<String, Set<String>> clientResources = new LRUCache<>(10000);
+    private final Map<String, GatewayClientResourceDefinition> clientResources = new LRUCache<>(10000);
 
     @Override
-    public Mono<Set<String>> loadResourcePathByClientId(String clientId) {
+    public Mono<GatewayClientResourceDefinition> loadResourcePathByClientId(String clientId) {
         return Mono.justOrEmpty(this.clientResources.get(clientId)) // 从内存中获取
                 // 找不到从数据库查询
                 .switchIfEmpty(
                         getClientApiRoutes(CollectionUtil.newHashSet(clientId))
-                                .map(cr -> PathUtil.getFullPath(cr.getRoutePath(), cr.getApiPath()))
-                                .collect(Collectors.toSet())
+                                .reduce(new GatewayClientResourceDefinition(), (crd, cr) -> crd.addResource(cr).clientSecret(cr.getClientSecret()))
                                 .doOnNext(rs -> {
-                                    if (rs.size() > 0) {
-                                        synchronized (this.clientResources) {
-                                            this.clientResources.put(clientId, rs);
-                                        }
+                                    synchronized (this.clientResources) {
+                                        this.clientResources.put(clientId, rs);
                                     }
                                 })
-                                .doOnSuccess(rs -> log.info("Reload client id:{} resource count:{}", clientId, rs.size()))
+                                .doOnSuccess(rs -> log.info("Reload client id:{} resource count:{}", clientId, rs.getResources().size()))
                 );
     }
 
     @Override
     public Mono<Void> refresh(RefreshGateway param) {
         Set<String> refreshClientIds = param.getArgs();
-        return groupClientResource(getClientApiRoutes(refreshClientIds))
+        return getGatewayClientResourceDefinition(refreshClientIds)
                 .doOnNext(map -> {
-                    synchronized (this.clientResources) {
-                        clearResources(param);
-                        this.clientResources.putAll(map);
+                    if (map.size() > 0) {
+                        synchronized (this.clientResources) {
+                            clearResources(param);
+                            this.clientResources.putAll(map);
+                        }
                     }
                 })
                 .doOnSubscribe(v -> log.info("[Refresh client resources] starting. target client ids:{}", refreshClientIds))
@@ -80,17 +77,20 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
     /**
      * 将客户端资源按照客户端id分组
      *
-     * @param clientResources 客户端资源
+     * @param refreshClientIds api编码
      * @return 分组后的客户端资源
      */
-    protected Mono<Map<String, Set<String>>> groupClientResource(Flux<ClientResource> clientResources) {
-        return clientResources
-                .collect(HashMap::new, (map, api) -> {
-                    String path = PathUtil.getFullPath(api.getRoutePath(), api.getApiPath());
-                    if (map.containsKey(api.getClientId())) {
-                        map.get(api.getClientId()).add(path);
+    protected Mono<Map<String, GatewayClientResourceDefinition>> getGatewayClientResourceDefinition(Set<String> refreshClientIds) {
+        return getClientApiRoutes(refreshClientIds)
+                .collect(HashMap::new, (map, res) -> {
+                    if (map.containsKey(res.getClientId())) {
+                        map.get(res.getClientId())
+                                .addResource(res);
                     } else {
-                        map.put(api.getClientId(), CollectionUtil.newHashSet(path));
+                        map.put(res.getClientId(), new GatewayClientResourceDefinition()
+                                .clientSecret(res.getClientSecret())
+                                .addResource(res)
+                        );
                     }
                 });
     }
@@ -101,6 +101,6 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
      * @param clientIds 客户端id
      * @return 客户端资源
      */
-    protected abstract Flux<ClientResource> getClientApiRoutes(Set<String> clientIds);
+    protected abstract Flux<GatewayClientResourceDefinition.ClientResource> getClientApiRoutes(Set<String> clientIds);
 
 }

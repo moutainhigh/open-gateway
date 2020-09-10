@@ -18,7 +18,7 @@ import java.util.Set;
 @Slf4j
 @Getter
 @ToString
-public class GatewayIpLimit {
+public class GatewayIpLimitDefinition {
 
     /**
      * 黑名单过滤器
@@ -29,7 +29,7 @@ public class GatewayIpLimit {
      */
     private final IpMatcher whiteMatcher;
 
-    public GatewayIpLimit(Collection<IpLimit> ipLimits) {
+    public GatewayIpLimitDefinition(Collection<IpLimit> ipLimits) {
         Objects.requireNonNull(ipLimits);
         Set<String> blackIps = new HashSet<>();
         Set<String> whiteIps = new HashSet<>();
