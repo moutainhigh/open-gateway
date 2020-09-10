@@ -23,40 +23,39 @@ public abstract class AbstractIpLimitRepository implements RefreshableIpLimitRep
 
     @Override
     public Mono<GatewayIpLimit> loadIpLimitByApi(String apiCode) {
-        return Mono.justOrEmpty(ipLimits.get(apiCode));
+        return Mono.justOrEmpty(this.ipLimits.get(apiCode));
     }
 
     @Override
     public Mono<Void> refresh(RefreshGateway param) {
         // 需要更新的api
-        Set<String> refreshApiCodes = param == null ? null : param.getArgs();
-        // 清理ip限制
-        Mono<Void> clearIpLimits = Mono.fromRunnable(() -> this.clearIpLimits(refreshApiCodes));
-        return clearIpLimits.then(
-                getIpLimits(refreshApiCodes)
-                        .collect(Collectors.groupingBy(GatewayIpLimit.IpLimit::getApiCode))
-                        .doOnSubscribe(v -> log.info("[Refresh ip limits] starting. target api codes:{}", refreshApiCodes))
-                        .doOnSuccess(group -> {
-                            group.forEach((key, value) -> this.ipLimits.put(key, new GatewayIpLimit(value)));
-                            log.info("[Refresh ip limits] finished");
-                        })
-                        .doOnError(e -> log.error("[Refresh ip limits] failed reason:{}", e.getMessage()))
-                        .then()
-        );
+        Set<String> refreshApiCodes = param.getArgs();
+        return getIpLimits(refreshApiCodes)
+                .collect(Collectors.groupingBy(GatewayIpLimit.IpLimit::getApiCode))
+                .doOnNext(group -> {
+                    if (group.size() > 0) {
+                        this.clearIpLimits(param); // 清理ip限制
+                        group.forEach((key, value) -> this.ipLimits.put(key, new GatewayIpLimit(value)));
+                    }
+                })
+                .doOnSubscribe(v -> log.info("[Refresh ip limits] starting. target api codes:{}", refreshApiCodes))
+                .doOnSuccess(group -> log.info("[Refresh ip limits] finished"))
+                .doOnError(e -> log.error("[Refresh ip limits] failed reason:{}", e.getMessage()))
+                .then();
     }
 
     /**
      * 根据api代码清理黑白名单
      *
-     * @param apiCodes api编码
+     * @param param api编码
      */
-    private void clearIpLimits(Set<String> apiCodes) {
-        if (apiCodes == null) {
-            ipLimits.clear();
-            log.info("[Refresh ip limits] clear all ip limits finished");
-        } else {
-            apiCodes.forEach(ipLimits::remove);
+    private void clearIpLimits(RefreshGateway param) {
+        if (param.isRefreshAll()) {
+            this.ipLimits.clear();
             log.info("[Refresh ip limits] clear ip limits finished");
+        } else {
+            param.getArgs().forEach(this.ipLimits::remove);
+            log.info("[Refresh ip limits] remove old ip limits finished");
         }
     }
 

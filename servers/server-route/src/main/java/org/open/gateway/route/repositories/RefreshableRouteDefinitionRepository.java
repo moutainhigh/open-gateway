@@ -1,6 +1,5 @@
 package org.open.gateway.route.repositories;
 
-import open.gateway.common.base.entity.RefreshGateway;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
 import reactor.core.publisher.Mono;
@@ -10,7 +9,7 @@ import reactor.core.publisher.Mono;
  *
  * @author MIKO
  */
-public interface RefreshableRouteDefinitionRepository extends RouteDefinitionRepository, RefreshableRepository<RefreshGateway> {
+public interface RefreshableRouteDefinitionRepository extends RouteDefinitionRepository, RefreshableRepository {
 
     /**
      * 根据路径获取路由信息

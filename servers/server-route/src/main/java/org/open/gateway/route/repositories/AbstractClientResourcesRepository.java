@@ -29,52 +29,51 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
 
     @Override
     public Mono<Set<String>> loadResourcePathByClientId(String clientId) {
-        return Mono.justOrEmpty(clientResources.get(clientId)) // 从内存中获取
+        return Mono.justOrEmpty(this.clientResources.get(clientId)) // 从内存中获取
                 // 找不到从数据库查询
                 .switchIfEmpty(
                         getClientApiRoutes(CollectionUtil.newHashSet(clientId))
                                 .map(cr -> PathUtil.getFullPath(cr.getRoutePath(), cr.getApiPath()))
                                 .collect(Collectors.toSet())
-                                .doOnSuccess(rs -> {
-                                    synchronized (clientResources) {
-                                        clientResources.put(clientId, rs);
+                                .doOnNext(rs -> {
+                                    if (rs.size() > 0) {
+                                        synchronized (this.clientResources) {
+                                            this.clientResources.put(clientId, rs);
+                                        }
                                     }
                                 })
+                                .doOnSuccess(rs -> log.info("Reload client id:{} resource count:{}", clientId, rs.size()))
                 );
     }
 
     @Override
     public Mono<Void> refresh(RefreshGateway param) {
-        Set<String> refreshClientIds = param == null ? null : param.getArgs();
-        Mono<Void> cleanResources = Mono.fromRunnable(() -> this.clearResources(refreshClientIds));
-        return cleanResources.then(
-                groupClientResource(getClientApiRoutes(refreshClientIds))
-                        .doOnSubscribe(v -> log.info("[Refresh client resources] starting. target client ids:{}", refreshClientIds))
-                        .doOnSuccess(map -> {
-                            synchronized (clientResources) {
-                                this.clientResources.putAll(map);
-                                log.info("[Refresh client resources] finished");
-                            }
-                        })
-                        .doOnError(e -> log.error("[Refresh client resources] failed reason:{}", e.getMessage()))
-                        .then()
-        );
+        Set<String> refreshClientIds = param.getArgs();
+        return groupClientResource(getClientApiRoutes(refreshClientIds))
+                .doOnNext(map -> {
+                    synchronized (this.clientResources) {
+                        clearResources(param);
+                        this.clientResources.putAll(map);
+                    }
+                })
+                .doOnSubscribe(v -> log.info("[Refresh client resources] starting. target client ids:{}", refreshClientIds))
+                .doOnSuccess(map -> log.info("[Refresh client resources] finished"))
+                .doOnError(e -> log.error("[Refresh client resources] failed reason:{}", e.getMessage()))
+                .then();
     }
 
     /**
      * 清理客户端资源
      *
-     * @param clientIds 客户端id
+     * @param param api编码
      */
-    protected void clearResources(Set<String> clientIds) {
-        synchronized (clientResources) {
-            if (clientIds == null) {
-                this.clientResources.clear();
-                log.info("[Refresh client resources] clear all client resource finished");
-            } else {
-                clientIds.forEach(this.clientResources::remove);
-                log.info("[Refresh client resources] clear client resource finished");
-            }
+    private void clearResources(RefreshGateway param) {
+        if (param.isRefreshAll()) {
+            this.clientResources.clear();
+            log.info("[Refresh client resources] clear client resource finished");
+        } else {
+            param.getArgs().forEach(this.clientResources::remove);
+            log.info("[Refresh client resources] remove old client resource finished");
         }
     }
 

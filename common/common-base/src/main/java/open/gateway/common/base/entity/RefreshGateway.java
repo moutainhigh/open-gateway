@@ -32,4 +32,8 @@ public class RefreshGateway implements Serializable {
         this.args = args;
     }
 
+    public boolean isRefreshAll() {
+        return this.args == null || this.args.isEmpty();
+    }
+
 }

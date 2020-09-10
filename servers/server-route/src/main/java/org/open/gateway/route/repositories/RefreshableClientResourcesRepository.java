@@ -1,6 +1,5 @@
 package org.open.gateway.route.repositories;
 
-import open.gateway.common.base.entity.RefreshGateway;
 import reactor.core.publisher.Mono;
 
 import java.util.Set;
@@ -10,7 +9,7 @@ import java.util.Set;
  *
  * @author MIKO
  */
-public interface RefreshableClientResourcesRepository extends RefreshableRepository<RefreshGateway> {
+public interface RefreshableClientResourcesRepository extends RefreshableRepository {
 
     /**
      * 根据客户端id获取所拥有的资源路径

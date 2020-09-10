@@ -1,5 +1,6 @@
 package org.open.gateway.route.repositories;
 
+import open.gateway.common.base.entity.RefreshGateway;
 import reactor.core.publisher.Mono;
 
 /**
@@ -7,12 +8,12 @@ import reactor.core.publisher.Mono;
  *
  * @author MIKO
  */
-public interface RefreshableRepository<T> {
+public interface RefreshableRepository {
 
     /**
      * 刷新资源
      */
-    Mono<Void> refresh(T param);
+    Mono<Void> refresh(RefreshGateway param);
 
     /**
      * 刷新频率 单位秒

@@ -83,7 +83,7 @@ public class TokenConfig {
         }
 
         @PostConstruct
-        public void log(){
+        public void log() {
             log.info("Token store type is [jwt].");
         }
 
@@ -145,7 +145,7 @@ public class TokenConfig {
         }
 
         @PostConstruct
-        public void log(){
+        public void log() {
             log.info("Token store type is [redis].");
         }
 

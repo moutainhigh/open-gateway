@@ -69,16 +69,23 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
     @Override
     public Mono<Void> refresh(RefreshGateway param) {
         // 需要更新的api
-        Set<String> refreshApiCodes = param == null ? null : param.getArgs();
-        // 清理路由配置
-        Mono<Void> clearRoutes = Mono.fromRunnable(() -> clearRoutes(refreshApiCodes));
-        // 读取并保存路由配置
-        Mono<Void> readAndSaveRoute = getRefreshableRouteDefinitions(refreshApiCodes)
-                .map(this::toRouteDefinition)
-                .flatMap(routeDefinition -> this.save(Mono.just(routeDefinition)))
-                .then();
-        return clearRoutes
-                .then(readAndSaveRoute)
+        Set<String> refreshApiCodes = param.getArgs();
+        return getRefreshableRouteDefinitions(refreshApiCodes) // 读取网关配置
+                .flatMap(definition ->
+                        Mono.just(definition).map(this::toRouteDefinition)
+                                .onErrorResume(ex -> {
+                                    log.error("[Refresh routes] update route code:[{}] failed. error:{}", definition.getRouteCode(), ex.getMessage());
+                                    return Mono.empty();
+                                }) // 忽略错误的路由配置
+                ) // 转换为spring cloud gateway配置对象
+                .collectMap(RouteDefinition::getId) // 转换为map结构,key为路由id
+                .doOnNext(rts -> {
+                    if(rts.size() > 0){
+                        clearRoutes(param); // 清理路由配置
+                        this.routes.putAll(rts); // 更新内存路由配置
+                    }
+                })
+                .then()
                 .doOnSubscribe(v -> log.info("[Refresh routes] starting. target api codes:{}", refreshApiCodes))
                 .doOnSuccess(v -> log.info("[Refresh routes] finished"))
                 .doOnError(e -> log.error("[Refresh routes] error:" + e.getMessage()));
@@ -87,15 +94,15 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
     /**
      * 清理路由配置
      */
-    private void clearRoutes(Set<String> apiCodes) {
-        if (apiCodes == null) {
+    private void clearRoutes(RefreshGateway param) {
+        if (param.isRefreshAll()) {
+            // 清理所有路由配置
             this.routes.clear();
-            log.info("[Refresh routes] clear all routes finished");
+            log.info("[Refresh routes] clear routes finished");
         } else {
-            if (!apiCodes.isEmpty()) {
-                this.routes.values().removeIf(route -> apiCodes.contains(RouteDefinitionUtil.getApiCode(route)));
-                log.info("[Refresh routes] clear routes finished");
-            }
+            // 按照api code清理路由配置
+            this.routes.values().removeIf(route -> param.getArgs().contains(RouteDefinitionUtil.getApiCode(route)));
+            log.info("[Refresh routes] remove old routes finished");
         }
     }
 
@@ -139,7 +146,7 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
     }
 
     /**
-     * 配置权限信息
+     * 配置额外信息
      *
      * @param definition 路由规则
      * @param route      路由配置

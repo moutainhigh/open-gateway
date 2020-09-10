@@ -1,6 +1,5 @@
 package org.open.gateway.route.repositories;
 
-import open.gateway.common.base.entity.RefreshGateway;
 import org.open.gateway.route.entity.GatewayIpLimit;
 import reactor.core.publisher.Mono;
 
@@ -9,7 +8,7 @@ import reactor.core.publisher.Mono;
  *
  * @author MIKO
  */
-public interface RefreshableIpLimitRepository extends RefreshableRepository<RefreshGateway> {
+public interface RefreshableIpLimitRepository extends RefreshableRepository {
 
     /**
      * 加载ip限制策略

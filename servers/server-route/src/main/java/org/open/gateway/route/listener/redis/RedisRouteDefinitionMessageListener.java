@@ -1,6 +1,7 @@
 package org.open.gateway.route.listener.redis;
 
 import lombok.extern.slf4j.Slf4j;
+import open.gateway.common.base.entity.RefreshGateway;
 import open.gateway.common.utils.CollectionUtil;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
 import reactor.core.publisher.Mono;
@@ -18,7 +19,7 @@ public class RedisRouteDefinitionMessageListener extends AbstractStringMessageLi
 
     @Override
     protected Mono<Void> refresh(String ops) {
-        return this.repository.refresh(null);
+        return this.repository.refresh(new RefreshGateway());
     }
 
     @Override

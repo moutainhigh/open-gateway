@@ -2,6 +2,7 @@ package org.open.gateway.route.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StopWatch;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -24,7 +25,16 @@ public class ReactorUtil {
         return mono.doOnSubscribe(sub -> sw.start())
                 .doOnTerminate(() -> {
                     sw.stop();
-                    log.info(">>> [{}] execute finished. spend:[{}ms.][{}ns.]", prefix, sw.getTotalTimeMillis(), sw.getTotalTimeNanos());
+                    log.info("{} execute finished. spend:[{}ms.][{}ns.]", prefix, sw.getTotalTimeMillis(), sw.getTotalTimeNanos());
+                });
+    }
+
+    public static <T> Flux<T> recordUsedTime(String prefix, Flux<T> flux) {
+        StopWatch sw = new StopWatch();
+        return flux.doOnSubscribe(sub -> sw.start())
+                .doOnTerminate(() -> {
+                    sw.stop();
+                    log.info("{} execute finished. spend:[{}ms.][{}ns.]", prefix, sw.getTotalTimeMillis(), sw.getTotalTimeNanos());
                 });
     }
 

@@ -1,5 +1,6 @@
 package org.open.gateway.route.configuration;
 
+import open.gateway.common.base.entity.RefreshGateway;
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRepository;
@@ -67,17 +68,16 @@ public class GatewayRouteConfig implements ApplicationContextAware {
         return exchange -> Mono.just(WebExchangeUtil.getRemoteAddress(exchange));
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         Map<String, RefreshableRepository> repositoryMap = applicationContext.getBeansOfType(RefreshableRepository.class);
         repositoryMap.values().forEach(this::refreshInterval);
     }
 
-    private void refreshInterval(RefreshableRepository<?> repository) {
+    private void refreshInterval(RefreshableRepository repository) {
         // 初始化刷新1次, 之后每一定时间刷新一次
         Flux.interval(Duration.ofSeconds(repository.delay()), Duration.ofSeconds(repository.refreshInterval()))
-                .flatMap(count -> repository.refresh(null))
+                .flatMap(count -> repository.refresh(new RefreshGateway()))
                 .subscribe();
     }
 
