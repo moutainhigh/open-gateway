@@ -1,4 +1,4 @@
-package org.open.gateway.route.security.token.converters.redis;
+package org.open.gateway.route.security.token.converters.impl;
 
 import lombok.AllArgsConstructor;
 import open.gateway.common.base.constants.GatewayConstants;

@@ -23,8 +23,8 @@ public class OAuth2TokenResponse {
      */
     private String token_type;
     /**
-     * 过期时间
+     * 过期时间点
      */
-    private long expire_in;
+    private long expire_at;
 
 }

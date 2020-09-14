@@ -6,8 +6,9 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import open.gateway.common.base.constants.OAuth2Constants;
 import open.gateway.common.utils.IdUtil;
-import org.open.gateway.route.entity.token.AccessToken;
+import org.open.gateway.route.entity.token.TokenUser;
 import org.open.gateway.route.exception.InvalidTokenException;
 import org.open.gateway.route.exception.TokenExpiredException;
 
@@ -15,6 +16,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -76,23 +78,21 @@ public class Jwts {
     /**
      * 生成token
      *
-     * @param subject    主体内容
-     * @param expireTime 过期时间
-     * @param claims     其他信息
+     * @param subject  主体内容
+     * @param expireAt 过期时间点
+     * @param claims   其他信息
      * @return token对象
      * @throws JOSEException 签名异常
      */
-    private AccessToken doGenerateToken(String subject, long expireTime, Map<String, Object> claims) throws JOSEException {
+    private String doGenerateToken(String subject, long expireAt, Map<String, Object> claims) throws JOSEException {
         // tokenId
         String jwtID = IdUtil.uuid();
-        // 过期时间
-        long expirIn = System.currentTimeMillis() + expireTime;
         // 1. 建立payload 载体
         JWTClaimsSet.Builder claimsSetBuilder = new JWTClaimsSet.Builder()
                 .issuer(this.issuer)
                 .subject(subject)
                 .jwtID(jwtID)
-                .expirationTime(new Date(expirIn));
+                .expirationTime(new Date(expireAt));
         if (claims != null) {
             claims.forEach(claimsSetBuilder::claim);
         }
@@ -101,39 +101,38 @@ public class Jwts {
         SignedJWT signedJWT = new SignedJWT(this.header, claimsSet);
         signedJWT.sign(this.signer);
         // 3. 生成token
-        String tokenValue = signedJWT.serialize();
-        AccessToken token = new AccessToken();
-        token.setClientId(subject);
-        token.setToken(tokenValue);
-        token.setExpireIn(expirIn);
-        return token;
+        return signedJWT.serialize();
     }
 
     /**
      * 生成token
      *
-     * @param subject    主体内容
-     * @param expireTime 过期时间
-     * @param claims     其他信息
+     * @param subject   主体内容
+     * @param expireAt  过期时间点
+     * @param tokenUser 用户信息
      * @return token对象
      */
-    public AccessToken generateToken(String subject, long expireTime, Map<String, Object> claims) {
+    public String generateToken(String subject, long expireAt, TokenUser tokenUser) {
+        HashMap<String, Object> claims = new HashMap<>(3);
+        claims.put(OAuth2Constants.TokenPayloadKey.SCOPE, tokenUser.getScopes());
+        claims.put(OAuth2Constants.TokenPayloadKey.AUTHORITIES, tokenUser.getAuthorities());
+        return generateToken(subject, expireAt, claims);
+    }
+
+    /**
+     * 生成token
+     *
+     * @param subject  主体内容
+     * @param expireAt 过期时间点
+     * @param claims   其他信息
+     * @return token对象
+     */
+    public String generateToken(String subject, long expireAt, Map<String, Object> claims) {
         try {
-            return doGenerateToken(subject, expireTime, claims);
+            return doGenerateToken(subject, expireAt, claims);
         } catch (JOSEException e) {
             throw new IllegalArgumentException(e);
         }
-    }
-
-    /**
-     * 生成token
-     *
-     * @param subject    主体内容
-     * @param expireTime 过期时间
-     * @return token对象
-     */
-    public AccessToken generateToken(String subject, long expireTime) {
-        return generateToken(subject, expireTime, null);
     }
 
     public RSAPublicKey getPublicKey() {

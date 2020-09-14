@@ -9,7 +9,6 @@ import org.open.gateway.route.entity.oauth2.OAuth2AuthorizeRequest;
 import org.open.gateway.route.entity.oauth2.OAuth2TokenRequest;
 import org.open.gateway.route.entity.oauth2.OAuth2TokenResponse;
 import org.open.gateway.route.exception.InvalidClientSecretException;
-import org.open.gateway.route.security.token.generators.TokenGeneratorManager;
 import org.open.gateway.route.service.ClientDetailsService;
 import org.open.gateway.route.service.TokenService;
 import org.open.gateway.route.service.bo.ClientDetails;
@@ -31,7 +30,6 @@ public class OauthEndpoints {
 
     private final ClientDetailsService clientDetailsService;
     private final TokenService tokenService;
-    private final TokenGeneratorManager tokenGeneratorManager;
 
     /**
      * 认证请求
@@ -56,12 +54,12 @@ public class OauthEndpoints {
                         tokenService.loadClientTokenByClientId(cd.getClientId()) // 从数据库查询该客户端已经存在的token
                                 .filter(token -> !token.isExpired()) // 过滤没有过期的
                                 .map(token -> buildTokenResponse(token.getToken(), Dates.toTimestamp(token.getExpireTime()))) // 构建返回对象
-                                .doOnNext(response -> log.info("Client id:{} exists token:{} expire_in:{}", tokenRequest.getClient_id(), response.getAccess_token(), response.getExpire_in()))
+                                .doOnNext(response -> log.info("Client id:{} exists token:{} expire_at:{}", tokenRequest.getClient_id(), response.getAccess_token(), response.getExpire_at()))
                                 .switchIfEmpty(
-                                        Mono.defer(() -> this.tokenGeneratorManager.generate(tokenRequest, cd)) // 重新生成token
-                                                .flatMap(accessToken -> tokenService.saveClientToken(cd.getClientId(), accessToken.getToken(), accessToken.getExpireIn()).thenReturn(accessToken)) // 保存token
-                                                .map(accessToken -> buildTokenResponse(accessToken.getToken(), accessToken.getExpireIn()))
-                                                .doOnSuccess(response -> log.info("Generated token:{} expire_in:{} with client_id:{}", response.getAccess_token(), response.getExpire_in(), tokenRequest.getClient_id()))
+                                        Mono.defer(() -> this.tokenService.generate(cd)) // 重新生成token
+                                                .flatMap(accessToken -> tokenService.saveClientToken(cd.getClientId(), accessToken.getToken(), accessToken.getExpireAt()).thenReturn(accessToken)) // 保存token
+                                                .map(accessToken -> buildTokenResponse(accessToken.getToken(), accessToken.getExpireAt()))
+                                                .doOnSuccess(response -> log.info("Generated token:{} expire_in:{} with client_id:{}", response.getAccess_token(), response.getExpire_at(), tokenRequest.getClient_id()))
                                 ) // 没有或者过期时候生成一个token
                 );
     }
@@ -97,11 +95,11 @@ public class OauthEndpoints {
      * @param expireIn 过期时间
      * @return 返回数据
      */
-    private OAuth2TokenResponse buildTokenResponse(String token, Long expireIn) {
+    private OAuth2TokenResponse buildTokenResponse(String token, Long expireAt) {
         OAuth2TokenResponse response = new OAuth2TokenResponse();
         response.setAccess_token(token);
         response.setToken_type(OAuth2Constants.TOKEN_PREFIX);
-        response.setExpire_in(expireIn);
+        response.setExpire_at(expireAt);
         return response;
     }
 

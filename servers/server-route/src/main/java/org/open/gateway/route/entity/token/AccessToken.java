@@ -25,6 +25,6 @@ public class AccessToken {
     /**
      * 过期时间
      */
-    private long expireIn;
+    private long expireAt;
 
 }

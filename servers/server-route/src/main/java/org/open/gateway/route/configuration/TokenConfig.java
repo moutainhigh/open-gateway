@@ -5,17 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.open.gateway.route.security.token.converters.jwt.JwtTokenAuthenticationConverter;
-import org.open.gateway.route.security.token.converters.redis.RedisTokenAuthenticationConverter;
-import org.open.gateway.route.security.token.generators.TokenGeneratorManager;
-import org.open.gateway.route.security.token.generators.jwt.JwtClientCredentialsTokenGenerator;
-import org.open.gateway.route.security.token.generators.redis.RedisClientCredentialsTokenGenerator;
+import org.open.gateway.route.security.token.converters.impl.JwtTokenAuthenticationConverter;
+import org.open.gateway.route.security.token.converters.impl.RedisTokenAuthenticationConverter;
+import org.open.gateway.route.security.token.generators.impl.JwtTokenGenerator;
+import org.open.gateway.route.security.token.generators.impl.RedisTokenGenerator;
 import org.open.gateway.route.utils.jwt.JwtProvider;
 import org.open.gateway.route.utils.jwt.Jwts;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -35,11 +33,6 @@ import java.security.KeyPair;
 @Slf4j
 @Configuration
 public class TokenConfig {
-
-    @Bean
-    public TokenGeneratorManager jwtTokenGeneratorManager(ApplicationContext applicationContext) {
-        return new TokenGeneratorManager(applicationContext);
-    }
 
     @Configuration
     @AllArgsConstructor
@@ -68,8 +61,8 @@ public class TokenConfig {
          * jwt token生成器
          */
         @Bean
-        public JwtClientCredentialsTokenGenerator clientCredentialsTokenGenerator() {
-            return new JwtClientCredentialsTokenGenerator(jwts());
+        public JwtTokenGenerator jwtTokenGenerator() {
+            return new JwtTokenGenerator(jwts());
         }
 
         /**
@@ -130,8 +123,8 @@ public class TokenConfig {
          * redis token生成器
          */
         @Bean
-        public RedisClientCredentialsTokenGenerator clientCredentialsTokenGenerator(ReactiveStringRedisTemplate redisTemplate) {
-            return new RedisClientCredentialsTokenGenerator(redisTemplate);
+        public RedisTokenGenerator uuidTokenGenerator(ReactiveStringRedisTemplate redisTemplate) {
+            return new RedisTokenGenerator(redisTemplate);
         }
 
         /**

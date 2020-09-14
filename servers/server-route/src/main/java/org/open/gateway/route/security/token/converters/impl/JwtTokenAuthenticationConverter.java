@@ -1,4 +1,4 @@
-package org.open.gateway.route.security.token.converters.jwt;
+package org.open.gateway.route.security.token.converters.impl;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.AllArgsConstructor;

@@ -1,21 +1,27 @@
 package org.open.gateway.route.service;
 
 import io.r2dbc.spi.Row;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.utils.Dates;
+import org.open.gateway.route.entity.token.AccessToken;
+import org.open.gateway.route.entity.token.TokenUser;
 import org.open.gateway.route.repositories.jdbc.SQLS;
+import org.open.gateway.route.security.token.generators.TokenGenerator;
+import org.open.gateway.route.service.bo.ClientDetails;
 import org.open.gateway.route.service.bo.OauthClientToken;
 import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Update;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import org.springframework.util.Assert;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by miko on 2020/8/6.
@@ -24,12 +30,84 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-@AllArgsConstructor
 public class TokenService {
 
     private final TransactionalOperator operator;
 
     private final DatabaseClient databaseClient;
+
+    /**
+     * token生成器
+     */
+    private final TokenGenerator generator;
+
+    public TokenService(TransactionalOperator operator, DatabaseClient databaseClient, TokenGenerator generator) {
+        this.operator = operator;
+        this.databaseClient = databaseClient;
+        this.generator = generator;
+    }
+
+    /**
+     * 生成token
+     *
+     * @param clientDetails 客户端信息
+     * @return access_token
+     */
+    public Mono<AccessToken> generate(ClientDetails clientDetails) {
+        // token用户信息
+        TokenUser tokenUser = generateTokenUser(clientDetails);
+        // 获取过期时间点
+        long expireAt = getExpireAt(clientDetails.getAccessTokenValiditySeconds());
+        // 生成token
+        return this.generator.generate(expireAt, tokenUser)
+                .map(token -> this.generateAccessToken(token, expireAt));
+    }
+
+    /**
+     * 获取过期时间点
+     *
+     * @param accessTokenValiditySeconds 有效时间
+     * @return 过期时间点
+     */
+    private long getExpireAt(long accessTokenValiditySeconds) {
+        return Duration.ofSeconds(accessTokenValiditySeconds)
+                .plusMillis(System.currentTimeMillis())
+                .toMillis();
+    }
+
+    /**
+     * 生成accessToken
+     *
+     * @param token    token字符串
+     * @param expireAt 过期时间点
+     * @return accessToken对象
+     */
+    private AccessToken generateAccessToken(String token, long expireAt) {
+        AccessToken accessToken = new AccessToken();
+        accessToken.setToken(token);
+        accessToken.setExpireAt(expireAt);
+        return accessToken;
+    }
+
+    /**
+     * 生成token用户信息
+     *
+     * @param clientDetails 客户端配置信息
+     * @return token用户信息
+     */
+    private TokenUser generateTokenUser(ClientDetails clientDetails) {
+        TokenUser tokenUser = new TokenUser();
+        tokenUser.setClientId(clientDetails.getClientId());
+        if (clientDetails.getAuthorities() != null && !clientDetails.getAuthorities().isEmpty()) {
+            tokenUser.setAuthorities(
+                    clientDetails.getAuthorities().stream()
+                            .map(GrantedAuthority::getAuthority)
+                            .collect(Collectors.toList())
+            );
+        }
+        tokenUser.setScopes(clientDetails.getScope());
+        return tokenUser;
+    }
 
     /**
      * 根据客户端id获取token信息(不为null)
@@ -44,6 +122,22 @@ public class TokenService {
     }
 
     /**
+     * 根据客户端id删除token
+     *
+     * @param clientId 客户端id
+     */
+    public Mono<Integer> deleteClientTokenByClientId(String clientId) {
+        return databaseClient.update()
+                .table("oauth_client_token")
+                .using(Update.update("is_del", 1))
+                .matching(
+                        Criteria.where("client_id").is(clientId).and("is_del").is(0)
+                )
+                .fetch()
+                .rowsUpdated();
+    }
+
+    /**
      * 保存token
      *
      * @param clientId   客户端id
@@ -54,14 +148,7 @@ public class TokenService {
         Assert.notNull(clientId, "client_id is required");
         Assert.notNull(token, "token is required");
         Assert.notNull(expireTime, "expireTime is required");
-        return databaseClient.update()
-                .table("oauth_client_token")
-                .using(Update.update("is_del", 1))
-                .matching(
-                        Criteria.where("client_id").is(clientId).and("is_del").is(0)
-                )
-                .fetch()
-                .rowsUpdated() // 先根据客户端id更新老的token为已删除状态
+        return deleteClientTokenByClientId(clientId) // 先根据客户端id更新老的token为已删除状态
                 .then(
                         databaseClient.insert()
                                 .into("oauth_client_token")
