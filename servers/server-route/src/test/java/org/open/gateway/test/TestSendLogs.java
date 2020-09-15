@@ -3,10 +3,8 @@ package org.open.gateway.test;
 import open.gateway.common.base.entity.AccessLogs;
 import open.gateway.common.utils.StringUtil;
 import org.junit.jupiter.api.Test;
-import org.open.gateway.route.GatewayRouteApplication;
 import org.open.gateway.route.service.AccessLogsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StopWatch;
 
@@ -17,8 +15,7 @@ import java.util.Date;
  *
  * @author MIKO
  */
-@SpringBootTest(classes = GatewayRouteApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-public class TestSendLogs extends BaseTest {
+public class TestSendLogs extends BaseSpringTest {
 
     @Autowired
     private AccessLogsService accessLogsService;

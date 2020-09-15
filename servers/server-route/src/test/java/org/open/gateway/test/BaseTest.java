@@ -28,4 +28,8 @@ public class BaseTest {
         System.out.printf("%s 总耗时[%s ms] 次数[%s] 平均耗时[%s us].%n", prefix, sw.getTotalTimeMillis(), sw.getTaskCount(), BigDecimal.valueOf(sw.getTotalTimeNanos()).divide(BigDecimal.valueOf(sw.getTaskCount()), 2, RoundingMode.HALF_UP));
     }
 
+    public String currentThreadName(){
+        return Thread.currentThread().getName();
+    }
+
 }

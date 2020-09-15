@@ -19,6 +19,8 @@ public interface GatewayConstants {
         String PREFIX_ACCESS_TOKENS = "access_token:";
         // 授权码前缀
         String PREFIX_AUTHORIZE_CODE = "authorize_code:";
+        // 申请token锁前缀
+        String PREFIX_LOCK_TOKEN_REQUEST = "lock_token:";
 
     }
 

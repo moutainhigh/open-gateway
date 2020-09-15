@@ -210,11 +210,11 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
         FilterDefinition rateLimiterDefinition = new FilterDefinition();
         Map<String, String> rateLimiterParams = new HashMap<>(8);
         rateLimiterDefinition.setName("RequestRateLimiter");
-        //令牌桶流速
+        // 令牌桶流速
         rateLimiterParams.put("redis-rate-limiter.replenishRate", String.valueOf(replenishRate));
-        //令牌桶容量
+        // 令牌桶容量
         rateLimiterParams.put("redis-rate-limiter.burstCapacity", String.valueOf(burstCapacity));
-        //请求耗费的令牌数量
+        // 请求耗费的令牌数量
         rateLimiterParams.put("redis-rate-limiter.requestedTokens", String.valueOf(requestedTokens));
         // 限流策略(#{@BeanName})
         rateLimiterParams.put("key-resolver", getKeyResolver(rateLimit.getPolicyType()));
