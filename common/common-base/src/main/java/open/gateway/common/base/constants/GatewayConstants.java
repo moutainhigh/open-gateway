@@ -20,7 +20,7 @@ public interface GatewayConstants {
         // 授权码前缀
         String PREFIX_AUTHORIZE_CODE = "authorize_code:";
         // 申请token锁前缀
-        String PREFIX_LOCK_TOKEN_REQUEST = "lock_token:";
+        String PREFIX_LOCK = "lock:";
 
     }
 

@@ -1,6 +1,7 @@
 package org.open.gateway.route.service;
 
 import io.r2dbc.spi.Row;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.utils.Dates;
 import org.open.gateway.route.entity.token.AccessToken;
@@ -30,22 +31,16 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@AllArgsConstructor
 public class TokenService {
 
     private final TransactionalOperator operator;
 
     private final DatabaseClient databaseClient;
-
     /**
      * token生成器
      */
     private final TokenGenerator generator;
-
-    public TokenService(TransactionalOperator operator, DatabaseClient databaseClient, TokenGenerator generator) {
-        this.operator = operator;
-        this.databaseClient = databaseClient;
-        this.generator = generator;
-    }
 
     /**
      * 生成token

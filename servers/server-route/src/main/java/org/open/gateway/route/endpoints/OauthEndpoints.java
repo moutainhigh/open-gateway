@@ -3,7 +3,6 @@ package org.open.gateway.route.endpoints;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.base.constants.EndpointsConstants;
-import open.gateway.common.base.constants.GatewayConstants.RedisKey;
 import open.gateway.common.base.constants.OAuth2Constants;
 import open.gateway.common.utils.Dates;
 import org.open.gateway.route.entity.oauth2.OAuth2AuthorizeRequest;
@@ -12,16 +11,14 @@ import org.open.gateway.route.entity.oauth2.OAuth2TokenResponse;
 import org.open.gateway.route.exception.FrequentTokenRequestException;
 import org.open.gateway.route.exception.InvalidClientSecretException;
 import org.open.gateway.route.service.ClientDetailsService;
+import org.open.gateway.route.service.LockService;
 import org.open.gateway.route.service.TokenService;
 import org.open.gateway.route.service.bo.ClientDetails;
-import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import reactor.core.publisher.Mono;
-
-import java.time.Duration;
 
 /**
  * Created by miko on 2020/7/7.
@@ -33,8 +30,8 @@ import java.time.Duration;
 @AllArgsConstructor
 public class OauthEndpoints {
 
-    private final ReactiveStringRedisTemplate redisTemplate;
     private final ClientDetailsService clientDetailsService;
+    private final LockService lockService;
     private final TokenService tokenService;
 
     /**
@@ -54,32 +51,24 @@ public class OauthEndpoints {
     public Mono<OAuth2TokenResponse> token(OAuth2TokenRequest tokenRequest) {
         // 校验token请求
         checkTokenRequest(tokenRequest);
-        String lockKey = RedisKey.PREFIX_LOCK_TOKEN_REQUEST + tokenRequest.getClient_id();
         // 加锁, 防止同一个客户端并发调用生成多个token
-        return redisTemplate.opsForValue()
-                .setIfAbsent(lockKey, "", Duration.ofSeconds(5))
-                .filter(b -> b) // 为true拿到锁继续执行
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new FrequentTokenRequestException())))
-                .then(
-                        clientDetailsService.loadClientByClientId(tokenRequest.getClient_id()) // 根据client_id获取client信息
-                                .filter(cd -> this.checkClientSecret(tokenRequest, cd)) // 校验secret
-                                .flatMap(cd ->
-                                        tokenService.loadClientTokenByClientId(cd.getClientId()) // 从数据库查询该客户端已经存在的token
-                                                .filter(token -> !token.isExpired()) // 过滤没有过期的
-                                                .map(token -> buildTokenResponse(token.getToken(), Dates.toTimestamp(token.getExpireTime()))) // 构建返回对象
-                                                .doOnNext(response -> log.info("Client id:{} exists token:{} expire_at:{}", tokenRequest.getClient_id(), response.getAccess_token(), response.getExpire_at()))
-                                                .switchIfEmpty(
-                                                        Mono.defer(() -> this.tokenService.generate(cd)) // 重新生成token
-                                                                .flatMap(accessToken -> tokenService.saveClientToken(cd.getClientId(), accessToken.getToken(), accessToken.getExpireAt()).thenReturn(accessToken)) // 保存token
-                                                                .map(accessToken -> buildTokenResponse(accessToken.getToken(), accessToken.getExpireAt()))
-                                                                .doOnSuccess(response -> log.info("Generated token:{} expire_in:{} with client_id:{}", response.getAccess_token(), response.getExpire_at(), tokenRequest.getClient_id()))
-                                                ) // 没有或者过期时候生成一个token
-                                )
-                                .doOnTerminate(() -> redisTemplate.opsForValue()
-                                        .delete(lockKey).doOnSuccess(b -> log.info("Delete lock key:{} result:{}", lockKey, b))
-                                        .subscribe()
-                                ) // 删除redis key
-                );
+        return lockService.lock("token_" + tokenRequest.getClient_id(),
+                clientDetailsService.loadClientByClientId(tokenRequest.getClient_id()) // 根据client_id获取client信息
+                        .filter(cd -> this.checkClientSecret(tokenRequest, cd)) // 校验secret
+                        .flatMap(cd ->
+                                tokenService.loadClientTokenByClientId(cd.getClientId()) // 从数据库查询该客户端已经存在的token
+                                        .filter(token -> !token.isExpired()) // 过滤没有过期的
+                                        .map(token -> buildTokenResponse(token.getToken(), Dates.toTimestamp(token.getExpireTime()))) // 构建返回对象
+                                        .doOnNext(response -> log.info("Client id:{} exists token:{} expire_at:{}", tokenRequest.getClient_id(), response.getAccess_token(), response.getExpire_at()))
+                                        .switchIfEmpty(
+                                                Mono.defer(() -> this.tokenService.generate(cd)) // 重新生成token
+                                                        .flatMap(accessToken -> tokenService.saveClientToken(cd.getClientId(), accessToken.getToken(), accessToken.getExpireAt()).thenReturn(accessToken)) // 保存token
+                                                        .map(accessToken -> buildTokenResponse(accessToken.getToken(), accessToken.getExpireAt()))
+                                                        .doOnSuccess(response -> log.info("Generated token:{} expire_in:{} with client_id:{}", response.getAccess_token(), response.getExpire_at(), tokenRequest.getClient_id()))
+                                        ) // 没有或者过期时候生成一个token
+                        ),
+                Mono.defer(() -> Mono.error(new FrequentTokenRequestException())) // 加锁失败返回异常
+        );
     }
 
     /**
