@@ -9,7 +9,9 @@ public class IpRangeTest {
 
     @Test
     public void testEmpty() {
-        IpRange ipRange = new IpRange("");
+        IpRange ipRange = new IpRange("127.0.0.1");
+        System.out.println("from:" + ipRange.getFrom());
+        System.out.println("to:" + ipRange.getTo());
     }
 
     @Test

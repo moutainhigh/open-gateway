@@ -22,15 +22,7 @@ public class IpMatcher {
 
         List<IpRange> tempIpList = requiredIps.stream()
                 .map(IpRange::new)
-                .sorted((o1, o2) -> {
-                    if (o1.getFrom() != o2.getFrom()) {
-                        return o1.getFrom() > o2.getFrom() ? 1 : -1;
-                    }
-                    if (o1.getTo() != o2.getTo()) {
-                        return o1.getTo() > o2.getTo() ? 1 : -1;
-                    }
-                    return 0;
-                })
+                .sorted()
                 .collect(Collectors.toList());
 
         int insertIndex = 0;

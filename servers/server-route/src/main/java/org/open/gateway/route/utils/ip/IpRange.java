@@ -5,7 +5,7 @@ import org.springframework.util.StringUtils;
 /**
  * @author miko
  */
-public class IpRange {
+public class IpRange implements Comparable<IpRange> {
 
     private static final int IPV4_BIT_COUNT = 32;
     private long from;
@@ -63,4 +63,16 @@ public class IpRange {
         from = from & (~mask);
 
     }
+
+    @Override
+    public int compareTo(IpRange o) {
+        if (this.getFrom() != o.getFrom()) {
+            return this.getFrom() > o.getFrom() ? 1 : -1;
+        }
+        if (this.getTo() != o.getTo()) {
+            return this.getTo() > o.getTo() ? 1 : -1;
+        }
+        return 0;
+    }
+    
 }
