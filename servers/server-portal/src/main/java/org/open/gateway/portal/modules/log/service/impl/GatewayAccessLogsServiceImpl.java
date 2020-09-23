@@ -1,10 +1,10 @@
-package org.open.gateway.portal.service.impl;
+package org.open.gateway.portal.modules.log.service.impl;
 
 import lombok.AllArgsConstructor;
 import open.gateway.common.base.entity.AccessLogs;
+import org.open.gateway.portal.modules.log.service.GatewayAccessLogsService;
 import org.open.gateway.portal.persistence.mapper.GatewayAccessLogsMapperExt;
 import org.open.gateway.portal.persistence.po.GatewayAccessLogs;
-import org.open.gateway.portal.service.GatewayAccessLogsService;
 import org.open.gateway.portal.utils.Beans;
 import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.stereotype.Service;
@@ -25,15 +25,6 @@ public class GatewayAccessLogsServiceImpl implements GatewayAccessLogsService {
 
     private final GatewayAccessLogsMapperExt gatewayAccessLogsMapperExt;
 
-
-    private GatewayAccessLogs toGatewayAccessLogs(AccessLogs accessLogs) {
-        GatewayAccessLogs bean = new GatewayAccessLogs();
-        Beans.from(accessLogs).copy(bean);
-        bean.setCreateTime(new Date());
-        bean.setCreatePerson("mq");
-        return bean;
-    }
-
     /**
      * 保存请求日志
      *
@@ -47,4 +38,13 @@ public class GatewayAccessLogsServiceImpl implements GatewayAccessLogsService {
                 .collect(Collectors.toList());
         BizUtil.checkUpdate(gatewayAccessLogsMapperExt.insertListSelective(bean));
     }
+
+    private GatewayAccessLogs toGatewayAccessLogs(AccessLogs accessLogs) {
+        GatewayAccessLogs bean = new GatewayAccessLogs();
+        Beans.from(accessLogs).copy(bean);
+        bean.setCreateTime(new Date());
+        bean.setCreatePerson("mq");
+        return bean;
+    }
+
 }

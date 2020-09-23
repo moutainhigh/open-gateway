@@ -1,10 +1,10 @@
-package org.open.gateway.portal.controller;
+package org.open.gateway.portal.modules.log.controller;
 
 import com.github.pagehelper.Page;
 import lombok.AllArgsConstructor;
 import org.open.gateway.portal.constants.EndPoints;
-import org.open.gateway.portal.controller.vo.AccessLogsPageListRequest;
-import org.open.gateway.portal.controller.vo.AccessLogsPageListResponse;
+import org.open.gateway.portal.modules.log.controller.vo.AccessLogsPageListRequest;
+import org.open.gateway.portal.modules.log.controller.vo.AccessLogsPageListResponse;
 import org.open.gateway.portal.persistence.mapper.GatewayAccessLogsMapperExt;
 import org.open.gateway.portal.persistence.po.GatewayAccessLogs;
 import org.open.gateway.portal.utils.Beans;

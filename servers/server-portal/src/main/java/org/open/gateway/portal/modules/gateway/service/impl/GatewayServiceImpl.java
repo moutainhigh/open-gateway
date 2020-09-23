@@ -1,10 +1,10 @@
-package org.open.gateway.portal.service.impl;
+package org.open.gateway.portal.modules.gateway.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.base.constants.MqConstants;
 import open.gateway.common.base.entity.RefreshGateway;
-import org.open.gateway.portal.service.GatewayService;
+import org.open.gateway.portal.modules.gateway.service.GatewayService;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Service;
 

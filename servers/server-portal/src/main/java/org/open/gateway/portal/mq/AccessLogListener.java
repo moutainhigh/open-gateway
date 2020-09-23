@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.base.constants.MqConstants;
 import open.gateway.common.base.entity.AccessLogs;
-import org.open.gateway.portal.service.GatewayAccessLogsService;
+import org.open.gateway.portal.modules.log.service.GatewayAccessLogsService;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.util.StopWatch;

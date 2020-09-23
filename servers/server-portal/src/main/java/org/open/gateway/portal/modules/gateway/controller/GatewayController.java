@@ -1,8 +1,8 @@
-package org.open.gateway.portal.controller;
+package org.open.gateway.portal.modules.gateway.controller;
 
 import lombok.AllArgsConstructor;
 import org.open.gateway.portal.constants.EndPoints;
-import org.open.gateway.portal.service.GatewayService;
+import org.open.gateway.portal.modules.gateway.service.GatewayService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

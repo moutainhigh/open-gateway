@@ -1,4 +1,4 @@
-package org.open.gateway.portal.controller.vo;
+package org.open.gateway.portal.modules.log.controller.vo;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,7 +1,7 @@
 package org.open.gateway.portal.configuration;
 
+import org.open.gateway.portal.modules.log.service.GatewayAccessLogsService;
 import org.open.gateway.portal.mq.AccessLogListener;
-import org.open.gateway.portal.service.GatewayAccessLogsService;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.context.annotation.Bean;

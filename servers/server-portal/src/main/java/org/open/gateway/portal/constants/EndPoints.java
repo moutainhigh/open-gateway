@@ -7,6 +7,17 @@ package org.open.gateway.portal.constants;
  */
 public interface EndPoints {
 
+    // 用户-登录
+    String ACCOUNT_LOGIN = "/account/login";
+    // 用户-退出登录
+    String ACCOUNT_LOGOUT = "/account/logout";
+    // 用户-新增/修改
+    String ACCOUNT_SAVE = "/account/save";
+    // 用户-删除
+    String ACCOUNT_DELETE = "/account/delete";
+    // 用户-分页列表
+    String ACCOUNT_PAGE_LIST = "/account/pageList";
+
     // 网关-路由刷新
     String GATEWAY_ROUTES_REFRESH = "/gateway/routes/refresh";
     // 网关-资源刷新

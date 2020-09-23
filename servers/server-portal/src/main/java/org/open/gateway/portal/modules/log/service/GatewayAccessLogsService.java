@@ -1,4 +1,4 @@
-package org.open.gateway.portal.service;
+package org.open.gateway.portal.modules.log.service;
 
 import open.gateway.common.base.entity.AccessLogs;
 

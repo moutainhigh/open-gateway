@@ -1,4 +1,4 @@
-package org.open.gateway.portal.service;
+package org.open.gateway.portal.modules.gateway.service;
 
 import java.util.Set;
 
