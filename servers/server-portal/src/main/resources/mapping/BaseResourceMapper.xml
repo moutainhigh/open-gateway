@@ -17,33 +17,30 @@
 		<result column="is_del" jdbcType="TINYINT" property="isDel"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, resource_code, resource_name, parent_code, url, sort, desc, status, create_time,
-		create_person, update_time, update_person, is_del
-	</sql>
+    id, resource_code, resource_name, parent_code, url, sort, desc, status, create_time, 
+    create_person, update_time, update_person, is_del
+  </sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List"/>
 		from base_resource
 		where id = #{id,jdbcType=INTEGER}
 	</select>
-	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.BaseResource">
-		insert into base_resource (id, resource_code, resource_name,
-		parent_code, url, sort,
-		desc, status, create_time,
-		create_person, update_time, update_person,
-		is_del)
-		values (#{id,jdbcType=INTEGER}, #{resourceCode,jdbcType=VARCHAR}, #{resourceName,jdbcType=VARCHAR},
-		#{parentCode,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER},
-		#{desc,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP},
-		#{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updatePerson,jdbcType=VARCHAR},
-		#{isDel,jdbcType=TINYINT})
-	</insert>
-	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.BaseResource">
+	<insert id="insert" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.BaseResource" useGeneratedKeys="true">
+    insert into base_resource (resource_code, resource_name, parent_code, 
+      url, sort, desc, status, 
+      create_time, create_person, update_time, 
+      update_person, is_del)
+    values (#{resourceCode,jdbcType=VARCHAR}, #{resourceName,jdbcType=VARCHAR}, #{parentCode,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{desc,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updatePerson,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT})
+  </insert>
+	<insert id="insertSelective" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.BaseResource" useGeneratedKeys="true">
 		insert into base_resource
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				id,
-			</if>
 			<if test="resourceCode != null">
 				resource_code,
 			</if>
@@ -82,9 +79,6 @@
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				#{id,jdbcType=INTEGER},
-			</if>
 			<if test="resourceCode != null">
 				#{resourceCode,jdbcType=VARCHAR},
 			</if>
@@ -166,19 +160,19 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.BaseResource">
-		update base_resource
-		set resource_code = #{resourceCode,jdbcType=VARCHAR},
-		resource_name = #{resourceName,jdbcType=VARCHAR},
-		parent_code = #{parentCode,jdbcType=VARCHAR},
-		url = #{url,jdbcType=VARCHAR},
-		sort = #{sort,jdbcType=INTEGER},
-		desc = #{desc,jdbcType=VARCHAR},
-		status = #{status,jdbcType=TINYINT},
-		create_time = #{createTime,jdbcType=TIMESTAMP},
-		create_person = #{createPerson,jdbcType=VARCHAR},
-		update_time = #{updateTime,jdbcType=TIMESTAMP},
-		update_person = #{updatePerson,jdbcType=VARCHAR},
-		is_del = #{isDel,jdbcType=TINYINT}
-		where id = #{id,jdbcType=INTEGER}
-	</update>
+    update base_resource
+    set resource_code = #{resourceCode,jdbcType=VARCHAR},
+      resource_name = #{resourceName,jdbcType=VARCHAR},
+      parent_code = #{parentCode,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      desc = #{desc,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_person = #{createPerson,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_person = #{updatePerson,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>

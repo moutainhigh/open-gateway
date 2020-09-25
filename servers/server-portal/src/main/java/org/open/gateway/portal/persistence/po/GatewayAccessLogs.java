@@ -7,6 +7,10 @@ public class GatewayAccessLogs {
 
     private String path;
 
+    private String apiCode;
+
+    private String routeCode;
+
     private String ip;
 
     private Integer httpStatus;
@@ -22,10 +26,6 @@ public class GatewayAccessLogs {
     private Date requestTime;
 
     private Date responseTime;
-
-    private String apiCode;
-
-    private String routeCode;
 
     private Integer usedTime;
 
@@ -53,6 +53,22 @@ public class GatewayAccessLogs {
 
     public void setPath(String path) {
         this.path = path == null ? null : path.trim();
+    }
+
+    public String getApiCode() {
+        return apiCode;
+    }
+
+    public void setApiCode(String apiCode) {
+        this.apiCode = apiCode == null ? null : apiCode.trim();
+    }
+
+    public String getRouteCode() {
+        return routeCode;
+    }
+
+    public void setRouteCode(String routeCode) {
+        this.routeCode = routeCode == null ? null : routeCode.trim();
     }
 
     public String getIp() {
@@ -117,22 +133,6 @@ public class GatewayAccessLogs {
 
     public void setResponseTime(Date responseTime) {
         this.responseTime = responseTime;
-    }
-
-    public String getApiCode() {
-        return apiCode;
-    }
-
-    public void setApiCode(String apiCode) {
-        this.apiCode = apiCode == null ? null : apiCode.trim();
-    }
-
-    public String getRouteCode() {
-        return routeCode;
-    }
-
-    public void setRouteCode(String routeCode) {
-        this.routeCode = routeCode == null ? null : routeCode.trim();
     }
 
     public Integer getUsedTime() {

@@ -16,33 +16,30 @@
 		<result column="is_del" jdbcType="TINYINT" property="isDel"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, policy_name, policy_type, limit_quota, max_limit_quota, interval_unit, status,
-		create_time, create_person, update_time, update_person, is_del
-	</sql>
+    id, policy_name, policy_type, limit_quota, max_limit_quota, interval_unit, status, 
+    create_time, create_person, update_time, update_person, is_del
+  </sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List"/>
 		from gateway_rate_limit
 		where id = #{id,jdbcType=INTEGER}
 	</select>
-	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.GatewayRateLimit">
-		insert into gateway_rate_limit (id, policy_name, policy_type,
-		limit_quota, max_limit_quota, interval_unit,
-		status, create_time, create_person,
-		update_time, update_person, is_del
-		)
-		values (#{id,jdbcType=INTEGER}, #{policyName,jdbcType=VARCHAR}, #{policyType,jdbcType=VARCHAR},
-		#{limitQuota,jdbcType=BIGINT}, #{maxLimitQuota,jdbcType=BIGINT}, #{intervalUnit,jdbcType=VARCHAR},
-		#{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR},
-		#{updateTime,jdbcType=TIMESTAMP}, #{updatePerson,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT}
-		)
-	</insert>
-	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.GatewayRateLimit">
+	<insert id="insert" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.GatewayRateLimit" useGeneratedKeys="true">
+    insert into gateway_rate_limit (policy_name, policy_type, limit_quota, 
+      max_limit_quota, interval_unit, status, 
+      create_time, create_person, update_time, 
+      update_person, is_del)
+    values (#{policyName,jdbcType=VARCHAR}, #{policyType,jdbcType=VARCHAR}, #{limitQuota,jdbcType=BIGINT}, 
+      #{maxLimitQuota,jdbcType=BIGINT}, #{intervalUnit,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updatePerson,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT})
+  </insert>
+	<insert id="insertSelective" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.GatewayRateLimit" useGeneratedKeys="true">
 		insert into gateway_rate_limit
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				id,
-			</if>
 			<if test="policyName != null">
 				policy_name,
 			</if>
@@ -78,9 +75,6 @@
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				#{id,jdbcType=INTEGER},
-			</if>
 			<if test="policyName != null">
 				#{policyName,jdbcType=VARCHAR},
 			</if>
@@ -156,18 +150,18 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.GatewayRateLimit">
-		update gateway_rate_limit
-		set policy_name = #{policyName,jdbcType=VARCHAR},
-		policy_type = #{policyType,jdbcType=VARCHAR},
-		limit_quota = #{limitQuota,jdbcType=BIGINT},
-		max_limit_quota = #{maxLimitQuota,jdbcType=BIGINT},
-		interval_unit = #{intervalUnit,jdbcType=VARCHAR},
-		status = #{status,jdbcType=TINYINT},
-		create_time = #{createTime,jdbcType=TIMESTAMP},
-		create_person = #{createPerson,jdbcType=VARCHAR},
-		update_time = #{updateTime,jdbcType=TIMESTAMP},
-		update_person = #{updatePerson,jdbcType=VARCHAR},
-		is_del = #{isDel,jdbcType=TINYINT}
-		where id = #{id,jdbcType=INTEGER}
-	</update>
+    update gateway_rate_limit
+    set policy_name = #{policyName,jdbcType=VARCHAR},
+      policy_type = #{policyType,jdbcType=VARCHAR},
+      limit_quota = #{limitQuota,jdbcType=BIGINT},
+      max_limit_quota = #{maxLimitQuota,jdbcType=BIGINT},
+      interval_unit = #{intervalUnit,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_person = #{createPerson,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_person = #{updatePerson,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>

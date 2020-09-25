@@ -15,10 +15,10 @@
 		<result column="autoapprove" jdbcType="VARCHAR" property="autoapprove"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-		client_id, client_secret, resource_ids, scope, authorized_grant_types, web_server_redirect_uri,
-		authorities, access_token_validity, refresh_token_validity, additional_information,
-		autoapprove
-	</sql>
+    client_id, client_secret, resource_ids, scope, authorized_grant_types, web_server_redirect_uri, 
+    authorities, access_token_validity, refresh_token_validity, additional_information, 
+    autoapprove
+  </sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List"/>
@@ -26,16 +26,15 @@
 		where client_id = #{clientId,jdbcType=VARCHAR}
 	</select>
 	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.OauthClientDetails">
-		insert into oauth_client_details (client_id, client_secret, resource_ids,
-		scope, authorized_grant_types, web_server_redirect_uri,
-		authorities, access_token_validity, refresh_token_validity,
-		additional_information, autoapprove)
-		values (#{clientId,jdbcType=VARCHAR}, #{clientSecret,jdbcType=VARCHAR}, #{resourceIds,jdbcType=VARCHAR},
-		#{scope,jdbcType=VARCHAR}, #{authorizedGrantTypes,jdbcType=VARCHAR}, #{webServerRedirectUri,jdbcType=VARCHAR},
-		#{authorities,jdbcType=VARCHAR}, #{accessTokenValidity,jdbcType=INTEGER},
-		#{refreshTokenValidity,jdbcType=INTEGER},
-		#{additionalInformation,jdbcType=VARCHAR}, #{autoapprove,jdbcType=VARCHAR})
-	</insert>
+    insert into oauth_client_details (client_id, client_secret, resource_ids, 
+      scope, authorized_grant_types, web_server_redirect_uri, 
+      authorities, access_token_validity, refresh_token_validity, 
+      additional_information, autoapprove)
+    values (#{clientId,jdbcType=VARCHAR}, #{clientSecret,jdbcType=VARCHAR}, #{resourceIds,jdbcType=VARCHAR}, 
+      #{scope,jdbcType=VARCHAR}, #{authorizedGrantTypes,jdbcType=VARCHAR}, #{webServerRedirectUri,jdbcType=VARCHAR}, 
+      #{authorities,jdbcType=VARCHAR}, #{accessTokenValidity,jdbcType=INTEGER}, #{refreshTokenValidity,jdbcType=INTEGER}, 
+      #{additionalInformation,jdbcType=VARCHAR}, #{autoapprove,jdbcType=VARCHAR})
+  </insert>
 	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.OauthClientDetails">
 		insert into oauth_client_details
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -146,17 +145,17 @@
 		where client_id = #{clientId,jdbcType=VARCHAR}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.OauthClientDetails">
-		update oauth_client_details
-		set client_secret = #{clientSecret,jdbcType=VARCHAR},
-		resource_ids = #{resourceIds,jdbcType=VARCHAR},
-		scope = #{scope,jdbcType=VARCHAR},
-		authorized_grant_types = #{authorizedGrantTypes,jdbcType=VARCHAR},
-		web_server_redirect_uri = #{webServerRedirectUri,jdbcType=VARCHAR},
-		authorities = #{authorities,jdbcType=VARCHAR},
-		access_token_validity = #{accessTokenValidity,jdbcType=INTEGER},
-		refresh_token_validity = #{refreshTokenValidity,jdbcType=INTEGER},
-		additional_information = #{additionalInformation,jdbcType=VARCHAR},
-		autoapprove = #{autoapprove,jdbcType=VARCHAR}
-		where client_id = #{clientId,jdbcType=VARCHAR}
-	</update>
+    update oauth_client_details
+    set client_secret = #{clientSecret,jdbcType=VARCHAR},
+      resource_ids = #{resourceIds,jdbcType=VARCHAR},
+      scope = #{scope,jdbcType=VARCHAR},
+      authorized_grant_types = #{authorizedGrantTypes,jdbcType=VARCHAR},
+      web_server_redirect_uri = #{webServerRedirectUri,jdbcType=VARCHAR},
+      authorities = #{authorities,jdbcType=VARCHAR},
+      access_token_validity = #{accessTokenValidity,jdbcType=INTEGER},
+      refresh_token_validity = #{refreshTokenValidity,jdbcType=INTEGER},
+      additional_information = #{additionalInformation,jdbcType=VARCHAR},
+      autoapprove = #{autoapprove,jdbcType=VARCHAR}
+    where client_id = #{clientId,jdbcType=VARCHAR}
+  </update>
 </mapper>

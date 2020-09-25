@@ -20,5 +20,5 @@ public interface GatewayAccessLogsMapperExt extends GatewayAccessLogsMapper {
                                        @Param("usedTimeBegin") Long usedTimeBegin, @Param("usedTimeEnd") Long usedTimeEnd);
 
 
-    int insertListSelective(List<GatewayAccessLogs> logs);
+    int insertBatchSelective(List<GatewayAccessLogs> logs);
 }

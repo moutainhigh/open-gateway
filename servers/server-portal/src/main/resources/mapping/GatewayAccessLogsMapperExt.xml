@@ -31,7 +31,7 @@
 		</where>
 	</select>
 
-	<insert id="insertListSelective">
+	<insert id="insertBatchSelective">
 		insert into gateway_access_logs (<include refid="Base_Column_List"/>)
 		VALUES
 		<foreach collection="list" item="data" separator=",">

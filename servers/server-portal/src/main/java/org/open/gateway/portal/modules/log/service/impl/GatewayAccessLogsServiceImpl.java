@@ -36,7 +36,7 @@ public class GatewayAccessLogsServiceImpl implements GatewayAccessLogsService {
         List<GatewayAccessLogs> bean = logs.stream()
                 .map(this::toGatewayAccessLogs)
                 .collect(Collectors.toList());
-        BizUtil.checkUpdate(gatewayAccessLogsMapperExt.insertListSelective(bean));
+        BizUtil.checkUpdate(gatewayAccessLogsMapperExt.insertBatchSelective(bean), bean.size());
     }
 
     private GatewayAccessLogs toGatewayAccessLogs(AccessLogs accessLogs) {

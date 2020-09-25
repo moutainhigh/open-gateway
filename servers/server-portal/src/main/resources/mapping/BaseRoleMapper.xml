@@ -14,31 +14,30 @@
 		<result column="is_del" jdbcType="TINYINT" property="isDel"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, role_code, role_name, desc, status, create_time, create_person, update_time,
-		update_person, is_del
-	</sql>
+    id, role_code, role_name, desc, status, create_time, create_person, update_time, 
+    update_person, is_del
+  </sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List"/>
 		from base_role
 		where id = #{id,jdbcType=INTEGER}
 	</select>
-	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.BaseRole">
-		insert into base_role (id, role_code, role_name,
-		desc, status, create_time,
-		create_person, update_time, update_person,
-		is_del)
-		values (#{id,jdbcType=INTEGER}, #{roleCode,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR},
-		#{desc,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP},
-		#{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updatePerson,jdbcType=VARCHAR},
-		#{isDel,jdbcType=TINYINT})
-	</insert>
-	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.BaseRole">
+	<insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.open.gateway.portal.persistence.po.BaseRole"
+			useGeneratedKeys="true">
+    insert into base_role (role_code, role_name, desc, 
+      status, create_time, create_person, 
+      update_time, update_person, is_del
+      )
+    values (#{roleCode,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updatePerson,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT}
+      )
+  </insert>
+	<insert id="insertSelective" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.BaseRole" useGeneratedKeys="true">
 		insert into base_role
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				id,
-			</if>
 			<if test="roleCode != null">
 				role_code,
 			</if>
@@ -68,9 +67,6 @@
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				#{id,jdbcType=INTEGER},
-			</if>
 			<if test="roleCode != null">
 				#{roleCode,jdbcType=VARCHAR},
 			</if>
@@ -134,16 +130,16 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.BaseRole">
-		update base_role
-		set role_code = #{roleCode,jdbcType=VARCHAR},
-		role_name = #{roleName,jdbcType=VARCHAR},
-		desc = #{desc,jdbcType=VARCHAR},
-		status = #{status,jdbcType=TINYINT},
-		create_time = #{createTime,jdbcType=TIMESTAMP},
-		create_person = #{createPerson,jdbcType=VARCHAR},
-		update_time = #{updateTime,jdbcType=TIMESTAMP},
-		update_person = #{updatePerson,jdbcType=VARCHAR},
-		is_del = #{isDel,jdbcType=TINYINT}
-		where id = #{id,jdbcType=INTEGER}
-	</update>
+    update base_role
+    set role_code = #{roleCode,jdbcType=VARCHAR},
+      role_name = #{roleName,jdbcType=VARCHAR},
+      desc = #{desc,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_person = #{createPerson,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_person = #{updatePerson,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>

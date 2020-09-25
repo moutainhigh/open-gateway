@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Created by miko on 2019/10/29.
@@ -87,8 +88,8 @@ public class PageRequest {
         return PageHelper.startPage(pageNum, pageSize, count);
     }
 
-    public <E> Page<E> doSelectPage(ISelect select) {
-        return startPage().doSelectPage(select);
+    public <E> Page<E> doSelectPage(Supplier<?> select) {
+        return startPage().doSelectPage(select::get);
     }
 
     /**

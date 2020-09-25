@@ -1,6 +1,6 @@
-package org.open.gateway.test;
+package com.baosight.portal;
 
-import org.open.gateway.route.GatewayRouteApplication;
+import org.open.gateway.portal.GatewayPortalApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author MIKO
  */
 @SpringBootTest(
-        classes = GatewayRouteApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK,
+        classes = GatewayPortalApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         properties = {"spring.profiles.active=dev"}
 )
 public class BaseSpringTest extends BaseTest {

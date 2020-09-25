@@ -10,28 +10,25 @@
 		<result column="account_id" jdbcType="INTEGER" property="accountId"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, operation_type, operation_time, ip, user_agent, account_id
-	</sql>
+    id, operation_type, operation_time, ip, user_agent, account_id
+  </sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List"/>
 		from base_operation_logs
 		where id = #{id,jdbcType=INTEGER}
 	</select>
-	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.BaseOperationLogs">
-		insert into base_operation_logs (id, operation_type, operation_time,
-		ip, user_agent, account_id
-		)
-		values (#{id,jdbcType=INTEGER}, #{operationType,jdbcType=VARCHAR}, #{operationTime,jdbcType=TIMESTAMP},
-		#{ip,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR}, #{accountId,jdbcType=INTEGER}
-		)
-	</insert>
-	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.BaseOperationLogs">
+	<insert id="insert" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.BaseOperationLogs" useGeneratedKeys="true">
+    insert into base_operation_logs (operation_type, operation_time, ip, 
+      user_agent, account_id)
+    values (#{operationType,jdbcType=VARCHAR}, #{operationTime,jdbcType=TIMESTAMP}, #{ip,jdbcType=VARCHAR}, 
+      #{userAgent,jdbcType=VARCHAR}, #{accountId,jdbcType=INTEGER})
+  </insert>
+	<insert id="insertSelective" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.BaseOperationLogs" useGeneratedKeys="true">
 		insert into base_operation_logs
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				id,
-			</if>
 			<if test="operationType != null">
 				operation_type,
 			</if>
@@ -49,9 +46,6 @@
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				#{id,jdbcType=INTEGER},
-			</if>
 			<if test="operationType != null">
 				#{operationType,jdbcType=VARCHAR},
 			</if>
@@ -91,12 +85,12 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.BaseOperationLogs">
-		update base_operation_logs
-		set operation_type = #{operationType,jdbcType=VARCHAR},
-		operation_time = #{operationTime,jdbcType=TIMESTAMP},
-		ip = #{ip,jdbcType=VARCHAR},
-		user_agent = #{userAgent,jdbcType=VARCHAR},
-		account_id = #{accountId,jdbcType=INTEGER}
-		where id = #{id,jdbcType=INTEGER}
-	</update>
+    update base_operation_logs
+    set operation_type = #{operationType,jdbcType=VARCHAR},
+      operation_time = #{operationTime,jdbcType=TIMESTAMP},
+      ip = #{ip,jdbcType=VARCHAR},
+      user_agent = #{userAgent,jdbcType=VARCHAR},
+      account_id = #{accountId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>

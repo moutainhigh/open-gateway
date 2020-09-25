@@ -1,4 +1,4 @@
-package org.open.gateway.test;
+package org.open.gateway;
 
 import org.springframework.util.StopWatch;
 

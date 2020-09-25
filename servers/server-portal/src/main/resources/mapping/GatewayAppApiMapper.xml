@@ -8,8 +8,8 @@
 		<result column="create_person" jdbcType="VARCHAR" property="createPerson"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-		app_id, api_id, create_time, create_person
-	</sql>
+    app_id, api_id, create_time, create_person
+  </sql>
 	<select id="selectByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.GatewayAppApiKey"
 			resultMap="BaseResultMap">
 		select
@@ -19,11 +19,11 @@
 		and api_id = #{apiId,jdbcType=INTEGER}
 	</select>
 	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.GatewayAppApi">
-		insert into gateway_app_api (app_id, api_id, create_time,
-		create_person)
-		values (#{appId,jdbcType=INTEGER}, #{apiId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
-		#{createPerson,jdbcType=VARCHAR})
-	</insert>
+    insert into gateway_app_api (app_id, api_id, create_time, 
+      create_person)
+    values (#{appId,jdbcType=INTEGER}, #{apiId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createPerson,jdbcType=VARCHAR})
+  </insert>
 	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.GatewayAppApi">
 		insert into gateway_app_api
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -69,10 +69,10 @@
 		and api_id = #{apiId,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.GatewayAppApi">
-		update gateway_app_api
-		set create_time = #{createTime,jdbcType=TIMESTAMP},
-		create_person = #{createPerson,jdbcType=VARCHAR}
-		where app_id = #{appId,jdbcType=INTEGER}
-		and api_id = #{apiId,jdbcType=INTEGER}
-	</update>
+    update gateway_app_api
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_person = #{createPerson,jdbcType=VARCHAR}
+    where app_id = #{appId,jdbcType=INTEGER}
+      and api_id = #{apiId,jdbcType=INTEGER}
+  </update>
 </mapper>

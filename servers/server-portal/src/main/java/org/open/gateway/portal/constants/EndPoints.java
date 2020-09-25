@@ -17,6 +17,12 @@ public interface EndPoints {
     String ACCOUNT_DELETE = "/account/delete";
     // 用户-分页列表
     String ACCOUNT_PAGE_LIST = "/account/pageList";
+    // 用户-角色列表
+    String ACCOUNT_ROLES = "/account/roles";
+    // 用户-角色新增/修改
+    String ACCOUNT_ROLE_SAVE = "/account/roles/save";
+    // 用户-资源列表
+    String ACCOUNT_RESOURCES = "/account/resources";
 
     // 网关-路由刷新
     String GATEWAY_ROUTES_REFRESH = "/gateway/routes/refresh";

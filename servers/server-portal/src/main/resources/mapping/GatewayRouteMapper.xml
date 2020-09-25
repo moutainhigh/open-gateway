@@ -19,35 +19,32 @@
 		<result column="is_del" jdbcType="TINYINT" property="isDel"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, route_code, route_name, route_type, route_path, url, strip_prefix, retryable,
-		status, desc, create_time, create_person, update_time, update_person, is_del
-	</sql>
+    id, route_code, route_name, route_type, route_path, url, strip_prefix, retryable, 
+    status, desc, create_time, create_person, update_time, update_person, is_del
+  </sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List"/>
 		from gateway_route
 		where id = #{id,jdbcType=INTEGER}
 	</select>
-	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.GatewayRoute">
-		insert into gateway_route (id, route_code, route_name,
-		route_type, route_path, url,
-		strip_prefix, retryable, status,
-		desc, create_time, create_person,
-		update_time, update_person, is_del
-		)
-		values (#{id,jdbcType=INTEGER}, #{routeCode,jdbcType=VARCHAR}, #{routeName,jdbcType=VARCHAR},
-		#{routeType,jdbcType=TINYINT}, #{routePath,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
-		#{stripPrefix,jdbcType=TINYINT}, #{retryable,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
-		#{desc,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR},
-		#{updateTime,jdbcType=TIMESTAMP}, #{updatePerson,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT}
-		)
-	</insert>
-	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.GatewayRoute">
+	<insert id="insert" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.GatewayRoute" useGeneratedKeys="true">
+    insert into gateway_route (route_code, route_name, route_type, 
+      route_path, url, strip_prefix, 
+      retryable, status, desc, 
+      create_time, create_person, update_time, 
+      update_person, is_del)
+    values (#{routeCode,jdbcType=VARCHAR}, #{routeName,jdbcType=VARCHAR}, #{routeType,jdbcType=TINYINT}, 
+      #{routePath,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{stripPrefix,jdbcType=TINYINT}, 
+      #{retryable,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{desc,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updatePerson,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT})
+  </insert>
+	<insert id="insertSelective" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.GatewayRoute" useGeneratedKeys="true">
 		insert into gateway_route
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				id,
-			</if>
 			<if test="routeCode != null">
 				route_code,
 			</if>
@@ -92,9 +89,6 @@
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				#{id,jdbcType=INTEGER},
-			</if>
 			<if test="routeCode != null">
 				#{routeCode,jdbcType=VARCHAR},
 			</if>
@@ -188,21 +182,21 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.GatewayRoute">
-		update gateway_route
-		set route_code = #{routeCode,jdbcType=VARCHAR},
-		route_name = #{routeName,jdbcType=VARCHAR},
-		route_type = #{routeType,jdbcType=TINYINT},
-		route_path = #{routePath,jdbcType=VARCHAR},
-		url = #{url,jdbcType=VARCHAR},
-		strip_prefix = #{stripPrefix,jdbcType=TINYINT},
-		retryable = #{retryable,jdbcType=TINYINT},
-		status = #{status,jdbcType=TINYINT},
-		desc = #{desc,jdbcType=VARCHAR},
-		create_time = #{createTime,jdbcType=TIMESTAMP},
-		create_person = #{createPerson,jdbcType=VARCHAR},
-		update_time = #{updateTime,jdbcType=TIMESTAMP},
-		update_person = #{updatePerson,jdbcType=VARCHAR},
-		is_del = #{isDel,jdbcType=TINYINT}
-		where id = #{id,jdbcType=INTEGER}
-	</update>
+    update gateway_route
+    set route_code = #{routeCode,jdbcType=VARCHAR},
+      route_name = #{routeName,jdbcType=VARCHAR},
+      route_type = #{routeType,jdbcType=TINYINT},
+      route_path = #{routePath,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      strip_prefix = #{stripPrefix,jdbcType=TINYINT},
+      retryable = #{retryable,jdbcType=TINYINT},
+      status = #{status,jdbcType=TINYINT},
+      desc = #{desc,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_person = #{createPerson,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_person = #{updatePerson,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>
