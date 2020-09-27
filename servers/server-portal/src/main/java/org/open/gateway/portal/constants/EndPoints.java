@@ -9,6 +9,8 @@ public interface EndPoints {
 
     // 用户-登录
     String ACCOUNT_LOGIN = "/account/login";
+    // 用户-注册
+    String ACCOUNT_REGISTER = "/account/register";
     // 用户-退出登录
     String ACCOUNT_LOGOUT = "/account/logout";
     // 用户-新增/修改

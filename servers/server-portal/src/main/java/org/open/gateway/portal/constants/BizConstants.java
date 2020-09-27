@@ -9,6 +9,8 @@ public interface BizConstants {
 
     String DEFAULT_OPERATE_PERSON = "portal";
 
+    String TOKEN_PREFIX = "portal_token:";
+
     interface STATUS {
 
         byte NORMAL = 1;

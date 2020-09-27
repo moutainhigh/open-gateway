@@ -35,6 +35,12 @@ public class AccountServiceImpl implements AccountService {
     public BaseAccountBO queryBaseAccountByCode(String account) {
         log.info("parameter account is:{}", account);
         BaseAccount baseAccount = baseAccountMapper.selectByAccount(account);
+        if (baseAccount == null) {
+            throw new BizException(ResultCode.ACCOUNT_NOT_EXISTS);
+        }
+        if (BizConstants.STATUS.NORMAL != baseAccount.getStatus()) {
+            throw new BizException(ResultCode.ACCOUNT_NOT_AVAILABLE);
+        }
         BaseAccountBO baseAccountBO = toBaseAccountBO(baseAccount);
         log.info("result data is:{}", baseAccountBO);
         return baseAccountBO;
@@ -92,6 +98,13 @@ public class AccountServiceImpl implements AccountService {
         return storeToken(accountBO);
     }
 
+    @Override
+    public void logout(String token) {
+        String tokenKey = getRedisKey(token);
+        Boolean result = redisTemplate.delete(tokenKey);
+        log.info("logout finished delete tokenKey:{} result:{}", tokenKey, result);
+    }
+
 
     private void checkAccountPassword(String plainPassword, String salt, String secretPassword) {
         String tempSecretPassword = BizUtil.getSecretPassword(plainPassword, salt);
@@ -104,9 +117,13 @@ public class AccountServiceImpl implements AccountService {
     private String storeToken(BaseAccountBO account) {
         String token = BizUtil.generateToken(account.getAccount(), account.getPassword());
         log.info("generated token is:{}", token);
-        redisTemplate.opsForValue().set(token, JSON.toJSONString(account), Duration.ofMinutes(120));
-        log.info("store token into redis finished");
+        Boolean result = redisTemplate.opsForValue().setIfAbsent(getRedisKey(token), JSON.toJSONString(account), Duration.ofMinutes(120));
+        log.info("store token into redis finished. result:{}", result);
         return token;
+    }
+
+    private String getRedisKey(String token) {
+        return BizConstants.TOKEN_PREFIX + token;
     }
 
 }

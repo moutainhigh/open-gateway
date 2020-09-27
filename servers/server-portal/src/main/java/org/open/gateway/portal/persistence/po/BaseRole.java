@@ -9,7 +9,7 @@ public class BaseRole {
 
     private String roleName;
 
-    private String desc;
+    private String note;
 
     private Byte status;
 
@@ -47,12 +47,12 @@ public class BaseRole {
         this.roleName = roleName == null ? null : roleName.trim();
     }
 
-    public String getDesc() {
-        return desc;
+    public String getNote() {
+        return note;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc == null ? null : desc.trim();
+    public void setNote(String note) {
+        this.note = note == null ? null : note.trim();
     }
 
     public Byte getStatus() {

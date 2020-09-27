@@ -25,6 +25,10 @@ public enum ResultCode {
      */
     ACCOUNT_NOT_AVAILABLE("1002", "帐户不可用"),
     /**
+     * 帐户已存在
+     */
+    ACCOUNT_IS_EXISTS("1003", "帐户已存在"),
+    /**
      * 成功
      */
     SUCCESS("0000", "OK");

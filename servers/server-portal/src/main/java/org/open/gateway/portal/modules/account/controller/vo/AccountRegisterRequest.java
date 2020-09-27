@@ -5,8 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import javax.validation.constraints.Pattern;
 
 /**
  * Created by miko on 9/24/20.
@@ -31,9 +30,20 @@ public class AccountRegisterRequest {
     private String password;
 
     /**
-     * 请求的时间
+     * 手机号码
      */
-    @NotNull
-    private LocalDateTime requestTime;
+    @Pattern(regexp = "[0-9]{13}")
+    @NotEmpty
+    private String phone;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 备注
+     */
+    private String note;
 
 }

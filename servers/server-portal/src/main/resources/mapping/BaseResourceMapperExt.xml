@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.open.gateway.portal.persistence.mapper.BaseResourceMapperExt">
+
+	<select id="selectByAccount" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM base_account ba
+		INNER JOIN base_account_role bar ON ba.id = bar.account_id
+		INNER JOIN base_role br ON br.id = bar.role_id
+		INNER JOIN base_role_resource brr ON brr.role_id = br.id
+		INNER JOIN base_resource r ON r.id = brr.resource_id
+		WHERE ba.is_del = '0' AND br.is_del = '0' AND r.is_del = '0'
+		AND ba.`status` = '1' AND br.`status` = '1' AND r.`status` = '1'
+		AND ba.account = #{account}
+	</select>
+
+</mapper>

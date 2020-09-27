@@ -11,6 +11,12 @@ import javax.validation.constraints.NotNull;
  */
 public interface AccountService {
 
+    /**
+     * 查询帐户信息
+     *
+     * @param account 帐户
+     * @return 帐户信息
+     */
     @NotNull
     BaseAccountBO queryBaseAccountByCode(String account);
 
@@ -35,5 +41,12 @@ public interface AccountService {
      * @return 登录token
      */
     String login(String account, String plainPassword);
+
+    /**
+     * 登出
+     *
+     * @param token 登录token信息
+     */
+    void logout(String token);
 
 }
