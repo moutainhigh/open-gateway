@@ -9,7 +9,7 @@ import org.open.gateway.portal.persistence.mapper.GatewayAccessLogsMapperExt;
 import org.open.gateway.portal.persistence.po.GatewayAccessLogs;
 import org.open.gateway.portal.utils.Beans;
 import org.open.gateway.portal.vo.PageInfo;
-import org.open.gateway.portal.vo.Response;
+import org.open.gateway.portal.vo.Result;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +31,7 @@ public class GatewayAccessLogsController {
     private final GatewayAccessLogsMapperExt gatewayAccessLogsMapper;
 
     @PostMapping(EndPoints.ACCESS_LOGS_PAGE_LIST)
-    public Response queryPageList(@Valid @RequestBody AccessLogsPageListRequest request) {
+    public Result queryPageList(@Valid @RequestBody AccessLogsPageListRequest request) {
         // 查询分页列表
         Page<GatewayAccessLogs> logs = request.doSelectPage(() -> gatewayAccessLogsMapper.selectList(
                 request.getIp(), request.getApiCode(), request.getRouteCode(),
@@ -42,7 +42,7 @@ public class GatewayAccessLogsController {
         List<AccessLogsPageListResponse> responses = logs.stream()
                 .map(log -> Beans.from(log).convert(AccessLogsPageListResponse::new))
                 .collect(Collectors.toList());
-        return Response.data(responses)
+        return Result.data(responses)
                 .pageInfo(PageInfo.of(logs))
                 .ok();
     }

@@ -6,6 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.utils.JSON;
 import org.junit.jupiter.api.Test;
 import org.open.gateway.portal.constants.DateTimeFormatters;
+import org.open.gateway.portal.exception.AccountExistsException;
+import org.open.gateway.portal.exception.AccountNotAvailableException;
+import org.open.gateway.portal.exception.AccountNotExistsException;
+import org.open.gateway.portal.exception.AccountPasswordInvalidException;
 import org.open.gateway.portal.modules.account.controller.vo.AccountLoginRequest;
 import org.open.gateway.portal.modules.account.srevice.AccountService;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
@@ -31,7 +35,7 @@ public class AccountTest extends BaseSpringTest {
     @Test
     @Transactional
     @Rollback
-    public void testRegisterAndLogin() {
+    public void testRegisterAndLogin() throws AccountExistsException, AccountNotAvailableException, AccountPasswordInvalidException, AccountNotExistsException {
         String account = "junit_test";
         String password = "admin123";
         BaseAccountBO accountBO = accountService.register(account, password, "17521125571", "oni-miko@outlook.com", "系统管理员", "10.60.86.128");

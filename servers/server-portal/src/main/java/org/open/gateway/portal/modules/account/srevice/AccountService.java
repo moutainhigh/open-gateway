@@ -1,8 +1,10 @@
 package org.open.gateway.portal.modules.account.srevice;
 
+import org.open.gateway.portal.exception.AccountExistsException;
+import org.open.gateway.portal.exception.AccountNotAvailableException;
+import org.open.gateway.portal.exception.AccountNotExistsException;
+import org.open.gateway.portal.exception.AccountPasswordInvalidException;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * Created by miko on 9/24/20.
@@ -16,9 +18,9 @@ public interface AccountService {
      *
      * @param account 帐户
      * @return 帐户信息
+     * @throws AccountNotAvailableException 帐户不可用
      */
-    @NotNull
-    BaseAccountBO queryBaseAccountByCode(String account);
+    BaseAccountBO queryBaseAccountByCode(String account) throws AccountNotAvailableException;
 
     /**
      * 注册
@@ -30,8 +32,10 @@ public interface AccountService {
      * @param note          描述
      * @param registerIp    ip地址
      * @return 用户信息
+     * @throws AccountNotAvailableException 帐户不可用
+     * @throws AccountExistsException       帐户已经存在
      */
-    BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp);
+    BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp) throws AccountNotAvailableException, AccountExistsException;
 
     /**
      * 登录
@@ -39,8 +43,11 @@ public interface AccountService {
      * @param account       帐户
      * @param plainPassword 密码明文
      * @return 登录token
+     * @throws AccountPasswordInvalidException 帐户密码错误
+     * @throws AccountNotExistsException       帐户不存在
+     * @throws AccountNotAvailableException    帐户不可用
      */
-    String login(String account, String plainPassword);
+    String login(String account, String plainPassword) throws AccountPasswordInvalidException, AccountNotExistsException, AccountNotAvailableException;
 
     /**
      * 登出

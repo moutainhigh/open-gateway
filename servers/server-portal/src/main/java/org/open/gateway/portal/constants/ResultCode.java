@@ -19,7 +19,7 @@ public enum ResultCode {
     /**
      * 无效的密码
      */
-    ACCOUNT_INVALID_PASSWORD("1001", "无效的密码"),
+    ACCOUNT_PASSWORD_INVALID("1001", "无效的密码"),
     /**
      * 帐户不可用
      */
@@ -28,6 +28,10 @@ public enum ResultCode {
      * 帐户已存在
      */
     ACCOUNT_IS_EXISTS("1003", "帐户已存在"),
+    /**
+     * 登录请求过期
+     */
+    ACCOUNT_LOGIN_REQUEST_EXPIRED("1004", "登录请求过期"),
     /**
      * 成功
      */

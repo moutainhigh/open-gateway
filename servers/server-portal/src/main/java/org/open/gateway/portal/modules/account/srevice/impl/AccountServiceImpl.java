@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.utils.JSON;
 import open.gateway.common.utils.StringUtil;
 import org.open.gateway.portal.constants.BizConstants;
-import org.open.gateway.portal.constants.ResultCode;
-import org.open.gateway.portal.exception.BizException;
+import org.open.gateway.portal.exception.AccountExistsException;
+import org.open.gateway.portal.exception.AccountNotAvailableException;
+import org.open.gateway.portal.exception.AccountNotExistsException;
+import org.open.gateway.portal.exception.AccountPasswordInvalidException;
 import org.open.gateway.portal.modules.account.srevice.AccountService;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
 import org.open.gateway.portal.persistence.mapper.BaseAccountMapperExt;
@@ -32,14 +34,15 @@ public class AccountServiceImpl implements AccountService {
     private final BaseAccountMapperExt baseAccountMapper;
 
     @Override
-    public BaseAccountBO queryBaseAccountByCode(String account) {
+    public BaseAccountBO queryBaseAccountByCode(String account) throws AccountNotAvailableException {
         log.info("parameter account is:{}", account);
         BaseAccount baseAccount = baseAccountMapper.selectByAccount(account);
         if (baseAccount == null) {
-            throw new BizException(ResultCode.ACCOUNT_NOT_EXISTS);
+            log.info("account no found. param account is:{}", account);
+            return null;
         }
         if (BizConstants.STATUS.NORMAL != baseAccount.getStatus()) {
-            throw new BizException(ResultCode.ACCOUNT_NOT_AVAILABLE);
+            throw new AccountNotAvailableException();
         }
         BaseAccountBO baseAccountBO = toBaseAccountBO(baseAccount);
         log.info("result data is:{}", baseAccountBO);
@@ -47,7 +50,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp) {
+    public BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp) throws AccountNotAvailableException, AccountExistsException {
+        BaseAccountBO accountBO = queryBaseAccountByCode(account);
+        if (accountBO != null) {
+            throw new AccountExistsException();
+        }
         String salt = StringUtil.randomLetter(16); // 生成摘要加密盐
         String secretPassword = BizUtil.getSecretPassword(plainPassword, salt);
         Date now = new Date();
@@ -89,9 +96,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String login(String account, String plainPassword) {
+    public String login(String account, String plainPassword) throws AccountPasswordInvalidException, AccountNotExistsException, AccountNotAvailableException {
         // 查询账号
         BaseAccountBO accountBO = queryBaseAccountByCode(account);
+        if (accountBO == null) {
+            throw new AccountNotExistsException();
+        }
         // 校验密码
         checkAccountPassword(plainPassword, accountBO.getSalt(), accountBO.getPassword());
         // 生成token
@@ -106,10 +116,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    private void checkAccountPassword(String plainPassword, String salt, String secretPassword) {
+    private void checkAccountPassword(String plainPassword, String salt, String secretPassword) throws AccountPasswordInvalidException {
         String tempSecretPassword = BizUtil.getSecretPassword(plainPassword, salt);
         if (!tempSecretPassword.equals(secretPassword)) {
-            throw new BizException(ResultCode.ACCOUNT_INVALID_PASSWORD);
+            throw new AccountPasswordInvalidException();
         }
         log.info("check account password finished");
     }

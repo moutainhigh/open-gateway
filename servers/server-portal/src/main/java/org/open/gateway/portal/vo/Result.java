@@ -1,20 +1,20 @@
 package org.open.gateway.portal.vo;
 
-import lombok.Data;
+import lombok.Getter;
 import org.open.gateway.portal.constants.ResultCode;
 
-@Data
-public class Response {
+@Getter
+public class Result {
 
-    private String code;
+    private final String code;
 
-    private String msg;
+    private final String msg;
 
-    private Object data;
+    private final Object data;
 
-    private PageInfo pageInfo;
+    private final PageInfo pageInfo;
 
-    public Response(String code, String msg, Object data, PageInfo pageInfo) {
+    public Result(String code, String msg, Object data, PageInfo pageInfo) {
         this.code = code;
         this.msg = msg;
         this.data = data;
@@ -33,26 +33,19 @@ public class Response {
         return builder().pageInfo(pageInfo);
     }
 
-    public static Response ok() {
+    public static Result ok() {
         return builder().ok();
     }
 
-    public static Response fail(ResultCode resultCode) {
+    public static Result fail(ResultCode resultCode) {
         return builder().fail(resultCode);
     }
 
     public static class ResponseBuilder {
 
-        private String msg;
-
         private Object data;
 
         private PageInfo pageInfo;
-
-        public ResponseBuilder msg(String msg) {
-            this.msg = msg;
-            return this;
-        }
 
         public ResponseBuilder data(Object data) {
             this.data = data;
@@ -64,16 +57,20 @@ public class Response {
             return this;
         }
 
-        private Response code(String resultCode) {
-            return new Response(resultCode, msg, data, pageInfo);
+        public Result ok() {
+            return ok(ResultCode.SUCCESS.getMessage());
         }
 
-        public Response ok() {
-            return code(ResultCode.SUCCESS.getCode());
+        public Result ok(String msg) {
+            return build(ResultCode.SUCCESS.getCode(), msg);
         }
 
-        public Response fail(ResultCode resultCode) {
-            return code(resultCode.getCode());
+        public Result fail(ResultCode resultCode) {
+            return build(resultCode.getCode(), resultCode.getMessage());
+        }
+
+        private Result build(String resultCode, String msg) {
+            return new Result(resultCode, msg, data, pageInfo);
         }
 
     }
