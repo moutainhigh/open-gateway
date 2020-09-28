@@ -1,14 +1,21 @@
 package com.baosight.portal.account;
 
+import cn.hutool.crypto.SecureUtil;
 import com.baosight.portal.BaseSpringTest;
 import lombok.extern.slf4j.Slf4j;
+import open.gateway.common.utils.JSON;
 import org.junit.jupiter.api.Test;
+import org.open.gateway.portal.constants.DateTimeFormatters;
+import org.open.gateway.portal.modules.account.controller.vo.AccountLoginRequest;
 import org.open.gateway.portal.modules.account.srevice.AccountService;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
+import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+
+import java.time.LocalDateTime;
 
 /**
  * Created by miko on 9/24/20.
@@ -32,6 +39,20 @@ public class AccountTest extends BaseSpringTest {
         Assert.notNull(accountBO.getId(), "account id is null");
         String token = accountService.login(account, password);
         log.info("login finished token is:{}", token);
+    }
+
+    @Test
+    public void buildLoginRequest() {
+        LocalDateTime requestTime = LocalDateTime.now();
+        String requestTimeString = requestTime.format(DateTimeFormatters.yyyy_MM_dd_HH_mm_ss);
+        log.info("requestTimeString:{}", requestTimeString);
+        String password = BizUtil.encodePassword("password", SecureUtil.md5(requestTimeString));
+        AccountLoginRequest request = new AccountLoginRequest();
+        request.setAccount("admin");
+        request.setPassword(password);
+        request.setRequestTime(requestTime);
+        String requestBody = JSON.toJSONString(request);
+        log.info("login request body:{}", requestBody);
     }
 
 }

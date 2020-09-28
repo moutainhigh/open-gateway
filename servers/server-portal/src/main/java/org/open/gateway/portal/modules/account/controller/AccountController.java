@@ -7,16 +7,14 @@ import org.open.gateway.portal.constants.DateTimeFormatters;
 import org.open.gateway.portal.constants.EndPoints;
 import org.open.gateway.portal.constants.ResultCode;
 import org.open.gateway.portal.exception.BizException;
-import org.open.gateway.portal.modules.account.controller.vo.AccountLoginRequest;
-import org.open.gateway.portal.modules.account.controller.vo.AccountLoginResponse;
-import org.open.gateway.portal.modules.account.controller.vo.AccountLogoutRequest;
-import org.open.gateway.portal.modules.account.controller.vo.AccountRegisterRequest;
+import org.open.gateway.portal.modules.account.controller.vo.*;
 import org.open.gateway.portal.modules.account.srevice.AccountService;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
 import org.open.gateway.portal.utils.BizUtil;
 import org.open.gateway.portal.utils.ServletRequestUtil;
 import org.open.gateway.portal.vo.Response;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +34,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping(EndPoints.ACCOUNT_LOGIN)
-    public Response login(@Valid AccountLoginRequest request) {
+    public Response login(@Valid @RequestBody AccountLoginRequest request) {
         // 校验请求
         checkAccountLoginRequest(request);
         //  登录
@@ -47,25 +45,39 @@ public class AccountController {
     }
 
     @PostMapping(EndPoints.ACCOUNT_LOGOUT)
-    public Response logout(@Valid AccountLogoutRequest request) {
+    public Response logout(@Valid @RequestBody AccountLogoutRequest request) {
         accountService.logout(request.getToken());
         return Response.ok();
     }
 
     @PostMapping(EndPoints.ACCOUNT_REGISTER)
-    public Response register(@Valid AccountRegisterRequest request, HttpServletRequest servletRequest) {
+    public Response register(@Valid @RequestBody AccountRegisterRequest request, HttpServletRequest servletRequest) {
         // 校验请求
         checkAccountRegisterRequest(request);
         String ip = ServletRequestUtil.getIpFromRequest(servletRequest);
         log.info("Request ip is:{}", ip);
         BaseAccountBO accountBO = accountService.register(request.getAccount(), request.getPassword(), request.getPhone(), request.getEmail(), request.getNote(), ip);
+        AccountRegisterResponse response = toAccountRegisterResponse(accountBO);
         // 生成返回对象
-        return Response.data(accountBO).ok();
+        return Response.data(response).ok();
+    }
+
+    private AccountRegisterResponse toAccountRegisterResponse(BaseAccountBO accountBO) {
+        AccountRegisterResponse response = new AccountRegisterResponse();
+        response.setId(accountBO.getId());
+        response.setAccount(accountBO.getAccount());
+        response.setPassword(accountBO.getPassword());
+        response.setRegisterIp(accountBO.getRegisterIp());
+        response.setStatus(accountBO.getStatus());
+        response.setPhone(accountBO.getPhone());
+        response.setEmail(accountBO.getEmail());
+        response.setNote(accountBO.getNote());
+        return response;
     }
 
     private void checkAccountLoginRequest(AccountLoginRequest request) {
         // 校验请求日期是否过期
-        if (LocalDateTime.now().minusMinutes(30).isBefore(request.getRequestTime())) {
+        if (LocalDateTime.now().minusMinutes(30).isAfter(request.getRequestTime())) {
             throw new IllegalStateException("request expired");
         }
         // 明文

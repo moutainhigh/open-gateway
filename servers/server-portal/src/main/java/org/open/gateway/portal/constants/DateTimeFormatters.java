@@ -13,4 +13,6 @@ public interface DateTimeFormatters {
 
     DateTimeFormatter yyyy_MM_dd = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    DateTimeFormatter HH_mm_ss = DateTimeFormatter.ofPattern("HH:mm:ss");
+
 }

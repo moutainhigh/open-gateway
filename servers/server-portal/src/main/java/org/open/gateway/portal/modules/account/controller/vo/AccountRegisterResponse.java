@@ -14,9 +14,20 @@ import lombok.ToString;
 @ToString
 public class AccountRegisterResponse {
 
-    /**
-     * token
-     */
-    private String token;
+    private Integer id;
+
+    private String account;
+
+    private String password;
+
+    private String registerIp;
+
+    private Byte status;
+
+    private String phone;
+
+    private String email;
+
+    private String note;
 
 }

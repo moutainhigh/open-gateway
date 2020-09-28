@@ -6,9 +6,20 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -20,7 +31,9 @@ import java.util.TimeZone;
  */
 public class JSON {
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String TIME_FORMAT = "HH:mm:ss";
 
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
@@ -30,9 +43,25 @@ public class JSON {
         // 设置时区
         JSON_MAPPER.setTimeZone(TimeZone.getDefault());
         // 设置日期转换格式
-        JSON_MAPPER.setDateFormat(new SimpleDateFormat(DATE_FORMAT));
+        JSON_MAPPER.setDateFormat(new SimpleDateFormat(DATE_TIME_FORMAT));
         // 设置json字符串中出现未知属性不报错
         JSON_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_FORMAT);
+        DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern(TIME_FORMAT);
+
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormat));
+        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(dateFormat));
+        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(timeFormat));
+
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(dateTimeFormat));
+        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(dateFormat));
+        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(timeFormat));
+
+        JSON_MAPPER.registerModule(javaTimeModule);
     }
 
     public static ObjectMapper getJsonMapper() {
