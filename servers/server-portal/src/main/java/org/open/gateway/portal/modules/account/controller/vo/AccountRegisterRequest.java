@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 /**
@@ -20,20 +20,20 @@ public class AccountRegisterRequest {
     /**
      * 账户
      */
-    @NotEmpty
+    @NotBlank
     private String account;
 
     /**
      * 加密后的密码
      */
-    @NotEmpty
+    @NotBlank
     private String password;
 
     /**
      * 手机号码
      */
     @Pattern(regexp = "[0-9]{13}")
-    @NotEmpty
+    @NotBlank
     private String phone;
 
     /**

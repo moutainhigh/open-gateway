@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -21,13 +21,13 @@ public class AccountLoginRequest {
     /**
      * 账户
      */
-    @NotEmpty
+    @NotBlank
     private String account;
 
     /**
      * 加密后的密码
      */
-    @NotEmpty
+    @NotBlank
     private String password;
 
     /**

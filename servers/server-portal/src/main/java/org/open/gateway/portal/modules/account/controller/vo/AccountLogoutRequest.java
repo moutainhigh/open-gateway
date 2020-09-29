@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 /**
  * Created by miko on 9/24/20.
@@ -19,7 +19,7 @@ public class AccountLogoutRequest {
     /**
      * 请求token
      */
-    @NotEmpty
+    @NotBlank
     private String token;
 
 }

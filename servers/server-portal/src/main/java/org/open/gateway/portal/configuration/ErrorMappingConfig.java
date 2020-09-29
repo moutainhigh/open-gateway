@@ -4,8 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.portal.constants.ResultCode;
 import org.open.gateway.portal.exception.*;
 import org.open.gateway.portal.vo.Result;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
@@ -23,6 +28,24 @@ public class ErrorMappingConfig {
         ResultCode resultCode = mappingServiceExceptionToResultCode(e);
         log.error("Result code:{} msg:{}", resultCode.getCode(), resultCode.getMessage());
         return Result.fail(resultCode);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public String convertMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        List<ObjectError> objectErrorList = e.getBindingResult().getAllErrors();
+        StringBuilder sb = new StringBuilder();
+        for (ObjectError objectError : objectErrorList) {
+            if (objectError instanceof FieldError) {
+                FieldError fieldError = (FieldError) objectError;
+                sb.append(fieldError.getField());
+                sb.append(":");
+                sb.append(fieldError.getDefaultMessage());
+            } else {
+                sb.append(objectError.getDefaultMessage());
+            }
+            sb.append("; ");
+        }
+        return sb.toString();
     }
 
     private ResultCode mappingServiceExceptionToResultCode(ServiceException e) {
