@@ -74,5 +74,5 @@ public class IpRange implements Comparable<IpRange> {
         }
         return 0;
     }
-    
+
 }

@@ -1,7 +1,8 @@
 package org.open.gateway.route.repositories;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.base.collection.LRUCache;
 import open.gateway.common.base.entity.RefreshGateway;
 import open.gateway.common.utils.CollectionUtil;
 import org.open.gateway.route.entity.GatewayClientResourceDefinition;
@@ -23,19 +24,20 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
     /**
      * 客户端资源分组。 key为客户端id，value为该客户端所拥有的资源
      */
-    private final Map<String, GatewayClientResourceDefinition> clientResources = new LRUCache<>(10000);
+    private final Cache<String, GatewayClientResourceDefinition> clientResources = Caffeine.newBuilder()
+//            .refreshAfterWrite(5, TimeUnit.MINUTES) // 创建缓存或者最近一次更新缓存后经过指定时间间隔，刷新缓存
+            .maximumSize(10000) // 缓存的最大数量
+            .build();
 
     @Override
     public Mono<GatewayClientResourceDefinition> loadResourcePathByClientId(String clientId) {
-        return Mono.justOrEmpty(this.clientResources.get(clientId)) // 从内存中获取
+        return Mono.justOrEmpty(this.clientResources.getIfPresent(clientId)) // 从内存中获取
                 // 找不到从数据库查询
                 .switchIfEmpty(
                         getClientApiRoutes(CollectionUtil.newHashSet(clientId))
                                 .reduce(new GatewayClientResourceDefinition(), (crd, cr) -> crd.addResource(cr).clientSecret(cr.getClientSecret()))
                                 .doOnNext(rs -> {
-                                    synchronized (this.clientResources) {
-                                        this.clientResources.put(clientId, rs);
-                                    }
+                                    this.clientResources.put(clientId, rs);
                                 })
                                 .doOnSuccess(rs -> log.info("Reload client id:{} resource count:{}", clientId, rs.getResources().size()))
                 );
@@ -47,10 +49,8 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
         return getGatewayClientResourceDefinition(refreshClientIds)
                 .doOnNext(map -> {
                     if (map.size() > 0) {
-                        synchronized (this.clientResources) {
-                            clearResources(param);
-                            this.clientResources.putAll(map);
-                        }
+                        clearResources(param);
+                        this.clientResources.putAll(map);
                     }
                 })
                 .doOnSubscribe(v -> log.info("[Refresh client resources] starting. target client ids:{}", refreshClientIds))
@@ -66,10 +66,10 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
      */
     private void clearResources(RefreshGateway param) {
         if (param.isRefreshAll()) {
-            this.clientResources.clear();
+            this.clientResources.cleanUp();
             log.info("[Refresh client resources] clear client resource finished");
         } else {
-            param.getArgs().forEach(this.clientResources::remove);
+            this.clientResources.invalidateAll(param.getArgs());
             log.info("[Refresh client resources] remove old client resource finished");
         }
     }

@@ -4,7 +4,7 @@
 
 	<select id="selectByAccount" parameterType="java.lang.String" resultMap="BaseResultMap">
 		SELECT
-		<include refid="Base_Column_List" />
+		<include refid="Base_Column_List"/>
 		FROM base_account ba
 		INNER JOIN base_account_role bar ON ba.id = bar.account_id
 		INNER JOIN base_role br ON br.id = bar.role_id
