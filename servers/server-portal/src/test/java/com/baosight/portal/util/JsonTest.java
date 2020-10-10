@@ -1,17 +1,11 @@
 package com.baosight.portal.util;
 
-import cn.hutool.crypto.SecureUtil;
 import com.baosight.portal.BaseTest;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.utils.JSON;
-import open.gateway.common.utils.StringUtil;
 import org.junit.jupiter.api.Test;
 import org.open.gateway.portal.constants.DateTimeFormatters;
-import org.open.gateway.portal.modules.account.controller.vo.AccountLoginRequest;
-import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;

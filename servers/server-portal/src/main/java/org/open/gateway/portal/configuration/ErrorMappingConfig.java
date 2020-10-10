@@ -25,6 +25,7 @@ public class ErrorMappingConfig {
 
     @ExceptionHandler(ServiceException.class)
     public Result convertServiceException(ServiceException e) {
+        log.error("Service exception msg:{}", e.getMessage());
         ResultCode resultCode = mappingServiceExceptionToResultCode(e);
         log.error("Result code:{} msg:{}", resultCode.getCode(), resultCode.getMessage());
         return Result.fail(resultCode);
@@ -45,6 +46,7 @@ public class ErrorMappingConfig {
             }
             sb.append("; ");
         }
+        log.error("Valid result is:{}", sb.toString());
         return sb.toString();
     }
 
