@@ -18,24 +18,24 @@ import java.util.Set;
 public class JdbcClientResourcesRepository extends AbstractClientResourcesRepository {
 
     private final DatabaseClient databaseClient;
+    private final int refreshInterval;
 
     @Override
     public int refreshInterval() {
-        return 60 * 60;
+        return this.refreshInterval;
     }
 
     @Override
-    protected Flux<GatewayClientResourceDefinition.ClientResource> getClientApiRoutes(Set<String> clientIds) {
+    protected Flux<GatewayClientResourceDefinition> getClientApiRoutes(Set<String> clientIds) {
         return this.databaseClient
                 .execute(SQLS.QUERY_API_ROUTE.AND_IN("gp.client_id", clientIds).getSql())
                 .map(this::rowToClientResource)
                 .all();
     }
 
-    private GatewayClientResourceDefinition.ClientResource rowToClientResource(Row row) {
-        GatewayClientResourceDefinition.ClientResource clientResource = new GatewayClientResourceDefinition.ClientResource();
+    private GatewayClientResourceDefinition rowToClientResource(Row row) {
+        GatewayClientResourceDefinition clientResource = new GatewayClientResourceDefinition();
         clientResource.setClientId(row.get("client_id", String.class));
-        clientResource.setClientSecret(row.get("client_secret", String.class));
         clientResource.setRoutePath(row.get("route_path", String.class));
         clientResource.setApiPath(row.get("api_path", String.class));
         return clientResource;

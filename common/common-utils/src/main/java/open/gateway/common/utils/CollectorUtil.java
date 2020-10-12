@@ -1,9 +1,6 @@
 package open.gateway.common.utils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -72,6 +69,17 @@ public class CollectorUtil {
     }
 
     /**
+     * HashSet转换器
+     *
+     * @param mapper 映射器
+     * @param <E>    原始集合中元素的类型
+     * @param <R>    映射后的类型
+     */
+    public static <E, R> Collector<E, HashSet<R>, HashSet<R>> toHashSet(Function<E, R> mapper) {
+        return toCollection(HashSet::new, mapper);
+    }
+
+    /**
      * ArrayList转换器
      *
      * @param mapper 映射器
@@ -81,5 +89,6 @@ public class CollectorUtil {
     public static <E, R> Collector<E, ArrayList<R>, ArrayList<R>> toArrayList(Function<E, R> mapper) {
         return toCollection(ArrayList::new, mapper);
     }
+
 
 }

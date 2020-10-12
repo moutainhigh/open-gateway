@@ -107,14 +107,6 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
     }
 
     /**
-     * 获取网关路由配置信息
-     *
-     * @param apiCodes api代码
-     * @return 路由配置信息
-     */
-    protected abstract Flux<GatewayRouteDefinition> getRefreshableRouteDefinitions(Set<String> apiCodes);
-
-    /**
      * 网关配置信息转路由配置
      *
      * @param route 网关配置信息
@@ -271,5 +263,13 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
             return "1";
         }
     }
+
+    /**
+     * 获取网关路由配置信息
+     *
+     * @param apiCodes api代码
+     * @return 路由配置信息
+     */
+    protected abstract Flux<GatewayRouteDefinition> getRefreshableRouteDefinitions(Set<String> apiCodes);
 
 }

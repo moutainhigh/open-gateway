@@ -21,6 +21,7 @@ import java.util.Set;
 public class JdbcIpLimitRepository extends AbstractIpLimitRepository {
 
     private final DatabaseClient databaseClient;
+    private final int refreshInterval;
 
     @Override
     protected Flux<GatewayIpLimitDefinition.IpLimit> getIpLimits(Set<String> apiCodes) {
@@ -39,7 +40,7 @@ public class JdbcIpLimitRepository extends AbstractIpLimitRepository {
 
     @Override
     public int refreshInterval() {
-        return 60 * 60;
+        return this.refreshInterval;
     }
 
 }

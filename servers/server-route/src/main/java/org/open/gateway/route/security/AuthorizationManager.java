@@ -142,9 +142,9 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
             return Mono.just(true);
         }
         return this.clientResourcesRepository
-                .loadResourcePathByClientId(clientId)
+                .loadResourcesByClientId(clientId)
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new AccessDeniedException("Access Denied invalid client_id:" + clientId))))
-                .map(resource -> resource.getResources().contains(routeDefinition.getId()));
+                .map(resources -> resources.contains(routeDefinition.getId()));
     }
 
 }

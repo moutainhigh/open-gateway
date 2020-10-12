@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.base.entity.RefreshGateway;
 import open.gateway.common.utils.CollectionUtil;
+import open.gateway.common.utils.CollectorUtil;
 import org.open.gateway.route.entity.GatewayClientResourceDefinition;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,22 +25,20 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
     /**
      * 客户端资源分组。 key为客户端id，value为该客户端所拥有的资源
      */
-    private final Cache<String, GatewayClientResourceDefinition> clientResources = Caffeine.newBuilder()
+    private final Cache<String, Set<String>> clientResources = Caffeine.newBuilder()
 //            .refreshAfterWrite(5, TimeUnit.MINUTES) // 创建缓存或者最近一次更新缓存后经过指定时间间隔，刷新缓存
             .maximumSize(10000) // 缓存的最大数量
             .build();
 
     @Override
-    public Mono<GatewayClientResourceDefinition> loadResourcePathByClientId(String clientId) {
+    public Mono<Set<String>> loadResourcesByClientId(String clientId) {
         return Mono.justOrEmpty(this.clientResources.getIfPresent(clientId)) // 从内存中获取
                 // 找不到从数据库查询
                 .switchIfEmpty(
                         getClientApiRoutes(CollectionUtil.newHashSet(clientId))
-                                .reduce(new GatewayClientResourceDefinition(), (crd, cr) -> crd.addResource(cr).clientSecret(cr.getClientSecret()))
-                                .doOnNext(rs -> {
-                                    this.clientResources.put(clientId, rs);
-                                })
-                                .doOnSuccess(rs -> log.info("Reload client id:{} resource count:{}", clientId, rs.getResources().size()))
+                                .collect(CollectorUtil.toHashSet(GatewayClientResourceDefinition::getFullPath))
+                                .doOnNext(rs -> this.clientResources.put(clientId, rs))
+                                .doOnSuccess(rs -> log.info("Reload client id:{} resource count:{}", clientId, rs.size()))
                 );
     }
 
@@ -80,17 +79,13 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
      * @param refreshClientIds api编码
      * @return 分组后的客户端资源
      */
-    protected Mono<Map<String, GatewayClientResourceDefinition>> getGatewayClientResourceDefinition(Set<String> refreshClientIds) {
+    protected Mono<Map<String, Set<String>>> getGatewayClientResourceDefinition(Set<String> refreshClientIds) {
         return getClientApiRoutes(refreshClientIds)
                 .collect(HashMap::new, (map, res) -> {
                     if (map.containsKey(res.getClientId())) {
-                        map.get(res.getClientId())
-                                .addResource(res);
+                        map.get(res.getClientId()).add(res.getFullPath());
                     } else {
-                        map.put(res.getClientId(), new GatewayClientResourceDefinition()
-                                .clientSecret(res.getClientSecret())
-                                .addResource(res)
-                        );
+                        map.put(res.getClientId(), CollectionUtil.newHashSet(res.getFullPath()));
                     }
                 });
     }
@@ -101,6 +96,6 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
      * @param clientIds 客户端id
      * @return 客户端资源
      */
-    protected abstract Flux<GatewayClientResourceDefinition.ClientResource> getClientApiRoutes(Set<String> clientIds);
+    protected abstract Flux<GatewayClientResourceDefinition> getClientApiRoutes(Set<String> clientIds);
 
 }

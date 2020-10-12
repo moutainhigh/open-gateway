@@ -34,17 +34,17 @@ public class GatewayRouteConfig implements ApplicationContextAware {
 
     @Bean
     public RefreshableRouteDefinitionRepository routeDefinitionRepository(DatabaseClient databaseClient) {
-        return new JdbcRouteDefinitionRepository(databaseClient);
+        return new JdbcRouteDefinitionRepository(databaseClient, 60 * 60);
     }
 
     @Bean
     public RefreshableClientResourcesRepository clientResourcesRepository(DatabaseClient databaseClient) {
-        return new JdbcClientResourcesRepository(databaseClient);
+        return new JdbcClientResourcesRepository(databaseClient, 60 * 60);
     }
 
     @Bean
     public RefreshableIpLimitRepository ipLimitRepository(DatabaseClient databaseClient) {
-        return new JdbcIpLimitRepository(databaseClient);
+        return new JdbcIpLimitRepository(databaseClient, 60 * 60);
     }
 
     @Primary

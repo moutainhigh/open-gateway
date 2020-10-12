@@ -1,7 +1,8 @@
 package org.open.gateway.route.repositories;
 
-import org.open.gateway.route.entity.GatewayClientResourceDefinition;
 import reactor.core.publisher.Mono;
+
+import java.util.Set;
 
 /**
  * Created by miko on 2020/7/17.
@@ -16,6 +17,6 @@ public interface RefreshableClientResourcesRepository extends RefreshableReposit
      * @param clientId 客户端id
      * @return 资源路径
      */
-    Mono<GatewayClientResourceDefinition> loadResourcePathByClientId(String clientId);
+    Mono<Set<String>> loadResourcesByClientId(String clientId);
 
 }

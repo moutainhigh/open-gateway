@@ -53,7 +53,7 @@ public interface SQLS {
      * 根据客户端查询api
      */
     Sql QUERY_API_ROUTE = new Sql(
-            "select distinct gp.client_id, gp.client_secret, gr.route_path, ga.api_path " +
+            "select distinct gp.client_id, gr.route_path, ga.api_path " +
                     "from gateway_route gr " +
                     "inner join gateway_api ga on gr.route_code = ga.route_code " +
                     "inner join gateway_app_api gaa on gaa.api_id  = ga.id " +

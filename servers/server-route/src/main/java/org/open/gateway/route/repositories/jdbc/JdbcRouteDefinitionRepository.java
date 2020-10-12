@@ -20,10 +20,11 @@ import java.util.Set;
 public class JdbcRouteDefinitionRepository extends AbstractRouteDefinitionRepository {
 
     private final DatabaseClient databaseClient;
+    private final int refreshInterval;
 
     @Override
     public int refreshInterval() {
-        return 60 * 60;
+        return this.refreshInterval;
     }
 
     @Override
