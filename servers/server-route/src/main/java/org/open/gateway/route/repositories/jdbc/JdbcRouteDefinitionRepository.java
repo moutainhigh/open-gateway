@@ -29,12 +29,12 @@ public class JdbcRouteDefinitionRepository extends AbstractRouteDefinitionReposi
 
     @Override
     protected Flux<GatewayRouteDefinition> getRefreshableRouteDefinitions(Set<String> apiCodes) {
-        return this.databaseClient.execute(SQLS.QUERY_API_ROUTE_DEFINITIONS.AND_IN("ga.api_code", apiCodes).getSql())
+        return this.databaseClient.execute(SQLS.QUERY_API_ROUTE_DEFINITIONS.andIn("ga.api_code", apiCodes).format())
                 .map(this::rowToGatewayRouteDefinition)
                 .all()
                 .flatMap(routeDefinition ->
                         this.databaseClient
-                                .execute(SQLS.QUERY_RATE_LIMIT_BY_API_ID.getSql(routeDefinition.getApiId()))
+                                .execute(SQLS.QUERY_RATE_LIMIT_BY_API_ID.format(routeDefinition.getApiId()))
                                 .map(this::rowToGatewayRateLimitDefinition)
                                 .one()
                                 .doOnSuccess(routeDefinition::setRateLimit)

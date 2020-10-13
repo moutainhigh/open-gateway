@@ -58,7 +58,7 @@ public class StringUtil {
      * @param maxLen 限定的最大长度
      * @return 处理后的字符串
      */
-    public static String trimByLenLimit(String str, int maxLen) {
+    public static String splitByLenLimit(String str, int maxLen) {
         if (str.length() > maxLen) {
             return str.substring(0, maxLen);
         }

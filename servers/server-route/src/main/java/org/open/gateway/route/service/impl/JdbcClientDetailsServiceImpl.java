@@ -32,7 +32,7 @@ public class JdbcClientDetailsServiceImpl implements ClientDetailsService {
 
     @Override
     public Mono<ClientDetails> loadClientByClientId(String clientId) {
-        return databaseClient.execute(SQLS.QUERY_CLIENT_BY_ID.getSql(clientId))
+        return databaseClient.execute(SQLS.QUERY_CLIENT_BY_ID.format(clientId))
                 .map(this::rowToBaseClientDetails)
                 .one()
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new ClientNotFoundException())));

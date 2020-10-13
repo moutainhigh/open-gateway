@@ -6,6 +6,7 @@
 		<result column="app_name" jdbcType="VARCHAR" property="appName"/>
 		<result column="client_id" jdbcType="VARCHAR" property="clientId"/>
 		<result column="client_secret" jdbcType="VARCHAR" property="clientSecret"/>
+		<result column="register_from" jdbcType="VARCHAR" property="registerFrom"/>
 		<result column="status" jdbcType="TINYINT" property="status"/>
 		<result column="desc" jdbcType="VARCHAR" property="desc"/>
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
@@ -15,8 +16,8 @@
 		<result column="is_del" jdbcType="TINYINT" property="isDel"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-    id, app_name, client_id, client_secret, status, desc, create_time, create_person, 
-    update_time, update_person, is_del
+    id, app_name, client_id, client_secret, register_from, status, desc, create_time, 
+    create_person, update_time, update_person, is_del
   </sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		select
@@ -27,13 +28,13 @@
 	<insert id="insert" keyColumn="id" keyProperty="id"
 			parameterType="org.open.gateway.portal.persistence.po.GatewayApp" useGeneratedKeys="true">
     insert into gateway_app (app_name, client_id, client_secret, 
-      status, desc, create_time, 
-      create_person, update_time, update_person, 
-      is_del)
+      register_from, status, desc, 
+      create_time, create_person, update_time, 
+      update_person, is_del)
     values (#{appName,jdbcType=VARCHAR}, #{clientId,jdbcType=VARCHAR}, #{clientSecret,jdbcType=VARCHAR}, 
-      #{status,jdbcType=TINYINT}, #{desc,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updatePerson,jdbcType=VARCHAR}, 
-      #{isDel,jdbcType=TINYINT})
+      #{registerFrom,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{desc,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updatePerson,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT})
   </insert>
 	<insert id="insertSelective" keyColumn="id" keyProperty="id"
 			parameterType="org.open.gateway.portal.persistence.po.GatewayApp" useGeneratedKeys="true">
@@ -47,6 +48,9 @@
 			</if>
 			<if test="clientSecret != null">
 				client_secret,
+			</if>
+			<if test="registerFrom != null">
+				register_from,
 			</if>
 			<if test="status != null">
 				status,
@@ -79,6 +83,9 @@
 			</if>
 			<if test="clientSecret != null">
 				#{clientSecret,jdbcType=VARCHAR},
+			</if>
+			<if test="registerFrom != null">
+				#{registerFrom,jdbcType=VARCHAR},
 			</if>
 			<if test="status != null">
 				#{status,jdbcType=TINYINT},
@@ -115,6 +122,9 @@
 			<if test="clientSecret != null">
 				client_secret = #{clientSecret,jdbcType=VARCHAR},
 			</if>
+			<if test="registerFrom != null">
+				register_from = #{registerFrom,jdbcType=VARCHAR},
+			</if>
 			<if test="status != null">
 				status = #{status,jdbcType=TINYINT},
 			</if>
@@ -144,6 +154,7 @@
     set app_name = #{appName,jdbcType=VARCHAR},
       client_id = #{clientId,jdbcType=VARCHAR},
       client_secret = #{clientSecret,jdbcType=VARCHAR},
+      register_from = #{registerFrom,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},
       desc = #{desc,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},

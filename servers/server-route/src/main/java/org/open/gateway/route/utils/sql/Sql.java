@@ -22,26 +22,22 @@ public class Sql {
         return this.sql;
     }
 
-    public Sql format(Object... args) {
-        return new Sql(getSql(args));
-    }
-
-    public String getSql(Object... args) {
+    public String format(Object... args) {
         if (args == null || args.length == 0) {
             return this.toString();
         }
         return String.format(this.toString(), args);
     }
 
-    public Sql WHERE_IN(String column, Collection<?> args) {
-        return IN(" WHERE ", column, args);
+    public Sql whereIn(String column, Collection<?> args) {
+        return in(" WHERE ", column, args);
     }
 
-    public Sql AND_IN(String column, Collection<?> args) {
-        return IN(" AND ", column, args);
+    public Sql andIn(String column, Collection<?> args) {
+        return in(" AND ", column, args);
     }
 
-    public Sql IN(String prefix, String column, Collection<?> args) {
+    public Sql in(String prefix, String column, Collection<?> args) {
         if (args == null) {
             return new Sql(this.toString());
         }

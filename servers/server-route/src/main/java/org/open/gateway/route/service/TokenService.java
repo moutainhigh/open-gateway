@@ -111,7 +111,7 @@ public class TokenService {
      * @return token信息
      */
     public Mono<OauthClientToken> loadClientTokenByClientId(String clientId) {
-        return databaseClient.execute(SQLS.QUERY_CLIENT_TOKEN_BY_ID.getSql(clientId))
+        return databaseClient.execute(SQLS.QUERY_CLIENT_TOKEN_BY_ID.format(clientId))
                 .map(this::rowToClientToken)
                 .one();
     }

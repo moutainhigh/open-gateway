@@ -11,6 +11,8 @@ public class GatewayApp {
 
     private String clientSecret;
 
+    private String registerFrom;
+
     private Byte status;
 
     private String desc;
@@ -55,6 +57,14 @@ public class GatewayApp {
 
     public void setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret == null ? null : clientSecret.trim();
+    }
+
+    public String getRegisterFrom() {
+        return registerFrom;
+    }
+
+    public void setRegisterFrom(String registerFrom) {
+        this.registerFrom = registerFrom == null ? null : registerFrom.trim();
     }
 
     public Byte getStatus() {

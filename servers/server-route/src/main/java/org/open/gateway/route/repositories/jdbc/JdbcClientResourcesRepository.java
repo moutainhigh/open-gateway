@@ -28,7 +28,7 @@ public class JdbcClientResourcesRepository extends AbstractClientResourcesReposi
     @Override
     protected Flux<GatewayClientResourceDefinition> getClientApiRoutes(Set<String> clientIds) {
         return this.databaseClient
-                .execute(SQLS.QUERY_API_ROUTE.AND_IN("gp.client_id", clientIds).getSql())
+                .execute(SQLS.QUERY_API_ROUTE.andIn("gp.client_id", clientIds).format())
                 .map(this::rowToClientResource)
                 .all();
     }

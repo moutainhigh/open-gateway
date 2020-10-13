@@ -89,14 +89,14 @@ public class AccessLogsService {
         accessLogs.setHttpStatus(Objects.requireNonNull(response.getStatusCode()).value());
         accessLogs.setHttpMethod(request.getMethodValue());
         accessLogs.setHttpHeaders(toSerializableString(headers.toSingleValueMap()));
-        accessLogs.setRequestQueryString(StringUtil.trimByLenLimit(toSerializableString(request.getQueryParams()), 512));
+        accessLogs.setRequestQueryString(StringUtil.splitByLenLimit(toSerializableString(request.getQueryParams()), 512));
         accessLogs.setRequestBody(requestBody);
         accessLogs.setRequestTime(WebExchangeUtil.getRequestTime(exchange));
         accessLogs.setResponseTime(new Date());
         accessLogs.setUsedTime((int) (accessLogs.getResponseTime().getTime() - accessLogs.getRequestTime().getTime()));
         accessLogs.setUserAgent(headers.getFirst(HttpHeaders.USER_AGENT));
         if (ex != null) {
-            accessLogs.setError(StringUtil.trimByLenLimit(ex.getMessage(), 512));
+            accessLogs.setError(StringUtil.splitByLenLimit(ex.getMessage(), 512));
         }
         Route route = exchange.getAttribute(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR); // 路由信息中获取api信息
         if (route != null) {
