@@ -26,7 +26,7 @@ import java.security.KeyPair;
 
 /**
  * Created by miko on 2020/6/9.
- * jwt配置
+ * token配置
  *
  * @author miko
  **/
@@ -123,7 +123,7 @@ public class TokenConfig {
          * redis token生成器
          */
         @Bean
-        public RedisTokenGenerator uuidTokenGenerator(ReactiveStringRedisTemplate redisTemplate) {
+        public RedisTokenGenerator redisTokenGenerator(ReactiveStringRedisTemplate redisTemplate) {
             return new RedisTokenGenerator(redisTemplate);
         }
 

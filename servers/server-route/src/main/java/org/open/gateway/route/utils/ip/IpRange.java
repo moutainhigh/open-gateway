@@ -44,7 +44,7 @@ public class IpRange implements Comparable<IpRange> {
             maskBitCount = Long.parseLong(addressAndMask[1]);
         } else if (ipPattern.indexOf('*') > 0) {
             ip = ipPattern.replaceAll("\\*", "255");
-            maskBitCount = IPV4_BIT_COUNT - ((long)StringUtils.countOccurrencesOf(ipPattern, "*") * 8);
+            maskBitCount = IPV4_BIT_COUNT - ((long) StringUtils.countOccurrencesOf(ipPattern, "*") * 8);
         } else {
             ip = ipPattern;
             maskBitCount = IPV4_BIT_COUNT;

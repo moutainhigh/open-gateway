@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  */
 public class RedisSerializerTest extends BaseTest {
 
-    private final int test_count = 10000;
+    private final int test_count = 100000;
 
     @Test
     public void testJdkSerializationRedisSerializer() {

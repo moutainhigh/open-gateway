@@ -13,8 +13,8 @@ public interface TokenGenerator {
     /**
      * 生成token
      *
-     * @param tokenRequest  用户token请求参数
-     * @param clientDetails 客户端信息
+     * @param expireAt  过期时间
+     * @param tokenUser 客户端信息
      * @return 生成的token
      */
     Mono<String> generate(long expireAt, TokenUser tokenUser);

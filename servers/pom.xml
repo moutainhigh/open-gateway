@@ -6,6 +6,7 @@
 		<artifactId>open-gateway</artifactId>
 		<groupId>org.open.gateway</groupId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modules>
 		<module>server-route</module>

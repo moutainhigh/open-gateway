@@ -1,4 +1,4 @@
-package org.open.gateway.route.repositories.jdbc;
+package org.open.gateway.route.repositories.r2dbc;
 
 import org.open.gateway.route.utils.sql.Sql;
 

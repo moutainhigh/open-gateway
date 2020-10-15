@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.utils.Dates;
 import org.open.gateway.route.entity.token.AccessToken;
 import org.open.gateway.route.entity.token.TokenUser;
-import org.open.gateway.route.repositories.jdbc.SQLS;
+import org.open.gateway.route.repositories.r2dbc.SQLS;
 import org.open.gateway.route.security.token.generators.TokenGenerator;
 import org.open.gateway.route.service.bo.ClientDetails;
 import org.open.gateway.route.service.bo.OauthClientToken;

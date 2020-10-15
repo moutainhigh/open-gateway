@@ -5,9 +5,9 @@ import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRepository;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
-import org.open.gateway.route.repositories.jdbc.JdbcClientResourcesRepository;
-import org.open.gateway.route.repositories.jdbc.JdbcIpLimitRepository;
-import org.open.gateway.route.repositories.jdbc.JdbcRouteDefinitionRepository;
+import org.open.gateway.route.repositories.r2dbc.R2dbcClientResourcesRepository;
+import org.open.gateway.route.repositories.r2dbc.R2dbcIpLimitRepository;
+import org.open.gateway.route.repositories.r2dbc.R2dbcRouteDefinitionRepository;
 import org.open.gateway.route.utils.WebExchangeUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
@@ -34,17 +34,17 @@ public class GatewayRouteConfig implements ApplicationContextAware {
 
     @Bean
     public RefreshableRouteDefinitionRepository routeDefinitionRepository(DatabaseClient databaseClient) {
-        return new JdbcRouteDefinitionRepository(databaseClient, 60 * 60);
+        return new R2dbcRouteDefinitionRepository(databaseClient, 60 * 60);
     }
 
     @Bean
     public RefreshableClientResourcesRepository clientResourcesRepository(DatabaseClient databaseClient) {
-        return new JdbcClientResourcesRepository(databaseClient, 60 * 60);
+        return new R2dbcClientResourcesRepository(databaseClient, 60 * 60);
     }
 
     @Bean
     public RefreshableIpLimitRepository ipLimitRepository(DatabaseClient databaseClient) {
-        return new JdbcIpLimitRepository(databaseClient, 60 * 60);
+        return new R2dbcIpLimitRepository(databaseClient, 60 * 60);
     }
 
     @Primary

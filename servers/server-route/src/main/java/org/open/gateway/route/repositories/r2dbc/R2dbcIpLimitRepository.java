@@ -1,4 +1,4 @@
-package org.open.gateway.route.repositories.jdbc;
+package org.open.gateway.route.repositories.r2dbc;
 
 import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.Set;
  * @author MIKO
  */
 @AllArgsConstructor
-public class JdbcIpLimitRepository extends AbstractIpLimitRepository {
+public class R2dbcIpLimitRepository extends AbstractIpLimitRepository {
 
     private final DatabaseClient databaseClient;
     private final int refreshInterval;

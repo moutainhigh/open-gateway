@@ -45,8 +45,8 @@ public class RedisTemplateTest extends BaseSpringTest {
     }
 
     private Mono<Boolean> doSetValue(String key, String test_value1) {
-        return redisTemplate.opsForValue().setIfAbsent(key, test_value1, Duration.ofMillis(100000))
-                .doOnNext(b -> System.out.println("Thread:" + currentThreadName() + " setIfAbsent key:" + key + " result:" + b));
+        return redisTemplate.opsForValue().setIfAbsent(key, test_value1, Duration.ofMillis(100000));
+//                .doOnNext(b -> System.out.println("Thread:" + currentThreadName() + " setIfAbsent key:" + key + " result:" + b));
     }
 
 }

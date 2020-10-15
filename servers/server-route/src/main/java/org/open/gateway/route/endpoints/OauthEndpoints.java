@@ -61,7 +61,7 @@ public class OauthEndpoints {
                                         .map(token -> buildTokenResponse(token.getToken(), Dates.toTimestamp(token.getExpireTime()))) // 构建返回对象
                                         .doOnNext(response -> log.info("Client id:{} exists token:{} expire_at:{}", tokenRequest.getClient_id(), response.getAccess_token(), response.getExpire_at()))
                                         .switchIfEmpty(
-                                                Mono.defer(() -> this.tokenService.generate(cd)) // 重新生成token
+                                                Mono.defer(() -> tokenService.generate(cd)) // 重新生成token
                                                         .flatMap(accessToken -> tokenService.saveClientToken(cd.getClientId(), accessToken.getToken(), accessToken.getExpireAt()).thenReturn(accessToken)) // 保存token
                                                         .map(accessToken -> buildTokenResponse(accessToken.getToken(), accessToken.getExpireAt()))
                                                         .doOnSuccess(response -> log.info("Generated token:{} expire_in:{} with client_id:{}", response.getAccess_token(), response.getExpire_at(), tokenRequest.getClient_id()))
