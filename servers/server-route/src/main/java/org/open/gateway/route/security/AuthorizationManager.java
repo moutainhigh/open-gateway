@@ -59,7 +59,7 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> authentication, AuthorizationContext authorizationContext) {
         return authentication
-                .filter(auth -> auth.isAuthenticated() && auth.getPrincipal() != null)
+                .filter(Authentication::isAuthenticated)
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new AccessDeniedException("Access Denied invalid token"))))
                 .map(Authentication::getPrincipal)
                 .filter(principal -> principal instanceof TokenUser)

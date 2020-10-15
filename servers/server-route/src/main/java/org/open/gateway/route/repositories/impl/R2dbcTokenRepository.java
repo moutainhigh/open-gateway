@@ -1,16 +1,19 @@
-package org.open.gateway.route.repositories.r2dbc;
+package org.open.gateway.route.repositories.impl;
 
 import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import open.gateway.common.base.constants.GatewayConstants;
 import open.gateway.common.utils.Dates;
+import open.gateway.common.utils.IdUtil;
+import open.gateway.common.utils.JSON;
 import org.open.gateway.route.entity.token.AccessToken;
 import org.open.gateway.route.entity.token.TokenUser;
 import org.open.gateway.route.repositories.TokenRepository;
-import org.open.gateway.route.security.token.generators.TokenGenerator;
 import org.open.gateway.route.service.bo.ClientDetails;
 import org.open.gateway.route.service.bo.OauthClientToken;
 import org.springframework.data.r2dbc.core.DatabaseClient;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Update;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,7 +39,7 @@ public class R2dbcTokenRepository implements TokenRepository {
 
     private final TransactionalOperator operator;
     private final DatabaseClient databaseClient;
-    private final TokenGenerator generator;
+    private final ReactiveStringRedisTemplate redisTemplate;
 
     /**
      * 生成token
@@ -47,12 +50,27 @@ public class R2dbcTokenRepository implements TokenRepository {
     @Override
     public Mono<AccessToken> generate(ClientDetails clientDetails) {
         // token用户信息
-        TokenUser tokenUser = generateTokenUser(clientDetails);
+        TokenUser tokenUser = toTokenUser(clientDetails);
         // 获取过期时间点
         long expireAt = getExpireAt(clientDetails.getAccessTokenValiditySeconds());
         // 生成token
-        return this.generator.generate(expireAt, tokenUser)
-                .map(token -> this.generateAccessToken(token, expireAt));
+        return generateToken(expireAt, tokenUser).map(token -> this.toAccessToken(token, expireAt));
+    }
+
+    /**
+     * 生成token
+     *
+     * @param expireAt  过期时间
+     * @param tokenUser 客户端信息
+     * @return 生成的token
+     */
+    private Mono<String> generateToken(long expireAt, TokenUser tokenUser) {
+        // 生成授权访问token
+        String token = IdUtil.uuid();
+        // 生成token放入redis中
+        return this.redisTemplate.opsForValue()
+                .set(GatewayConstants.RedisKey.PREFIX_ACCESS_TOKENS + token, JSON.toJSONString(tokenUser), Duration.ofMillis(expireAt).minusMillis(System.currentTimeMillis()))
+                .thenReturn(token);
     }
 
     /**
@@ -74,7 +92,7 @@ public class R2dbcTokenRepository implements TokenRepository {
      * @param expireAt 过期时间点
      * @return accessToken对象
      */
-    private AccessToken generateAccessToken(String token, long expireAt) {
+    private AccessToken toAccessToken(String token, long expireAt) {
         AccessToken accessToken = new AccessToken();
         accessToken.setToken(token);
         accessToken.setExpireAt(expireAt);
@@ -87,7 +105,7 @@ public class R2dbcTokenRepository implements TokenRepository {
      * @param clientDetails 客户端配置信息
      * @return token用户信息
      */
-    private TokenUser generateTokenUser(ClientDetails clientDetails) {
+    private TokenUser toTokenUser(ClientDetails clientDetails) {
         TokenUser tokenUser = new TokenUser();
         tokenUser.setClientId(clientDetails.getClientId());
         if (clientDetails.getAuthorities() != null && !clientDetails.getAuthorities().isEmpty()) {

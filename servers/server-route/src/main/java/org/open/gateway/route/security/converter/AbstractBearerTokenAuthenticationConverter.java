@@ -1,7 +1,6 @@
-package org.open.gateway.route.security.token.converters;
+package org.open.gateway.route.security.converter;
 
 import org.open.gateway.route.constants.OAuth2Constants;
-import org.open.gateway.route.exception.InvalidTokenException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -9,9 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by miko on 2020/7/22.
@@ -21,10 +17,6 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractBearerTokenAuthenticationConverter implements ServerAuthenticationConverter {
 
-    /**
-     * 用于匹配请求头token的正则表达式
-     */
-    private static final Pattern AUTHORIZATION_PATTERN = Pattern.compile("^Bearer (?<token>[a-zA-Z0-9-._~+/]+)=*$", Pattern.CASE_INSENSITIVE);
     /**
      * 是否允许从get请求的url参数中获取token
      */
@@ -73,22 +65,9 @@ public abstract class AbstractBearerTokenAuthenticationConverter implements Serv
     private String resolveFromAuthorizationHeader(HttpHeaders headers) {
         String authorization = headers.getFirst(HttpHeaders.AUTHORIZATION);
         if (authorization != null && authorization.startsWith(OAuth2Constants.TOKEN_PREFIX)) {
-            Matcher matcher = AUTHORIZATION_PATTERN.matcher(authorization);
-            if (!matcher.matches()) {
-                throw invalidTokenError();
-            }
-            return matcher.group("token");
+            return authorization.substring(OAuth2Constants.TOKEN_PREFIX.length());
         }
         return null;
-    }
-
-    /**
-     * 无效的token异常
-     *
-     * @return 异常
-     */
-    protected InvalidTokenException invalidTokenError() {
-        return new InvalidTokenException("bearer token is malformed");
     }
 
     /**

@@ -3,6 +3,7 @@ package org.open.gateway.route.security.filter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.route.service.AccessLogsService;
+import org.open.gateway.route.utils.WebExchangeUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -38,6 +39,9 @@ public class RequestRecorderGatewayFilter implements GlobalFilter, Ordered {
         if ("websocket".equalsIgnoreCase(upgrade)) {
             return chain.filter(exchange);
         }
+        // 添加请求时间
+        WebExchangeUtil.putRequestTime(exchange);
+        // 发送日志
         return ServerWebExchangeUtils.cacheRequestBody(exchange, serverHttpRequest -> chain.filter(exchange.mutate().request(serverHttpRequest).build()))
                 .doOnSuccess(v -> this.accessLogsService.sendAccessLogs(exchange))
                 .doOnError(error -> this.accessLogsService.sendAccessLogs(exchange, error));

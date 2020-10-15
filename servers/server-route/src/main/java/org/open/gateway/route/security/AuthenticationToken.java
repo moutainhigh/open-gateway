@@ -1,4 +1,4 @@
-package org.open.gateway.route.security.token;
+package org.open.gateway.route.security;
 
 import org.open.gateway.route.entity.token.TokenUser;
 import org.springframework.security.core.Authentication;

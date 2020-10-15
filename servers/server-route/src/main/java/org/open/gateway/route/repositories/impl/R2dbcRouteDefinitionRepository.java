@@ -1,4 +1,4 @@
-package org.open.gateway.route.repositories.r2dbc;
+package org.open.gateway.route.repositories.impl;
 
 import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;

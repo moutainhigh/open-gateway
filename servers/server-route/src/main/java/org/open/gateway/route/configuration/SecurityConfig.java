@@ -9,7 +9,6 @@ import org.open.gateway.route.security.AuthenticationEntryPoint;
 import org.open.gateway.route.security.AuthenticationManager;
 import org.open.gateway.route.security.AuthorizationDeniedHandler;
 import org.open.gateway.route.security.AuthorizationManager;
-import org.open.gateway.route.security.filter.PreRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -52,7 +51,6 @@ public class SecurityConfig {
                 .exceptionHandling()
                 .accessDeniedHandler(new AuthorizationDeniedHandler());
 
-        http.addFilterAt(new PreRequestFilter(), SecurityWebFiltersOrder.FIRST);
         // 认证拦截器
         http.addFilterAt(authenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION);
         return http.build();
