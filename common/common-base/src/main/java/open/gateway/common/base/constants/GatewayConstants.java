@@ -13,8 +13,6 @@ public interface GatewayConstants {
      */
     interface RedisKey {
 
-        // 路由表存放redis的key
-        String ROUTES = "gateway_routes";
         // token存放redis的key的点缀
         String PREFIX_ACCESS_TOKENS = "access_token:";
         // 授权码前缀
@@ -41,7 +39,7 @@ public interface GatewayConstants {
     interface RateLimitPolicy {
 
         // 策略类型-根据url限制访问次数
-        String POLICY_TYPE_URL = "URL";
+        String POLICY_TYPE_URL = "url";
         // 策略类型-根据用户限制访问次数
         String POLICY_TYPE_USER = "user";
         // 策略类型-根据url和用户限制访问次数

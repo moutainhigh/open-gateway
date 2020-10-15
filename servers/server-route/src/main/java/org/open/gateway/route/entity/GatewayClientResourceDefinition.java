@@ -2,7 +2,7 @@ package org.open.gateway.route.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.open.gateway.route.utils.PathUtil;
+import org.open.gateway.route.utils.UrlUtil;
 
 /**
  * Created by miko on 2020/9/10.
@@ -28,7 +28,7 @@ public class GatewayClientResourceDefinition {
     private String apiPath;
 
     public String getFullPath() {
-        return PathUtil.getFullPath(this.getRoutePath(), this.getApiPath());
+        return UrlUtil.appendUrlPath(this.getRoutePath(), this.getApiPath());
     }
 
 }

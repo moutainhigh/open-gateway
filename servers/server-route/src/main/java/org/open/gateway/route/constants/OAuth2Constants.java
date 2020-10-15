@@ -1,4 +1,4 @@
-package open.gateway.common.base.constants;
+package org.open.gateway.route.constants;
 
 /**
  * Created by miko on 2020/7/8.
@@ -26,20 +26,6 @@ public interface OAuth2Constants {
         String CLIENT_CREDENTIALS = "client_credentials";
         // 简化模式
         String IMPLICIT = "implicit";
-
-    }
-
-    interface TokenPayloadKey {
-
-        String SUB = "sub";
-
-        String AUTHORITIES = "authorities";
-
-        String SCOPE = "scope";
-
-        String REDIRECT_URI = "redirect_uri";
-
-        String AUTO_APPROVE = "auto_approve";
 
     }
 

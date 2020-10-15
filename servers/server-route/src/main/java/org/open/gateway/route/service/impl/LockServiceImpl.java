@@ -18,7 +18,7 @@ import java.time.Duration;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class RedisLockServiceImpl implements LockService {
+public class LockServiceImpl implements LockService {
 
     private final ReactiveStringRedisTemplate redisTemplate;
 

@@ -6,7 +6,6 @@
 		<artifactId>open-gateway</artifactId>
 		<groupId>org.open.gateway</groupId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>pom</packaging>
@@ -16,9 +15,6 @@
 	</modules>
 
 	<artifactId>common</artifactId>
-	<properties>
-		<nimbus-jose-jwt.version>8.18.1</nimbus-jose-jwt.version>
-	</properties>
 
 	<dependencyManagement>
 		<dependencies>
@@ -31,11 +27,6 @@
 				<groupId>org.open.gateway</groupId>
 				<artifactId>common-utils</artifactId>
 				<version>${gateway.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.nimbusds</groupId>
-				<artifactId>nimbus-jose-jwt</artifactId>
-				<version>${nimbus-jose-jwt.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

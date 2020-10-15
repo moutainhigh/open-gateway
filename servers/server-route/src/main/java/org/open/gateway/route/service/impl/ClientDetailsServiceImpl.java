@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class R2dbcClientDetailsServiceImpl implements ClientDetailsService {
+public class ClientDetailsServiceImpl implements ClientDetailsService {
 
     private final DatabaseClient databaseClient;
 

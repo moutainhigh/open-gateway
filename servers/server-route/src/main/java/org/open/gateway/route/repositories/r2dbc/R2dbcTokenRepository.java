@@ -1,4 +1,4 @@
-package org.open.gateway.route.service;
+package org.open.gateway.route.repositories.r2dbc;
 
 import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import open.gateway.common.utils.Dates;
 import org.open.gateway.route.entity.token.AccessToken;
 import org.open.gateway.route.entity.token.TokenUser;
-import org.open.gateway.route.repositories.r2dbc.SQLS;
+import org.open.gateway.route.repositories.TokenRepository;
 import org.open.gateway.route.security.token.generators.TokenGenerator;
 import org.open.gateway.route.service.bo.ClientDetails;
 import org.open.gateway.route.service.bo.OauthClientToken;
@@ -32,14 +32,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class TokenService {
+public class R2dbcTokenRepository implements TokenRepository {
 
     private final TransactionalOperator operator;
-
     private final DatabaseClient databaseClient;
-    /**
-     * token生成器
-     */
     private final TokenGenerator generator;
 
     /**
@@ -48,6 +44,7 @@ public class TokenService {
      * @param clientDetails 客户端信息
      * @return access_token
      */
+    @Override
     public Mono<AccessToken> generate(ClientDetails clientDetails) {
         // token用户信息
         TokenUser tokenUser = generateTokenUser(clientDetails);
@@ -110,6 +107,7 @@ public class TokenService {
      * @param clientId 客户端id
      * @return token信息
      */
+    @Override
     public Mono<OauthClientToken> loadClientTokenByClientId(String clientId) {
         return databaseClient.execute(SQLS.QUERY_CLIENT_TOKEN_BY_ID.format(clientId))
                 .map(this::rowToClientToken)
@@ -121,6 +119,7 @@ public class TokenService {
      *
      * @param clientId 客户端id
      */
+    @Override
     public Mono<Integer> deleteClientTokenByClientId(String clientId) {
         return databaseClient.update()
                 .table("oauth_client_token")
@@ -139,6 +138,7 @@ public class TokenService {
      * @param token      token值
      * @param expireTime 过期时间
      */
+    @Override
     public Mono<Void> saveClientToken(String clientId, String token, Long expireTime) {
         Assert.notNull(clientId, "client_id is required");
         Assert.notNull(token, "token is required");

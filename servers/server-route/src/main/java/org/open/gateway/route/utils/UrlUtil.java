@@ -2,27 +2,31 @@ package org.open.gateway.route.utils;
 
 /**
  * Created by miko on 2020/7/10.
+ * url工具类
  *
  * @author MIKO
  */
-public class PathUtil {
+public class UrlUtil {
 
     /**
-     * 获取路由全路径
+     * 拼接url路径
      *
-     * @param routePath 路由路径
-     * @param apiPath   api路径
+     * @param url   原始路径
+     * @param paths 子路径
      * @return 路由全路径
      */
-    public static String getFullPath(String routePath, String apiPath) {
-        if (apiPath == null) {
-            return routePath;
+    public static String appendUrlPath(String url, String... paths) {
+        if (paths == null || paths.length == 0) {
+            return url;
         }
-        String formatApiUrl = apiPath.startsWith("/") ? apiPath : "/" + apiPath;
-        if (routePath != null) {
-            return routePath + formatApiUrl;
+        StringBuilder sb = new StringBuilder(url);
+        for (String path : paths) {
+            if (!path.startsWith("/")) {
+                sb.append("/");
+            }
+            sb.append(path);
         }
-        return formatApiUrl;
+        return sb.toString();
     }
 
     /**

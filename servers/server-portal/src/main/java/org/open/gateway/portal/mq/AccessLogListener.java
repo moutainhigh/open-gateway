@@ -26,7 +26,7 @@ public class AccessLogListener {
     @RabbitListener(
             bindings = @QueueBinding(
                     key = MqConstants.ROUTING_KEY_GATEWAY_ACCESS_LOGS,
-                    value = @Queue(value = MqConstants.QUEUE_GATEWAY_ACCESS_LOGS), //注意这里不要定义队列名称,系统会随机产生
+                    value = @Queue(value = MqConstants.QUEUE_GATEWAY_ACCESS_LOGS),
                     exchange = @Exchange(value = MqConstants.EXCHANGE_GATEWAY_ACCESS_LOGS, type = ExchangeTypes.DIRECT)
             ),
             containerFactory = "batchQueueRabbitListenerContainerFactory"

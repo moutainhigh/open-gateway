@@ -5,8 +5,8 @@ import open.gateway.common.base.constants.GatewayConstants;
 import open.gateway.common.base.entity.RefreshGateway;
 import org.open.gateway.route.entity.GatewayRateLimitDefinition;
 import org.open.gateway.route.entity.GatewayRouteDefinition;
-import org.open.gateway.route.utils.PathUtil;
 import org.open.gateway.route.utils.RouteDefinitionUtil;
+import org.open.gateway.route.utils.UrlUtil;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
@@ -129,7 +129,7 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
         }
         // 路由配置
         RouteDefinition definition = new RouteDefinition();
-        definition.setId(PathUtil.getFullPath(route.getRoutePath(), route.getApiPath()));
+        definition.setId(UrlUtil.appendUrlPath(route.getRoutePath(), route.getApiPath()));
         definition.setUri(uri);
         definition.setPredicates(Arrays.asList(predicatePath));
         definition.setFilters(filters);
@@ -159,7 +159,7 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
      * @return 转发配置
      */
     private PredicateDefinition getPathPredicateDefinition(GatewayRouteDefinition route) {
-        String path = PathUtil.getFullPath(route.getRoutePath(), route.getApiPath());
+        String path = UrlUtil.appendUrlPath(route.getRoutePath(), route.getApiPath());
         PredicateDefinition predicatePath = new PredicateDefinition();
         Map<String, String> predicatePathParams = new HashMap<>(3);
         predicatePathParams.put("name", route.getApiCode());

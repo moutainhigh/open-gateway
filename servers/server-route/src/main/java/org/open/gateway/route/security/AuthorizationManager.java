@@ -6,8 +6,8 @@ import org.open.gateway.route.entity.token.TokenUser;
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
-import org.open.gateway.route.utils.PathUtil;
 import org.open.gateway.route.utils.RouteDefinitionUtil;
+import org.open.gateway.route.utils.UrlUtil;
 import org.open.gateway.route.utils.WebExchangeUtil;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.security.access.AccessDeniedException;
@@ -100,7 +100,7 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
             return Mono.just(true);
         }
         // 清理请求路径
-        String path = PathUtil.trimUrlParameter(requestPath);
+        String path = UrlUtil.trimUrlParameter(requestPath);
         // 获取接口资源
         Mono<RouteDefinition> routeDefinition = resourceRepository.loadRouteDefinition(path);
         return routeDefinition

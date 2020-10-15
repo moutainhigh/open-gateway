@@ -1,6 +1,6 @@
 package org.open.gateway.route.security.token.converters;
 
-import open.gateway.common.base.constants.OAuth2Constants;
+import org.open.gateway.route.constants.OAuth2Constants;
 import org.open.gateway.route.exception.InvalidTokenException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;

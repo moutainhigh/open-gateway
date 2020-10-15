@@ -2,17 +2,16 @@ package org.open.gateway.route.endpoints;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.base.constants.EndpointsConstants;
-import open.gateway.common.base.constants.OAuth2Constants;
 import open.gateway.common.utils.Dates;
+import org.open.gateway.route.constants.OAuth2Constants;
 import org.open.gateway.route.entity.oauth2.OAuth2AuthorizeRequest;
 import org.open.gateway.route.entity.oauth2.OAuth2TokenRequest;
 import org.open.gateway.route.entity.oauth2.OAuth2TokenResponse;
 import org.open.gateway.route.exception.FrequentTokenRequestException;
 import org.open.gateway.route.exception.InvalidClientSecretException;
+import org.open.gateway.route.repositories.TokenRepository;
 import org.open.gateway.route.service.ClientDetailsService;
 import org.open.gateway.route.service.LockService;
-import org.open.gateway.route.service.TokenService;
 import org.open.gateway.route.service.bo.ClientDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -32,12 +31,12 @@ public class OauthEndpoints {
 
     private final ClientDetailsService clientDetailsService;
     private final LockService lockService;
-    private final TokenService tokenService;
+    private final TokenRepository tokenRepository;
 
     /**
      * 认证请求
      */
-    @PostMapping(EndpointsConstants.AUTHORIZE)
+    @PostMapping("/oauth/authorize")
     @ResponseBody
     public Mono<String> authorize(OAuth2AuthorizeRequest authorizeRequest) {
         return Mono.empty();
@@ -46,7 +45,7 @@ public class OauthEndpoints {
     /**
      * 获取token
      */
-    @PostMapping(EndpointsConstants.TOKEN)
+    @PostMapping("/oauth/token")
     @ResponseBody
     public Mono<OAuth2TokenResponse> token(OAuth2TokenRequest tokenRequest) {
         // 校验token请求
@@ -56,13 +55,13 @@ public class OauthEndpoints {
                 clientDetailsService.loadClientByClientId(tokenRequest.getClient_id()) // 根据client_id获取client信息
                         .filter(cd -> this.checkClientSecret(tokenRequest, cd)) // 校验secret
                         .flatMap(cd ->
-                                tokenService.loadClientTokenByClientId(cd.getClientId()) // 从数据库查询该客户端已经存在的token
+                                tokenRepository.loadClientTokenByClientId(cd.getClientId()) // 从数据库查询该客户端已经存在的token
                                         .filter(token -> !token.isExpired()) // 过滤没有过期的
                                         .map(token -> buildTokenResponse(token.getToken(), Dates.toTimestamp(token.getExpireTime()))) // 构建返回对象
                                         .doOnNext(response -> log.info("Client id:{} exists token:{} expire_at:{}", tokenRequest.getClient_id(), response.getAccess_token(), response.getExpire_at()))
                                         .switchIfEmpty(
-                                                Mono.defer(() -> tokenService.generate(cd)) // 重新生成token
-                                                        .flatMap(accessToken -> tokenService.saveClientToken(cd.getClientId(), accessToken.getToken(), accessToken.getExpireAt()).thenReturn(accessToken)) // 保存token
+                                                Mono.defer(() -> tokenRepository.generate(cd)) // 重新生成token
+                                                        .flatMap(accessToken -> tokenRepository.saveClientToken(cd.getClientId(), accessToken.getToken(), accessToken.getExpireAt()).thenReturn(accessToken)) // 保存token
                                                         .map(accessToken -> buildTokenResponse(accessToken.getToken(), accessToken.getExpireAt()))
                                                         .doOnSuccess(response -> log.info("Generated token:{} expire_in:{} with client_id:{}", response.getAccess_token(), response.getExpire_at(), tokenRequest.getClient_id()))
                                         ) // 没有或者过期时候生成一个token
