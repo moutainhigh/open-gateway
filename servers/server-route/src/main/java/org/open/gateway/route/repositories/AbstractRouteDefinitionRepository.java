@@ -7,11 +7,14 @@ import org.open.gateway.route.entity.GatewayRateLimitDefinition;
 import org.open.gateway.route.entity.GatewayRouteDefinition;
 import org.open.gateway.route.utils.RouteDefinitionUtil;
 import org.open.gateway.route.utils.UrlUtil;
+import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.support.NameUtils;
 import org.springframework.cloud.gateway.support.NotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -28,10 +31,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author MIKO
  */
 @Slf4j
-public abstract class AbstractRouteDefinitionRepository implements RefreshableRouteDefinitionRepository {
+public abstract class AbstractRouteDefinitionRepository implements RefreshableRouteDefinitionRepository, ApplicationEventPublisherAware {
 
     private static final String DEFAULT_KEY_RESOLVER = "urlKeyResolver";
     private final Map<String, RouteDefinition> routes = new ConcurrentHashMap<>();
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     public Mono<Void> save(Mono<RouteDefinition> route) {
@@ -86,9 +90,24 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
                     }
                 })
                 .then()
+                .doOnSuccess(v -> publishEvent())
                 .doOnSubscribe(v -> log.info("[Refresh routes] starting. target api codes:{}", refreshApiCodes))
-                .doOnSuccess(v -> log.info("[Refresh routes] finished"))
                 .doOnError(e -> log.error("[Refresh routes] error:" + e.getMessage()));
+    }
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.eventPublisher = applicationEventPublisher;
+    }
+
+    /**
+     * 刷新路由
+     */
+    private void publishEvent() {
+        // 发布刷新路由事件
+        this.eventPublisher.publishEvent(new RefreshRoutesEvent(this));
+        log.info("[Refresh routes] Publish refresh routes event finished");
+        log.info("[Refresh routes] finished");
     }
 
     /**

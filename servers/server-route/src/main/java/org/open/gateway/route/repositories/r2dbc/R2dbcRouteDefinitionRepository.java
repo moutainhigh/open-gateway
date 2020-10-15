@@ -20,12 +20,6 @@ import java.util.Set;
 public class R2dbcRouteDefinitionRepository extends AbstractRouteDefinitionRepository {
 
     private final DatabaseClient databaseClient;
-    private final int refreshInterval;
-
-    @Override
-    public int refreshInterval() {
-        return this.refreshInterval;
-    }
 
     @Override
     protected Flux<GatewayRouteDefinition> getRefreshableRouteDefinitions(Set<String> apiCodes) {

@@ -6,9 +6,6 @@ import open.gateway.common.base.entity.RefreshGateway;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
-import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
 
 /**
  * Created by miko on 2020/7/14.
@@ -16,18 +13,12 @@ import org.springframework.context.ApplicationEventPublisherAware;
  * @author MIKO
  */
 @Slf4j
-public class MqRouteDefinitionMessageListener implements ApplicationEventPublisherAware {
+public class MqRouteDefinitionMessageListener {
 
-    private ApplicationEventPublisher publisher;
     private final RefreshableRouteDefinitionRepository routeDefinitionRepository;
 
     public MqRouteDefinitionMessageListener(RefreshableRouteDefinitionRepository routeDefinitionRepository) {
         this.routeDefinitionRepository = routeDefinitionRepository;
-    }
-
-    @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.publisher = applicationEventPublisher;
     }
 
     @RabbitHandler
@@ -41,17 +32,7 @@ public class MqRouteDefinitionMessageListener implements ApplicationEventPublish
         log.info("MQ[{}] listener received msg: {}", MqConstants.EXCHANGE_REFRESH_ROUTES, msg);
         this.routeDefinitionRepository
                 .refresh(msg)
-                .doOnSuccess(sub -> this.refreshRoutes())
                 .subscribe();
-    }
-
-    /**
-     * 刷新路由
-     */
-    private void refreshRoutes() {
-        // 发布刷新路由事件
-        this.publisher.publishEvent(new RefreshRoutesEvent(this));
-        log.info("Publish refresh routes event finished");
     }
 
 }

@@ -17,10 +17,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.r2dbc.core.DatabaseClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.Map;
 
 /**
@@ -34,17 +32,17 @@ public class GatewayRouteConfig implements ApplicationContextAware {
 
     @Bean
     public RefreshableRouteDefinitionRepository routeDefinitionRepository(DatabaseClient databaseClient) {
-        return new R2dbcRouteDefinitionRepository(databaseClient, 60 * 60);
+        return new R2dbcRouteDefinitionRepository(databaseClient);
     }
 
     @Bean
     public RefreshableClientResourcesRepository clientResourcesRepository(DatabaseClient databaseClient) {
-        return new R2dbcClientResourcesRepository(databaseClient, 60 * 60);
+        return new R2dbcClientResourcesRepository(databaseClient);
     }
 
     @Bean
     public RefreshableIpLimitRepository ipLimitRepository(DatabaseClient databaseClient) {
-        return new R2dbcIpLimitRepository(databaseClient, 60 * 60);
+        return new R2dbcIpLimitRepository(databaseClient);
     }
 
     @Primary
@@ -71,14 +69,13 @@ public class GatewayRouteConfig implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         Map<String, RefreshableRepository> repositoryMap = applicationContext.getBeansOfType(RefreshableRepository.class);
-        repositoryMap.values().forEach(this::refreshInterval);
+        repositoryMap.values().forEach(this::refreshRepository);
     }
 
-    private void refreshInterval(RefreshableRepository repository) {
-        // 初始化刷新1次, 之后每一定时间刷新一次
-        Flux.interval(Duration.ofSeconds(repository.delay()), Duration.ofSeconds(repository.refreshInterval()))
-                .flatMap(count -> repository.refresh(new RefreshGateway()))
-                .subscribe();
+    private void refreshRepository(RefreshableRepository repository) {
+        // 初始化刷新
+        repository.refresh(new RefreshGateway()).subscribe();
     }
+
 
 }

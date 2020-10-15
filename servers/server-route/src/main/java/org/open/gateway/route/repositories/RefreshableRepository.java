@@ -15,18 +15,4 @@ public interface RefreshableRepository {
      */
     Mono<Void> refresh(RefreshGateway param);
 
-    /**
-     * 刷新频率 单位秒
-     *
-     * @return 秒
-     */
-    int refreshInterval();
-
-    /**
-     * 第一次延迟多少秒刷新
-     */
-    default int delay() {
-        return 0;
-    }
-
 }

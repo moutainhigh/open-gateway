@@ -21,7 +21,6 @@ import java.util.Set;
 public class R2dbcIpLimitRepository extends AbstractIpLimitRepository {
 
     private final DatabaseClient databaseClient;
-    private final int refreshInterval;
 
     @Override
     protected Flux<GatewayIpLimitDefinition.IpLimit> getIpLimits(Set<String> apiCodes) {
@@ -36,11 +35,6 @@ public class R2dbcIpLimitRepository extends AbstractIpLimitRepository {
         ipLimit.setPolicyType(row.get("policy_type", String.class));
         ipLimit.setIpAddresses(new HashSet<>(Objects.requireNonNull(Sql.parseArrayField(row.get("ip_addresses", String.class)))));
         return ipLimit;
-    }
-
-    @Override
-    public int refreshInterval() {
-        return this.refreshInterval;
     }
 
 }
