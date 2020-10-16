@@ -12,6 +12,7 @@
 	<artifactId>server-route</artifactId>
 
 	<dependencies>
+		<!-- base -->
 		<dependency>
 			<groupId>org.open.gateway</groupId>
 			<artifactId>server-base</artifactId>
@@ -25,6 +26,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+		</dependency>
+		<!-- spring clod loadbalancer-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-loadbalancer</artifactId>
 		</dependency>
 		<!-- caffeine -->
 		<dependency>
@@ -40,11 +46,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-r2dbc</artifactId>
-		</dependency>
-		<!--自动配置需要引入的一个嵌入式数据库类型对象-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jdbc</artifactId>
 		</dependency>
 	</dependencies>
 

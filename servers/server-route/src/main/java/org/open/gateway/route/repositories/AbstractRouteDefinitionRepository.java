@@ -84,6 +84,7 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
                 ) // 转换为spring cloud gateway配置对象
                 .collectMap(RouteDefinition::getId) // 转换为map结构,key为路由id
                 .doOnNext(rts -> {
+                    log.info("[Refresh routes] route definition num:{}", rts.size());
                     if (rts.size() > 0) {
                         clearRoutes(param); // 清理路由配置
                         this.routes.putAll(rts); // 更新内存路由配置

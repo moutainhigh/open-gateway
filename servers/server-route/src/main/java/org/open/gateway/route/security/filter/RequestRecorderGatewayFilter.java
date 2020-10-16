@@ -28,13 +28,11 @@ public class RequestRecorderGatewayFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest originalRequest = exchange.getRequest();
         URI originalRequestUrl = originalRequest.getURI();
-
         //只记录http的请求
         String scheme = originalRequestUrl.getScheme();
         if ((!"http".equals(scheme) && !"https".equals(scheme))) {
             return chain.filter(exchange);
         }
-
         String upgrade = originalRequest.getHeaders().getUpgrade();
         if ("websocket".equalsIgnoreCase(upgrade)) {
             return chain.filter(exchange);

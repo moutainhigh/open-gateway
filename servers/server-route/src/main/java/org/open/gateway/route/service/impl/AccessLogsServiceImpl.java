@@ -9,7 +9,6 @@ import org.open.gateway.route.service.AccessLogsService;
 import org.open.gateway.route.utils.RouteDefinitionUtil;
 import org.open.gateway.route.utils.WebExchangeUtil;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -33,7 +32,6 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-@ConditionalOnProperty(value = "gateway.log.enable", havingValue = "true", matchIfMissing = true)
 public class AccessLogsServiceImpl implements AccessLogsService {
 
     private final AmqpTemplate amqpTemplate;

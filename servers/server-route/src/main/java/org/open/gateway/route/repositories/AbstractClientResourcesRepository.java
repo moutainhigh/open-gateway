@@ -47,6 +47,7 @@ public abstract class AbstractClientResourcesRepository implements RefreshableCl
         Set<String> refreshClientIds = param.getArgs();
         return getGatewayClientResourceDefinition(refreshClientIds)
                 .doOnNext(map -> {
+                    log.info("[Refresh client resources] client resource definition num:{}", map.size());
                     if (map.size() > 0) {
                         clearResources(param);
                         this.clientResources.putAll(map);

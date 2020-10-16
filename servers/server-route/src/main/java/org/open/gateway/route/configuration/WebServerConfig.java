@@ -8,11 +8,13 @@ import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
+import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.codec.ServerCodecConfigurer;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.result.view.ViewResolver;
 
 import java.util.stream.Collectors;
@@ -26,13 +28,13 @@ import java.util.stream.Collectors;
 @Configuration
 public class WebServerConfig {
 
-//    /**
-//     * 配置负载均衡web客户端
-//     */
-//    @Bean
-//    public WebClient webclient(ReactorLoadBalancerExchangeFilterFunction lbFunction) {
-//        return WebClient.builder().filter(lbFunction).build();
-//    }
+    /**
+     * 配置负载均衡web客户端
+     */
+    @Bean
+    public WebClient webclient(ReactorLoadBalancerExchangeFilterFunction lbFunction) {
+        return WebClient.builder().filter(lbFunction).build();
+    }
 
     @Bean
     @Primary

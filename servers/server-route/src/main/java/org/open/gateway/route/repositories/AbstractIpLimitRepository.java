@@ -33,6 +33,7 @@ public abstract class AbstractIpLimitRepository implements RefreshableIpLimitRep
         return getIpLimits(refreshApiCodes)
                 .collect(Collectors.groupingBy(GatewayIpLimitDefinition.IpLimit::getApiCode))
                 .doOnNext(group -> {
+                    log.info("[Refresh ip limits] ip limit definition num:{}", group.size());
                     if (group.size() > 0) {
                         this.clearIpLimits(param); // 清理ip限制
                         group.forEach((key, value) -> this.ipLimits.put(key, new GatewayIpLimitDefinition(value)));

@@ -1,5 +1,6 @@
 package org.open.gateway.route.configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.base.entity.RefreshGateway;
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
@@ -10,16 +11,14 @@ import org.open.gateway.route.repositories.impl.R2dbcIpLimitRepository;
 import org.open.gateway.route.repositories.impl.R2dbcRouteDefinitionRepository;
 import org.open.gateway.route.utils.WebExchangeUtil;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.r2dbc.core.DatabaseClient;
+import org.springframework.lang.Nullable;
 import reactor.core.publisher.Mono;
-
-import java.util.Map;
 
 /**
  * Created by miko on 2020/6/9.
@@ -27,8 +26,9 @@ import java.util.Map;
  *
  * @author MIKO
  */
+@Slf4j
 @Configuration
-public class GatewayRouteConfig implements ApplicationContextAware {
+public class GatewayRouteConfig implements BeanPostProcessor {
 
     @Bean
     public RefreshableRouteDefinitionRepository routeDefinitionRepository(DatabaseClient databaseClient) {
@@ -67,15 +67,13 @@ public class GatewayRouteConfig implements ApplicationContextAware {
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        Map<String, RefreshableRepository> repositoryMap = applicationContext.getBeansOfType(RefreshableRepository.class);
-        repositoryMap.values().forEach(this::refreshRepository);
+    @Nullable
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        if (bean instanceof RefreshableRepository) {
+            // 初始化刷新
+            ((RefreshableRepository) bean).refresh(new RefreshGateway()).subscribe();
+        }
+        return bean;
     }
-
-    private void refreshRepository(RefreshableRepository repository) {
-        // 初始化刷新
-        repository.refresh(new RefreshGateway()).subscribe();
-    }
-
 
 }
