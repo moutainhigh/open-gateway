@@ -23,17 +23,6 @@ public interface GatewayConstants {
     }
 
     /**
-     * 是否已删除
-     */
-    interface IsDel {
-
-        // 已删除
-        int YES = 1;
-        // 未删除
-        int NO = 0;
-    }
-
-    /**
      * 限流策略
      */
     interface RateLimitPolicy {
@@ -46,6 +35,15 @@ public interface GatewayConstants {
         String POLICY_TYPE_URL_USER = "url_user";
         // 策略类型-根据ip限制访问次数
         String POLICY_TYPE_IP = "ip";
+
+        // 限流范围-地址
+        String KEY_RESOLVER_URL = "urlKeyResolver";
+        // 限流范围-地址&用户
+        String KEY_RESOLVER_URL_USER = "urlUserKeyResolver";
+        // 限流范围-用户
+        String KEY_RESOLVER_USER = "userKeyResolver";
+        // 限流范围-ip
+        String KEY_RESOLVER_IP = "ipKeyResolver";
 
         // 单位时间-秒
         String INTERVAL_UNIT_SECONDS = "seconds";

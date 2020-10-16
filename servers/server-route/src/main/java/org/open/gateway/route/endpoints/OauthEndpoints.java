@@ -34,7 +34,7 @@ public class OauthEndpoints {
     private final TokenRepository tokenRepository;
 
     /**
-     * 认证请求
+     * 获取授权码
      */
     @PostMapping("/oauth/authorize")
     @ResponseBody

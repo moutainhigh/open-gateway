@@ -33,7 +33,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public abstract class AbstractRouteDefinitionRepository implements RefreshableRouteDefinitionRepository, ApplicationEventPublisherAware {
 
-    private static final String DEFAULT_KEY_RESOLVER = "urlKeyResolver";
     private final Map<String, RouteDefinition> routes = new ConcurrentHashMap<>();
     private ApplicationEventPublisher eventPublisher;
 
@@ -242,19 +241,19 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
      */
     private String getKeyResolver(String policyType) {
         if (GatewayConstants.RateLimitPolicy.POLICY_TYPE_URL.equals(policyType)) {
-            return "#{@urlKeyResolver}";
+            return "#{@" + GatewayConstants.RateLimitPolicy.KEY_RESOLVER_URL + "}";
         }
         if (GatewayConstants.RateLimitPolicy.POLICY_TYPE_USER.equals(policyType)) {
-            return "#{@userKeyResolver}";
+            return "#{@" + GatewayConstants.RateLimitPolicy.KEY_RESOLVER_USER + "}";
         }
         if (GatewayConstants.RateLimitPolicy.POLICY_TYPE_URL_USER.equals(policyType)) {
-            return "#{@urlUserKeyResolver}";
+            return "#{@" + GatewayConstants.RateLimitPolicy.KEY_RESOLVER_URL_USER + "}";
         }
         if (GatewayConstants.RateLimitPolicy.POLICY_TYPE_IP.equals(policyType)) {
-            return "#{@ipKeyResolver}";
+            return "#{@" + GatewayConstants.RateLimitPolicy.KEY_RESOLVER_IP + "}";
         }
-        log.warn("Invalid policy type:{} use default key resolver:{}", policyType, DEFAULT_KEY_RESOLVER);
-        return "#{" + DEFAULT_KEY_RESOLVER + "}";
+        log.warn("Invalid policy type:{} use default key resolver:{}", policyType, GatewayConstants.RateLimitPolicy.KEY_RESOLVER_URL);
+        return "#{@" + GatewayConstants.RateLimitPolicy.KEY_RESOLVER_URL + "}";
     }
 
     /**

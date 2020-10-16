@@ -21,8 +21,9 @@ public interface BizConstants {
 
     interface DEL_FLAG {
 
+        // 已删除
         byte YES = 1;
-
+        // 未删除
         byte NO = 0;
 
     }

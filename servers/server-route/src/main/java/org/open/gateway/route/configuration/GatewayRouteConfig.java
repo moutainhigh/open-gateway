@@ -1,6 +1,7 @@
 package org.open.gateway.route.configuration;
 
 import lombok.extern.slf4j.Slf4j;
+import org.open.gateway.base.constants.GatewayConstants;
 import org.open.gateway.base.entity.RefreshGateway;
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
@@ -46,22 +47,22 @@ public class GatewayRouteConfig implements BeanPostProcessor {
     }
 
     @Primary
-    @Bean("urlUserKeyResolver")
+    @Bean(GatewayConstants.RateLimitPolicy.KEY_RESOLVER_URL_USER)
     public KeyResolver urlUserKeyResolver() {
         return exchange -> Mono.just(exchange.getRequest().getPath().value() + WebExchangeUtil.getClientId(exchange));
     }
 
-    @Bean("urlKeyResolver")
+    @Bean(GatewayConstants.RateLimitPolicy.KEY_RESOLVER_URL)
     public KeyResolver urlKeyResolver() {
         return exchange -> Mono.just(exchange.getRequest().getPath().value());
     }
 
-    @Bean("userKeyResolver")
+    @Bean(GatewayConstants.RateLimitPolicy.KEY_RESOLVER_USER)
     public KeyResolver userKeyResolver() {
         return exchange -> Mono.just(WebExchangeUtil.getClientId(exchange));
     }
 
-    @Bean("ipKeyResolver")
+    @Bean(GatewayConstants.RateLimitPolicy.KEY_RESOLVER_IP)
     public KeyResolver ipKeyResolver() {
         return exchange -> Mono.just(WebExchangeUtil.getRemoteAddress(exchange));
     }
