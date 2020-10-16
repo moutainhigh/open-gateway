@@ -40,25 +40,25 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-<!--		&lt;!&ndash; zookeeper &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.cloud</groupId>-->
-<!--			<artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>-->
-<!--			<exclusions>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.springframework.cloud</groupId>-->
-<!--					<artifactId>spring-cloud-starter-netflix-ribbon</artifactId>-->
-<!--				</exclusion>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.springframework.cloud</groupId>-->
-<!--					<artifactId>spring-cloud-starter-netflix-archaius</artifactId>-->
-<!--				</exclusion>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.springframework.cloud</groupId>-->
-<!--					<artifactId>spring-cloud-netflix-hystrix</artifactId>-->
-<!--				</exclusion>-->
-<!--			</exclusions>-->
-<!--		</dependency>-->
+		<!--		&lt;!&ndash; zookeeper &ndash;&gt;-->
+		<!--		<dependency>-->
+		<!--			<groupId>org.springframework.cloud</groupId>-->
+		<!--			<artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>-->
+		<!--			<exclusions>-->
+		<!--				<exclusion>-->
+		<!--					<groupId>org.springframework.cloud</groupId>-->
+		<!--					<artifactId>spring-cloud-starter-netflix-ribbon</artifactId>-->
+		<!--				</exclusion>-->
+		<!--				<exclusion>-->
+		<!--					<groupId>org.springframework.cloud</groupId>-->
+		<!--					<artifactId>spring-cloud-starter-netflix-archaius</artifactId>-->
+		<!--				</exclusion>-->
+		<!--				<exclusion>-->
+		<!--					<groupId>org.springframework.cloud</groupId>-->
+		<!--					<artifactId>spring-cloud-netflix-hystrix</artifactId>-->
+		<!--				</exclusion>-->
+		<!--			</exclusions>-->
+		<!--		</dependency>-->
 	</dependencies>
 
 	<dependencyManagement>
