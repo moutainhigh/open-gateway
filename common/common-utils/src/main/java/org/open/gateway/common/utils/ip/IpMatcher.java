@@ -1,4 +1,4 @@
-package org.open.gateway.route.utils.ip;
+package org.open.gateway.common.utils.ip;
 
 import java.util.ArrayList;
 import java.util.Collection;

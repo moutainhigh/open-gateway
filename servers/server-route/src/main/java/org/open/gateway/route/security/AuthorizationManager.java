@@ -1,13 +1,13 @@
 package org.open.gateway.route.security;
 
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.utils.CollectionUtil;
+import org.open.gateway.common.utils.CollectionUtil;
 import org.open.gateway.route.entity.token.TokenUser;
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
 import org.open.gateway.route.utils.RouteDefinitionUtil;
-import org.open.gateway.route.utils.UrlUtil;
+import org.open.gateway.common.utils.UrlUtil;
 import org.open.gateway.route.utils.WebExchangeUtil;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.security.access.AccessDeniedException;

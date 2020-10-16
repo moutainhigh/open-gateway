@@ -1,10 +1,10 @@
 package org.open.gateway.test;
 
-import open.gateway.common.base.entity.AccessLogs;
-import open.gateway.common.utils.StringUtil;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.open.gateway.BaseSpringTest;
+import org.open.gateway.base.entity.AccessLogs;
+import org.open.gateway.common.utils.StringUtil;
 import org.open.gateway.route.service.AccessLogsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

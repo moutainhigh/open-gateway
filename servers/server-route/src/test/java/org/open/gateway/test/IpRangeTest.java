@@ -1,7 +1,7 @@
 package org.open.gateway.test;
 
 import org.junit.jupiter.api.Test;
-import org.open.gateway.route.utils.ip.IpRange;
+import org.open.gateway.common.utils.ip.IpRange;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

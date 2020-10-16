@@ -1,8 +1,8 @@
 package org.open.gateway.test;
 
-import open.gateway.common.utils.StringUtil;
 import org.junit.jupiter.api.Test;
 import org.open.gateway.BaseSpringTest;
+import org.open.gateway.common.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.util.Assert;

@@ -1,6 +1,7 @@
-package org.open.gateway.route.utils.ip;
+package org.open.gateway.common.utils.ip;
 
-import org.springframework.util.StringUtils;
+
+import org.open.gateway.common.utils.StringUtil;
 
 /**
  * @author miko
@@ -32,7 +33,7 @@ public class IpRange implements Comparable<IpRange> {
     }
 
     private void convert(String ipPattern) {
-        if (StringUtils.isEmpty(ipPattern)) {
+        if (StringUtil.isBlank(ipPattern)) {
             throw new IllegalArgumentException("IpPattern cannot be null");
         }
 
@@ -44,7 +45,7 @@ public class IpRange implements Comparable<IpRange> {
             maskBitCount = Long.parseLong(addressAndMask[1]);
         } else if (ipPattern.indexOf('*') > 0) {
             ip = ipPattern.replaceAll("\\*", "255");
-            maskBitCount = IPV4_BIT_COUNT - ((long) StringUtils.countOccurrencesOf(ipPattern, "*") * 8);
+            maskBitCount = IPV4_BIT_COUNT - ((long) StringUtil.countOccurrencesOf(ipPattern, "*") * 8);
         } else {
             ip = ipPattern;
             maskBitCount = IPV4_BIT_COUNT;

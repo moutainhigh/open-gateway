@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.base.constants.GatewayConstants;
-import org.open.gateway.route.utils.ip.IpMatcher;
+import org.open.gateway.base.constants.GatewayConstants;
+import org.open.gateway.common.utils.ip.IpMatcher;
 import org.springframework.util.CollectionUtils;
 
 import java.net.InetAddress;

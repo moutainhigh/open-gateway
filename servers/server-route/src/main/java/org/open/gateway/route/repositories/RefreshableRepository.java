@@ -1,6 +1,6 @@
 package org.open.gateway.route.repositories;
 
-import open.gateway.common.base.entity.RefreshGateway;
+import org.open.gateway.base.entity.RefreshGateway;
 import reactor.core.publisher.Mono;
 
 /**

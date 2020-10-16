@@ -1,4 +1,4 @@
-package open.gateway.common.base.constants;
+package org.open.gateway.base.constants;
 
 /**
  * Created by miko on 2020/7/15.

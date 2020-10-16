@@ -1,11 +1,11 @@
 package org.open.gateway.portal.configuration;
 
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.utils.JSON;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.open.gateway.common.utils.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

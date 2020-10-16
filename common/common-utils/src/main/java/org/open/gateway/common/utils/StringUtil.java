@@ -1,9 +1,10 @@
-package open.gateway.common.utils;
+package org.open.gateway.common.utils;
 
 import java.util.Random;
 
 /**
  * Created by miko on 2020/7/21.
+ * 字符串工具类
  *
  * @author MIKO
  */
@@ -20,6 +21,48 @@ public class StringUtil {
             'O', 'P', 'Q', 'R', 'S', 'T',
             'U', 'V', 'W', 'X', 'Y', 'Z'
     };
+
+    /**
+     * 是否有内容
+     *
+     * @param str 字符串
+     * @return true有内容, false没有内容
+     */
+    public static boolean isBlank(String str) {
+        return str == null || str.trim().length() == 0;
+    }
+
+    /**
+     * 是否为空
+     *
+     * @param str 字符串
+     * @return true为空, false不为空
+     */
+    public static boolean isEmpty(String str) {
+        return str == null || str.length() == 0;
+    }
+
+    /**
+     * 计算字符串{@code str}中子字符串{@code sub}的出现次数
+     *
+     * @param str 字符串
+     * @param sub 子字符串
+     * @return 出现次数
+     */
+    public static int countOccurrencesOf(String str, String sub) {
+        if (isEmpty(str) || isEmpty(sub)) {
+            return 0;
+        }
+
+        int count = 0;
+        int pos = 0;
+        int idx;
+        while ((idx = str.indexOf(sub, pos)) != -1) {
+            ++count;
+            pos = idx + sub.length();
+        }
+        return count;
+    }
 
     /**
      * 生成随机英文字母字符串

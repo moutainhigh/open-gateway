@@ -2,7 +2,7 @@ package org.open.gateway.route.endpoints;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.utils.Dates;
+import org.open.gateway.common.utils.Dates;
 import org.open.gateway.route.constants.OAuth2Constants;
 import org.open.gateway.route.entity.oauth2.OAuth2AuthorizeRequest;
 import org.open.gateway.route.entity.oauth2.OAuth2TokenRequest;

@@ -1,8 +1,8 @@
 package org.open.gateway.portal.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import open.gateway.common.utils.JSON;
 import org.hibernate.validator.HibernateValidator;
+import org.open.gateway.common.utils.JSON;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

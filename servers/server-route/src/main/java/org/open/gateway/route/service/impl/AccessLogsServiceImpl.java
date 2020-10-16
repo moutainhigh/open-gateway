@@ -1,10 +1,10 @@
 package org.open.gateway.route.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.base.constants.MqConstants;
-import open.gateway.common.base.entity.AccessLogs;
-import open.gateway.common.utils.JSON;
-import open.gateway.common.utils.StringUtil;
+import org.open.gateway.base.constants.MqConstants;
+import org.open.gateway.base.entity.AccessLogs;
+import org.open.gateway.common.utils.JSON;
+import org.open.gateway.common.utils.StringUtil;
 import org.open.gateway.route.service.AccessLogsService;
 import org.open.gateway.route.utils.RouteDefinitionUtil;
 import org.open.gateway.route.utils.WebExchangeUtil;

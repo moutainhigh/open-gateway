@@ -1,4 +1,4 @@
-package open.gateway.common.utils;
+package org.open.gateway.common.utils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

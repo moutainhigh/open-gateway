@@ -1,6 +1,6 @@
 package org.open.gateway.route.configuration;
 
-import open.gateway.common.base.entity.RefreshGateway;
+import org.open.gateway.base.entity.RefreshGateway;
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRepository;

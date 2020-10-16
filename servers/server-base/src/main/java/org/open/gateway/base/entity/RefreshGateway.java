@@ -1,4 +1,4 @@
-package open.gateway.common.base.entity;
+package org.open.gateway.base.entity;
 
 import lombok.Getter;
 import lombok.Setter;

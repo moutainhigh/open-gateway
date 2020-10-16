@@ -1,7 +1,7 @@
 package org.open.gateway.portal.modules.log.service.impl;
 
 import lombok.AllArgsConstructor;
-import open.gateway.common.base.entity.AccessLogs;
+import org.open.gateway.base.entity.AccessLogs;
 import org.open.gateway.portal.modules.log.service.GatewayAccessLogsService;
 import org.open.gateway.portal.persistence.mapper.GatewayAccessLogsMapperExt;
 import org.open.gateway.portal.persistence.po.GatewayAccessLogs;

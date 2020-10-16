@@ -1,8 +1,8 @@
 package org.open.gateway.route.security.converter.impl;
 
 import lombok.AllArgsConstructor;
-import open.gateway.common.base.constants.GatewayConstants;
-import open.gateway.common.utils.JSON;
+import org.open.gateway.base.constants.GatewayConstants;
+import org.open.gateway.common.utils.JSON;
 import org.open.gateway.route.entity.token.TokenUser;
 import org.open.gateway.route.security.AuthenticationToken;
 import org.open.gateway.route.security.converter.AbstractBearerTokenAuthenticationConverter;

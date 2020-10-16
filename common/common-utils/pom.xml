@@ -12,10 +12,6 @@
 	<artifactId>common-utils</artifactId>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.open.gateway</groupId>
-			<artifactId>common-base</artifactId>
-		</dependency>
 		<!-- jackson begin -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

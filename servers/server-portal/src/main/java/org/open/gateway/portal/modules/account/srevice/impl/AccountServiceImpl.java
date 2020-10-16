@@ -2,8 +2,8 @@ package org.open.gateway.portal.modules.account.srevice.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.utils.JSON;
-import open.gateway.common.utils.StringUtil;
+import org.open.gateway.common.utils.JSON;
+import org.open.gateway.common.utils.StringUtil;
 import org.open.gateway.portal.constants.BizConstants;
 import org.open.gateway.portal.exception.AccountExistsException;
 import org.open.gateway.portal.exception.AccountNotAvailableException;

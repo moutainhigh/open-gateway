@@ -1,7 +1,7 @@
 package org.open.gateway.route.repositories;
 
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.base.entity.RefreshGateway;
+import org.open.gateway.base.entity.RefreshGateway;
 import org.open.gateway.route.entity.GatewayIpLimitDefinition;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

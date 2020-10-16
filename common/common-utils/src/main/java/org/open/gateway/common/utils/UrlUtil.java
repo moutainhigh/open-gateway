@@ -1,4 +1,4 @@
-package org.open.gateway.route.utils;
+package org.open.gateway.common.utils;
 
 /**
  * Created by miko on 2020/7/10.

@@ -12,6 +12,10 @@
 	<artifactId>server-route</artifactId>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.open.gateway</groupId>
+			<artifactId>server-base</artifactId>
+		</dependency>
 		<!-- gateway -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

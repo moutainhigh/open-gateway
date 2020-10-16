@@ -1,9 +1,9 @@
 package org.open.gateway.test;
 
-import open.gateway.common.utils.JSON;
-import open.gateway.common.utils.StringUtil;
 import org.junit.jupiter.api.Test;
 import org.open.gateway.BaseTest;
+import org.open.gateway.common.utils.JSON;
+import org.open.gateway.common.utils.StringUtil;
 import org.open.gateway.route.entity.token.TokenUser;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;

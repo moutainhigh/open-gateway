@@ -1,7 +1,7 @@
 package org.open.gateway.test;
 
 import org.junit.jupiter.api.Test;
-import org.open.gateway.route.utils.ip.IpMatcher;
+import org.open.gateway.common.utils.ip.IpMatcher;
 
 import java.util.Arrays;
 import java.util.List;

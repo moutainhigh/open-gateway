@@ -2,7 +2,7 @@ package org.open.gateway.route.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.base.constants.GatewayConstants;
+import org.open.gateway.base.constants.GatewayConstants;
 import org.open.gateway.route.service.LockService;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Service;

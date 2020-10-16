@@ -10,7 +10,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>pom</packaging>
 	<modules>
-		<module>common-base</module>
 		<module>common-utils</module>
 	</modules>
 
@@ -18,11 +17,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>org.open.gateway</groupId>
-				<artifactId>common-base</artifactId>
-				<version>${gateway.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>org.open.gateway</groupId>
 				<artifactId>common-utils</artifactId>

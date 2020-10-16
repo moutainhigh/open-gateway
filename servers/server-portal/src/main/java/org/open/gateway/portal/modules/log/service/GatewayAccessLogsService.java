@@ -1,6 +1,6 @@
 package org.open.gateway.portal.modules.log.service;
 
-import open.gateway.common.base.entity.AccessLogs;
+import org.open.gateway.base.entity.AccessLogs;
 
 import java.util.List;
 

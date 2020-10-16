@@ -1,8 +1,8 @@
 package org.open.gateway.route.listener.mq;
 
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.base.constants.MqConstants;
-import open.gateway.common.base.entity.RefreshGateway;
+import org.open.gateway.base.constants.MqConstants;
+import org.open.gateway.base.entity.RefreshGateway;
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;

@@ -3,8 +3,8 @@ package com.baosight.portal.util;
 import com.baosight.portal.BaseTest;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.utils.JSON;
 import org.junit.jupiter.api.Test;
+import org.open.gateway.common.utils.JSON;
 import org.open.gateway.portal.constants.DateTimeFormatters;
 import org.springframework.util.Assert;
 

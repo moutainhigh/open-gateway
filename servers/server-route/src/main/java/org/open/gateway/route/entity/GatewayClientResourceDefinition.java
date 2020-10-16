@@ -2,7 +2,7 @@ package org.open.gateway.route.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.open.gateway.route.utils.UrlUtil;
+import org.open.gateway.common.utils.UrlUtil;
 
 /**
  * Created by miko on 2020/9/10.

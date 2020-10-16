@@ -14,10 +14,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 import org.springframework.security.web.server.authentication.ServerAuthenticationEntryPointFailureHandler;
+import reactor.core.publisher.Mono;
 
 /**
  * Created by miko on 2020/7/1.
@@ -67,8 +69,14 @@ public class SecurityConfig {
         return new AuthenticationManager();
     }
 
+    @Bean
     public AuthorizationManager authorizationManager() {
         return new AuthorizationManager(resourceService, clientResourceService, ipLimitRepository);
+    }
+
+    @Bean
+    public ReactiveUserDetailsService gatewayUserDetailsService() {
+        return username -> Mono.empty();
     }
 
 }

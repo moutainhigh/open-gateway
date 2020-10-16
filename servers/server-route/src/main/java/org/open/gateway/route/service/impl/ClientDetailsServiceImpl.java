@@ -3,7 +3,7 @@ package org.open.gateway.route.service.impl;
 import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import open.gateway.common.utils.CollectionUtil;
+import org.open.gateway.common.utils.CollectionUtil;
 import org.open.gateway.route.exception.ClientNotFoundException;
 import org.open.gateway.route.repositories.impl.SQLS;
 import org.open.gateway.route.service.ClientDetailsService;
