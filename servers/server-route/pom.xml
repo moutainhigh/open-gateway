@@ -30,7 +30,7 @@
 		<!-- spring clod loadbalancer-->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-loadbalancer</artifactId>
+			<artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
 		</dependency>
 		<!-- caffeine -->
 		<dependency>
