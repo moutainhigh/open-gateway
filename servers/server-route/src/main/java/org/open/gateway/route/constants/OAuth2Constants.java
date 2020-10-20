@@ -12,6 +12,9 @@ public interface OAuth2Constants {
      */
     String TOKEN_PREFIX = "Bearer ";
 
+    /**
+     * 从url中获取token的参数名称
+     */
     String TOKEN_PARAM_NAME = "access_token";
 
     interface GrantType {

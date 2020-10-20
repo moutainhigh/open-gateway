@@ -2,6 +2,7 @@ package org.open.gateway.route.configuration;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.open.gateway.route.constants.Endpoints;
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
@@ -46,7 +47,7 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .logout().disable()
                 .authorizeExchange()
-                .pathMatchers("/", "/oauth/*").permitAll()
+                .pathMatchers(Endpoints.OAUTH_TOKEN, Endpoints.OAUTH_AUTHORIZE).permitAll()
                 .anyExchange()
                 .access(authorizationManager()) // 使用自定义授权管理器
                 .and()

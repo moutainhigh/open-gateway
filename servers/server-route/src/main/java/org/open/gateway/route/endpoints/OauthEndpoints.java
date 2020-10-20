@@ -3,6 +3,7 @@ package org.open.gateway.route.endpoints;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.common.utils.Dates;
+import org.open.gateway.route.constants.Endpoints;
 import org.open.gateway.route.constants.OAuth2Constants;
 import org.open.gateway.route.entity.oauth2.OAuth2AuthorizeRequest;
 import org.open.gateway.route.entity.oauth2.OAuth2TokenRequest;
@@ -36,7 +37,7 @@ public class OauthEndpoints {
     /**
      * 获取授权码
      */
-    @PostMapping("/oauth/authorize")
+    @PostMapping(Endpoints.OAUTH_AUTHORIZE)
     @ResponseBody
     public Mono<String> authorize(OAuth2AuthorizeRequest authorizeRequest) {
         return Mono.empty();
@@ -45,7 +46,7 @@ public class OauthEndpoints {
     /**
      * 获取token
      */
-    @PostMapping("/oauth/token")
+    @PostMapping(Endpoints.OAUTH_TOKEN)
     @ResponseBody
     public Mono<OAuth2TokenResponse> token(OAuth2TokenRequest tokenRequest) {
         // 校验token请求
