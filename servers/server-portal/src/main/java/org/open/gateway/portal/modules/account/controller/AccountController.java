@@ -9,10 +9,12 @@ import org.open.gateway.portal.constants.ResultCode;
 import org.open.gateway.portal.exception.*;
 import org.open.gateway.portal.modules.account.controller.vo.*;
 import org.open.gateway.portal.modules.account.srevice.AccountService;
+import org.open.gateway.portal.modules.account.srevice.bo.AccountResourceBO;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
 import org.open.gateway.portal.utils.BizUtil;
 import org.open.gateway.portal.utils.ServletRequestUtil;
 import org.open.gateway.portal.vo.Result;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created by miko on 9/24/20.
@@ -45,8 +48,8 @@ public class AccountController {
     }
 
     @PostMapping(EndPoints.ACCOUNT_LOGOUT)
-    public Result logout(@Valid @RequestBody AccountLogoutRequest request) {
-        accountService.logout(request.getToken());
+    public Result logout(@Valid @RequestBody AccountLogoutRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) {
+        accountService.logout(account.getAccount(), request.getToken());
         return Result.ok();
     }
 
@@ -58,6 +61,12 @@ public class AccountController {
         AccountRegisterResponse response = toAccountRegisterResponse(accountBO);
         // 生成返回对象
         return Result.data(response).ok();
+    }
+
+    @PostMapping(EndPoints.ACCOUNT_RESOURCES)
+    public Result accountResources(@AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) {
+        List<AccountResourceBO> resources = accountService.queryResourcesByAccount(account.getAccount());
+        return Result.data(resources).ok();
     }
 
     private AccountRegisterResponse toAccountRegisterResponse(BaseAccountBO accountBO) {

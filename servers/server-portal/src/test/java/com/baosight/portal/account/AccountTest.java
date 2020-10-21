@@ -3,6 +3,7 @@ package com.baosight.portal.account;
 import cn.hutool.crypto.SecureUtil;
 import com.baosight.portal.BaseSpringTest;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.open.gateway.common.utils.JSON;
 import org.open.gateway.portal.constants.DateTimeFormatters;
@@ -36,16 +37,19 @@ public class AccountTest extends BaseSpringTest {
     @Transactional
     @Rollback
     public void testRegisterAndLogin() throws AccountExistsException, AccountNotAvailableException, AccountPasswordInvalidException, AccountNotExistsException {
+        // 注册
         String account = "junit_test";
         String password = "admin123";
         BaseAccountBO accountBO = accountService.register(account, password, "17521125571", "oni-miko@outlook.com", "系统管理员", "10.60.86.128");
         log.info("register account is:{}", accountBO);
+        // 登录
         Assert.notNull(accountBO.getId(), "account id is null");
         String token = accountService.login(account, password);
         log.info("login finished token is:{}", token);
     }
 
     @Test
+    @Disabled
     public void buildLoginRequest() {
         LocalDateTime requestTime = LocalDateTime.now();
         String requestTimeString = requestTime.format(DateTimeFormatters.yyyy_MM_dd_HH_mm_ss);

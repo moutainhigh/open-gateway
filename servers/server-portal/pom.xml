@@ -70,24 +70,24 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 		<!-- feign -->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.cloud</groupId>-->
-<!--			<artifactId>spring-cloud-starter-openfeign</artifactId>-->
-<!--			<exclusions>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.springframework.cloud</groupId>-->
-<!--					<artifactId>spring-cloud-starter-netflix-ribbon</artifactId>-->
-<!--				</exclusion>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.springframework.cloud</groupId>-->
-<!--					<artifactId>spring-cloud-starter-netflix-archaius</artifactId>-->
-<!--				</exclusion>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.springframework.cloud</groupId>-->
-<!--					<artifactId>spring-cloud-netflix-ribbon</artifactId>-->
-<!--				</exclusion>-->
-<!--			</exclusions>-->
-<!--		</dependency>-->
+		<!--		<dependency>-->
+		<!--			<groupId>org.springframework.cloud</groupId>-->
+		<!--			<artifactId>spring-cloud-starter-openfeign</artifactId>-->
+		<!--			<exclusions>-->
+		<!--				<exclusion>-->
+		<!--					<groupId>org.springframework.cloud</groupId>-->
+		<!--					<artifactId>spring-cloud-starter-netflix-ribbon</artifactId>-->
+		<!--				</exclusion>-->
+		<!--				<exclusion>-->
+		<!--					<groupId>org.springframework.cloud</groupId>-->
+		<!--					<artifactId>spring-cloud-starter-netflix-archaius</artifactId>-->
+		<!--				</exclusion>-->
+		<!--				<exclusion>-->
+		<!--					<groupId>org.springframework.cloud</groupId>-->
+		<!--					<artifactId>spring-cloud-netflix-ribbon</artifactId>-->
+		<!--				</exclusion>-->
+		<!--			</exclusions>-->
+		<!--		</dependency>-->
 	</dependencies>
 
 	<build>

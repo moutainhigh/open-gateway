@@ -2,9 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.open.gateway.portal.persistence.mapper.BaseResourceMapperExt">
 
-	<select id="selectByAccount" parameterType="java.lang.String" resultMap="BaseResultMap">
+	<select id="selectResourcesByAccount" parameterType="java.lang.String" resultMap="BaseResultMap">
 		SELECT
-		<include refid="Base_Column_List"/>
+		r.id, r.resource_code, r.resource_name, r.parent_code, r.url, r.sort, r.note, r.status, r.create_time,
+		r.create_person, r.update_time, r.update_person, r.is_del
 		FROM base_account ba
 		INNER JOIN base_account_role bar ON ba.id = bar.account_id
 		INNER JOIN base_role br ON br.id = bar.role_id

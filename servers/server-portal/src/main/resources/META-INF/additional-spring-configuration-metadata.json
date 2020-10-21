@@ -1,0 +1,11 @@
+{
+  "properties": [
+	{
+	  "name": "token.duration.minutes",
+	  "type": "java.lang.Long",
+	  "description": "token持续时间.",
+	  "defaultValue": 30
+	}
+  ]
+}
+

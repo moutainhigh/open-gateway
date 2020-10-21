@@ -9,7 +9,7 @@ public interface BizConstants {
 
     String DEFAULT_OPERATE_PERSON = "portal";
 
-    String TOKEN_PREFIX = "portal_token:";
+    String ROOT_CODE = "ROOT";
 
     interface STATUS {
 

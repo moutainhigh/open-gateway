@@ -4,7 +4,10 @@ import org.open.gateway.portal.exception.AccountExistsException;
 import org.open.gateway.portal.exception.AccountNotAvailableException;
 import org.open.gateway.portal.exception.AccountNotExistsException;
 import org.open.gateway.portal.exception.AccountPasswordInvalidException;
+import org.open.gateway.portal.modules.account.srevice.bo.AccountResourceBO;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
+
+import java.util.List;
 
 /**
  * Created by miko on 9/24/20.
@@ -52,8 +55,17 @@ public interface AccountService {
     /**
      * 登出
      *
-     * @param token 登录token信息
+     * @param account 登录账号
+     * @param token   登录token信息
      */
-    void logout(String token);
+    void logout(String account, String token);
+
+    /**
+     * 查询帐户资源信息
+     *
+     * @param account 帐户
+     * @return 资源
+     */
+    List<AccountResourceBO> queryResourcesByAccount(String account);
 
 }

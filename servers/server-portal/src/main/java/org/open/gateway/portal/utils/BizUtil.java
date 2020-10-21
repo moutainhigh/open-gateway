@@ -1,7 +1,10 @@
 package org.open.gateway.portal.utils;
 
+import cn.hutool.core.codec.Base64;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.Digester;
+
+import java.time.Duration;
 
 /**
  * Created by miko on 2020/7/22.
@@ -67,14 +70,29 @@ public class BizUtil {
     }
 
     /**
-     * 生成token
+     * 生成登录token
      *
      * @param account  帐户
      * @param password 密码
+     * @param duration token持续时间
      * @return 登录token
      */
-    public static String generateToken(String account, String password) {
-        return SecureUtil.des(SecureUtil.sha256().digest(password)).encryptHex(account);
+    public static String generateToken(String account, String password, Duration duration) {
+        long seed = System.currentTimeMillis() / duration.toMillis();
+        return generateToken(account, password, seed);
+    }
+
+    /**
+     * 生成登录token
+     *
+     * @param account  帐户
+     * @param password 密码
+     * @param seed     随机种子
+     * @return 登录token
+     */
+    public static String generateToken(String account, String password, long seed) {
+        // base64(base64(帐户+随机种子) + des(sha256(密码 + 随机种子))(帐户))
+        return Base64.encode(Base64.encode(account + seed) + SecureUtil.des(SecureUtil.sha256().digest(password + seed)).encryptHex(account));
     }
 
 }

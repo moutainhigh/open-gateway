@@ -2,7 +2,6 @@ package org.open.gateway.portal.modules.account.srevice.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.open.gateway.common.utils.JSON;
 import org.open.gateway.common.utils.StringUtil;
 import org.open.gateway.portal.constants.BizConstants;
 import org.open.gateway.portal.exception.AccountExistsException;
@@ -10,15 +9,21 @@ import org.open.gateway.portal.exception.AccountNotAvailableException;
 import org.open.gateway.portal.exception.AccountNotExistsException;
 import org.open.gateway.portal.exception.AccountPasswordInvalidException;
 import org.open.gateway.portal.modules.account.srevice.AccountService;
+import org.open.gateway.portal.modules.account.srevice.TokenService;
+import org.open.gateway.portal.modules.account.srevice.bo.AccountResourceBO;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
 import org.open.gateway.portal.persistence.mapper.BaseAccountMapperExt;
+import org.open.gateway.portal.persistence.mapper.BaseResourceMapperExt;
 import org.open.gateway.portal.persistence.po.BaseAccount;
+import org.open.gateway.portal.persistence.po.BaseResource;
 import org.open.gateway.portal.utils.BizUtil;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by miko on 9/24/20.
@@ -30,8 +35,9 @@ import java.util.Date;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-    private final StringRedisTemplate redisTemplate;
+    private final TokenService tokenService;
     private final BaseAccountMapperExt baseAccountMapper;
+    private final BaseResourceMapperExt baseResourceMapper;
 
     @Override
     public BaseAccountBO queryBaseAccountByCode(String account) throws AccountNotAvailableException {
@@ -105,16 +111,50 @@ public class AccountServiceImpl implements AccountService {
         // 校验密码
         checkAccountPassword(plainPassword, accountBO.getSalt(), accountBO.getPassword());
         // 生成token
-        return storeToken(accountBO);
+        return tokenService.storeToken(accountBO);
     }
 
     @Override
-    public void logout(String token) {
-        String tokenKey = getRedisKey(token);
-        Boolean result = redisTemplate.delete(tokenKey);
-        log.info("logout finished delete tokenKey:{} result:{}", tokenKey, result);
+    public void logout(String account, String token) {
+        Boolean result = tokenService.deleteToken(account, token);
+        log.info("logout finished by token:{} result:{}", token, result);
     }
 
+    @Override
+    public List<AccountResourceBO> queryResourcesByAccount(String account) {
+        // 查询所有资源
+        List<BaseResource> resources = baseResourceMapper.selectResourcesByAccount(account);
+        log.info("account:{} resources num:{}", account, resources.size());
+        // 按照父代码分组
+        Map<String, List<AccountResourceBO>> resourcesGroup = resources.stream()
+                .map(this::toAccountResourceBO)
+                .collect(Collectors.groupingBy(AccountResourceBO::getParentCode));
+        // 根节点
+        List<AccountResourceBO> rootResources = toResourceTree(BizConstants.ROOT_CODE, resourcesGroup);
+        log.info("root resources num:{}", rootResources.size());
+        return rootResources;
+    }
+
+    private AccountResourceBO toAccountResourceBO(BaseResource br) {
+        AccountResourceBO ar = new AccountResourceBO();
+        ar.setResourceCode(br.getResourceCode());
+        ar.setResourceName(br.getResourceName());
+        ar.setParentCode(br.getParentCode());
+        ar.setUrl(br.getUrl());
+        ar.setSort(br.getSort());
+        ar.setNote(br.getNote());
+        return ar;
+    }
+
+    private List<AccountResourceBO> toResourceTree(String parentCode, Map<String, List<AccountResourceBO>> resourcesGroup) {
+        List<AccountResourceBO> resources = resourcesGroup.getOrDefault(parentCode, new ArrayList<>());
+        if (resources != null) {
+            for (AccountResourceBO r : resources) {
+                r.setChildren(toResourceTree(r.getResourceCode(), resourcesGroup));
+            }
+        }
+        return resources;
+    }
 
     private void checkAccountPassword(String plainPassword, String salt, String secretPassword) throws AccountPasswordInvalidException {
         String tempSecretPassword = BizUtil.getSecretPassword(plainPassword, salt);
@@ -122,18 +162,6 @@ public class AccountServiceImpl implements AccountService {
             throw new AccountPasswordInvalidException();
         }
         log.info("check account password finished");
-    }
-
-    private String storeToken(BaseAccountBO account) {
-        String token = BizUtil.generateToken(account.getAccount(), account.getPassword());
-        log.info("generated token is:{}", token);
-        Boolean result = redisTemplate.opsForValue().setIfAbsent(getRedisKey(token), JSON.toJSONString(account), Duration.ofMinutes(120));
-        log.info("store token into redis finished. result:{}", result);
-        return token;
-    }
-
-    private String getRedisKey(String token) {
-        return BizConstants.TOKEN_PREFIX + token;
     }
 
 }

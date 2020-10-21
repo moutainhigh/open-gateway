@@ -8,6 +8,6 @@ import java.util.List;
 @Mapper
 public interface BaseResourceMapperExt extends BaseResourceMapper {
 
-    List<BaseResource> selectByAccount(String account);
+    List<BaseResource> selectResourcesByAccount(String account);
 
 }
