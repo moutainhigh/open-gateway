@@ -29,10 +29,10 @@ public class GatewayServiceImpl implements GatewayService {
      */
     @Override
     public void refreshRoutes(Set<String> apiCodes) {
-        log.info("Starting send refresh route msg. api codes:{}", apiCodes);
+        log.info("starting send refresh route msg. api codes:{}", apiCodes);
         // 发送刷新网关消息
         this.rabbitTemplate.convertAndSend(MqConstants.EXCHANGE_REFRESH_ROUTES, "", new RefreshGateway(apiCodes));
-        log.info("Finished send refresh route msg.");
+        log.info("finished send refresh route msg.");
     }
 
     /**
@@ -42,10 +42,10 @@ public class GatewayServiceImpl implements GatewayService {
      */
     @Override
     public void refreshResources(Set<String> clientIds) {
-        log.info("Starting send refresh resources msg. client ids:{}", clientIds);
+        log.info("starting send refresh resources msg. client ids:{}", clientIds);
         // 发送刷新网关消息
         this.rabbitTemplate.convertAndSend(MqConstants.EXCHANGE_REFRESH_CLIENT_RESOURCES, "", new RefreshGateway(clientIds));
-        log.info("Finished send refresh resources msg.");
+        log.info("finished send refresh resources msg.");
     }
 
     /**
@@ -55,7 +55,9 @@ public class GatewayServiceImpl implements GatewayService {
      */
     @Override
     public void refreshIpLimits(Set<String> ipLimits) {
+        log.info("starting send refresh resources msg. ip limits:{}", ipLimits);
         this.rabbitTemplate.convertAndSend(MqConstants.EXCHANGE_REFRESH_IP_LIMITS, "", new RefreshGateway(ipLimits));
+        log.info("finished send refresh ip limits msg.");
     }
 
 }

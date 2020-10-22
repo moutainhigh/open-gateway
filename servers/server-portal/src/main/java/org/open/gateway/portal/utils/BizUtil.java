@@ -36,7 +36,7 @@ public class BizUtil {
     }
 
     /**
-     * 转换密码
+     * 摘要加密密码
      *
      * @param plainPassword 明文密码
      * @param salt          摘要加密盐
@@ -48,7 +48,7 @@ public class BizUtil {
     }
 
     /**
-     * 加密明文秘密
+     * 对称加密明文秘密
      *
      * @param plainText 明文秘密
      * @param key       密钥

@@ -4,11 +4,8 @@ import org.open.gateway.portal.exception.AccountExistsException;
 import org.open.gateway.portal.exception.AccountNotAvailableException;
 import org.open.gateway.portal.exception.AccountNotExistsException;
 import org.open.gateway.portal.exception.AccountPasswordInvalidException;
-import org.open.gateway.portal.modules.account.srevice.bo.AccountResourceBO;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
 import org.springframework.lang.Nullable;
-
-import java.util.List;
 
 /**
  * Created by miko on 9/24/20.
@@ -24,7 +21,7 @@ public interface AccountService {
      * @return 帐户信息
      */
     @Nullable
-    BaseAccountBO queryAccount(String account);
+    BaseAccountBO queryBaseAccount(String account);
 
     /**
      * 查询有效的帐户
@@ -34,7 +31,7 @@ public interface AccountService {
      * @throws AccountNotExistsException    帐户不存在
      * @throws AccountNotAvailableException 帐户不可用
      */
-    BaseAccountBO queryValidAccountByCode(String account) throws AccountNotExistsException, AccountNotAvailableException;
+    BaseAccountBO queryValidBaseAccountByCode(String account) throws AccountNotExistsException, AccountNotAvailableException;
 
     /**
      * 注册
@@ -83,16 +80,15 @@ public interface AccountService {
      * 登出
      *
      * @param account 登录账号
-     * @param token   登录token信息
      */
-    void logout(String account, String token);
+    void logout(String account);
 
     /**
-     * 查询帐户资源信息
+     * 删除账户
      *
-     * @param account 帐户
-     * @return 资源
+     * @param account  账户
+     * @param operator 操作人
      */
-    List<AccountResourceBO> queryResourcesByAccount(String account);
+    void delete(String account, String operator) throws AccountNotExistsException;
 
 }

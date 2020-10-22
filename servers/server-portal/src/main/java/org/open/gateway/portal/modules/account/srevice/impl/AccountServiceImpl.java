@@ -10,20 +10,13 @@ import org.open.gateway.portal.exception.AccountNotExistsException;
 import org.open.gateway.portal.exception.AccountPasswordInvalidException;
 import org.open.gateway.portal.modules.account.srevice.AccountService;
 import org.open.gateway.portal.modules.account.srevice.TokenService;
-import org.open.gateway.portal.modules.account.srevice.bo.AccountResourceBO;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
 import org.open.gateway.portal.persistence.mapper.BaseAccountMapperExt;
-import org.open.gateway.portal.persistence.mapper.BaseResourceMapperExt;
 import org.open.gateway.portal.persistence.po.BaseAccount;
-import org.open.gateway.portal.persistence.po.BaseResource;
 import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by miko on 9/24/20.
@@ -37,10 +30,9 @@ public class AccountServiceImpl implements AccountService {
 
     private final TokenService tokenService;
     private final BaseAccountMapperExt baseAccountMapper;
-    private final BaseResourceMapperExt baseResourceMapper;
 
     @Override
-    public BaseAccountBO queryAccount(String account) {
+    public BaseAccountBO queryBaseAccount(String account) {
         log.info("parameter account is:{}", account);
         BaseAccount baseAccount = baseAccountMapper.selectByAccount(account);
         if (baseAccount == null) {
@@ -53,8 +45,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public BaseAccountBO queryValidAccountByCode(String account) throws AccountNotExistsException, AccountNotAvailableException {
-        BaseAccountBO baseAccount = queryAccount(account);
+    public BaseAccountBO queryValidBaseAccountByCode(String account) throws AccountNotExistsException, AccountNotAvailableException {
+        BaseAccountBO baseAccount = queryBaseAccount(account);
         if (baseAccount == null) {
             throw new AccountNotExistsException();
         }
@@ -66,7 +58,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp, String operator) throws AccountNotAvailableException, AccountExistsException {
-        BaseAccountBO accountBO = queryAccount(account);
+        BaseAccountBO accountBO = queryBaseAccount(account);
         if (accountBO != null) {
             throw new AccountExistsException();
         }
@@ -92,7 +84,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void update(String account, String plainPassword, String phone, String email, String note, Byte status, String operator) throws AccountNotExistsException, AccountNotAvailableException {
-        BaseAccountBO accountBO = queryValidAccountByCode(account);
+        BaseAccountBO accountBO = queryValidBaseAccountByCode(account);
         Date now = new Date();
         BaseAccount baseAccount = new BaseAccount();
         baseAccount.setId(accountBO.getId());
@@ -135,55 +127,42 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public String login(String account, String plainPassword) throws AccountPasswordInvalidException, AccountNotExistsException, AccountNotAvailableException {
         // 查询账号
-        BaseAccountBO accountBO = queryValidAccountByCode(account);
+        BaseAccountBO accountBO = queryValidBaseAccountByCode(account);
         // 校验密码
         checkAccountPassword(plainPassword, accountBO.getSalt(), accountBO.getPassword());
         // 生成token
-        return tokenService.storeToken(accountBO);
+        return tokenService.generateToken(accountBO);
     }
 
     @Override
-    public void logout(String account, String token) {
-        Boolean result = tokenService.deleteToken(account, token);
-        log.info("logout finished by token:{} result:{}", token, result);
+    public void logout(String account) {
+        Boolean result = tokenService.deleteToken(account);
+        log.info("logout finished by account:{} result:{}", account, result);
     }
 
     @Override
-    public List<AccountResourceBO> queryResourcesByAccount(String account) {
-        // 查询所有资源
-        List<BaseResource> resources = baseResourceMapper.selectResourcesByAccount(account);
-        log.info("account:{} resources num:{}", account, resources.size());
-        // 按照父代码分组
-        Map<String, List<AccountResourceBO>> resourcesGroup = resources.stream()
-                .map(this::toAccountResourceBO)
-                .collect(Collectors.groupingBy(AccountResourceBO::getParentCode));
-        // 根节点
-        List<AccountResourceBO> rootResources = toResourceTree(BizConstants.ROOT_CODE, resourcesGroup);
-        log.info("root resources num:{}", rootResources.size());
-        return rootResources;
-    }
-
-    private AccountResourceBO toAccountResourceBO(BaseResource br) {
-        AccountResourceBO ar = new AccountResourceBO();
-        ar.setResourceCode(br.getResourceCode());
-        ar.setResourceName(br.getResourceName());
-        ar.setParentCode(br.getParentCode());
-        ar.setUrl(br.getUrl());
-        ar.setSort(br.getSort());
-        ar.setNote(br.getNote());
-        return ar;
-    }
-
-    private List<AccountResourceBO> toResourceTree(String parentCode, Map<String, List<AccountResourceBO>> resourcesGroup) {
-        List<AccountResourceBO> resources = resourcesGroup.getOrDefault(parentCode, new ArrayList<>());
-        if (resources != null) {
-            for (AccountResourceBO r : resources) {
-                r.setChildren(toResourceTree(r.getResourceCode(), resourcesGroup));
-            }
+    public void delete(String account, String operator) throws AccountNotExistsException {
+        BaseAccountBO accountBO = queryBaseAccount(account);
+        if (accountBO == null) {
+            throw new AccountNotExistsException();
         }
-        return resources;
+        BaseAccount baseAccount = new BaseAccount();
+        baseAccount.setId(accountBO.getId());
+        baseAccount.setUpdatePerson(operator);
+        baseAccount.setUpdateTime(new Date());
+        baseAccount.setIsDel(BizConstants.DEL_FLAG.YES);
+        BizUtil.checkUpdate(baseAccountMapper.updateByPrimaryKeySelective(baseAccount), 1);
+        log.info("logic delete account:{} finished. operator is:{}", account, operator);
     }
 
+    /**
+     * 校验账户秘密
+     *
+     * @param plainPassword  密码明文
+     * @param salt           摘要加密盐
+     * @param secretPassword 密码密文
+     * @throws AccountPasswordInvalidException 无效的账户密码
+     */
     private void checkAccountPassword(String plainPassword, String salt, String secretPassword) throws AccountPasswordInvalidException {
         String tempSecretPassword = BizUtil.getSecretPassword(plainPassword, salt);
         if (!tempSecretPassword.equals(secretPassword)) {

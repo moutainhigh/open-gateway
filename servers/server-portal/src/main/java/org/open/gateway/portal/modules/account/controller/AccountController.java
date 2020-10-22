@@ -8,9 +8,10 @@ import org.open.gateway.portal.constants.EndPoints;
 import org.open.gateway.portal.constants.ResultCode;
 import org.open.gateway.portal.exception.*;
 import org.open.gateway.portal.modules.account.controller.vo.*;
+import org.open.gateway.portal.modules.account.srevice.AccountResourceService;
 import org.open.gateway.portal.modules.account.srevice.AccountService;
-import org.open.gateway.portal.modules.account.srevice.bo.AccountResourceBO;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
+import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountResourceBO;
 import org.open.gateway.portal.utils.BizUtil;
 import org.open.gateway.portal.utils.ServletRequestUtil;
 import org.open.gateway.portal.vo.Result;
@@ -35,6 +36,7 @@ import java.util.List;
 public class AccountController {
 
     private final AccountService accountService;
+    private final AccountResourceService accountResourceService;
 
     @PostMapping(EndPoints.ACCOUNT_LOGIN)
     public Result login(@Valid @RequestBody AccountLoginRequest request) throws AccountPasswordInvalidException, AccountNotExistsException, AccountNotAvailableException {
@@ -58,8 +60,8 @@ public class AccountController {
     }
 
     @PostMapping(EndPoints.ACCOUNT_LOGOUT)
-    public Result logout(@Valid @RequestBody AccountLogoutRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) {
-        accountService.logout(account.getAccount(), request.getToken());
+    public Result logout(@AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) {
+        accountService.logout(account.getAccount());
         return Result.ok();
     }
 
@@ -69,10 +71,22 @@ public class AccountController {
         return Result.ok();
     }
 
+    @PostMapping(EndPoints.ACCOUNT_DELETE)
+    public Result delete(AccountDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) throws AccountNotExistsException {
+        accountService.delete(request.getAccount(), account.getAccount());
+        return Result.ok();
+    }
+
     @PostMapping(EndPoints.ACCOUNT_RESOURCES)
     public Result accountResources(@AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) {
-        List<AccountResourceBO> resources = accountService.queryResourcesByAccount(account.getAccount());
+        List<BaseAccountResourceBO> resources = accountResourceService.queryResourcesByAccount(account.getAccount());
         return Result.data(resources).ok();
+    }
+
+    @PostMapping(EndPoints.ACCOUNT_PAGE_LIST)
+    public Result pageList(@AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) {
+        // TODO
+        return Result.ok();
     }
 
     private AccountRegisterResponse toAccountRegisterResponse(BaseAccountBO accountBO) {

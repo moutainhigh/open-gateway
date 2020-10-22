@@ -5,21 +5,22 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 /**
- * Created by miko on 9/24/20.
+ * Created by miko on 10/22/20.
  *
  * @author MIKO
  */
 @Getter
 @Setter
 @ToString
-public class AccountLogoutRequest {
+public class AccountDeleteRequest {
 
     /**
-     * 请求token
+     * 账户
      */
     @NotBlank
-    private String token;
+    private String account;
 
 }

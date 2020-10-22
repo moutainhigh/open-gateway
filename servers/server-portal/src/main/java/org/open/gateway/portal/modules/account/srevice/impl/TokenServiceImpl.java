@@ -29,8 +29,8 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public String storeToken(BaseAccountBO account) {
-        String accountKey = getRedisAccountKey(account.getAccount());
+    public String generateToken(BaseAccountBO accountBO) {
+        String accountKey = getRedisAccountKey(accountBO.getAccount());
         // token持续时间
         Duration duration = Duration.ofMinutes(tokenDurationMinutes);
         // 查询帐户是否存在token
@@ -38,33 +38,36 @@ public class TokenServiceImpl implements TokenService {
         if (token == null) {
             token = IdUtil.uuid();
             Boolean setAccountResult = redisTemplate.opsForValue().setIfAbsent(accountKey, token, duration);
-            log.info("store account token finished. account:{} token:{} result:{} minutes.", account.getAccount(), token, setAccountResult);
+            log.info("store account token finished. account:{} token:{} result:{} minutes.", accountBO.getAccount(), token, setAccountResult);
             // 只有设置成功帐户token才有资格存储token
             if (setAccountResult != null && setAccountResult) {
                 log.info("generated token is:{}", token);
-                Boolean setTokenResult = redisTemplate.opsForValue().setIfAbsent(getRedisTokenKey(token), JSON.toJSONString(account), duration);
+                Boolean setTokenResult = redisTemplate.opsForValue().setIfAbsent(getRedisTokenKey(token), JSON.toJSONString(accountBO), duration);
                 log.info("store token into redis finished. result:{} duration:{} minutes.", setTokenResult, tokenDurationMinutes);
                 if (setTokenResult == null || !setTokenResult) {
                     throw new IllegalStateException("store token failed");
                 }
             } else {
-                log.info("set account:{} token failed", account);
+                log.info("set account:{} token failed", accountBO);
                 // 重新获取
                 token = redisTemplate.opsForValue().get(accountKey);
-                log.info("get account:{} new token is:{}", account, token);
+                log.info("get account:{} new token is:{}", accountBO, token);
             }
         }
+        log.info("account:{} result token:{}", accountBO.getAccount(), token);
         return token;
     }
 
     @Override
-    public Boolean deleteToken(String account, String token) {
+    public Boolean deleteToken(String account) {
         String accountKey = getRedisAccountKey(account);
+        String token = redisTemplate.opsForValue().get(accountKey);
+        log.info("get token:{} by account:{}", token, account);
         Boolean delAccountResult = redisTemplate.delete(accountKey);
-        log.info("Delete accountKey:{} result:{}", accountKey, delAccountResult);
+        log.info("delete accountKey:{} result:{}", accountKey, delAccountResult);
         String tokenKey = getRedisTokenKey(token);
         Boolean delTokenResult = redisTemplate.delete(tokenKey);
-        log.info("Delete tokenKey:{} result:{}", tokenKey, delTokenResult);
+        log.info("delete tokenKey:{} result:{}", tokenKey, delTokenResult);
         return delAccountResult != null && delAccountResult && delTokenResult != null && delTokenResult;
     }
 

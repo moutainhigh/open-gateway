@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class AccountResourceBO {
+public class BaseAccountResourceBO {
 
     private String resourceCode;
 
@@ -28,6 +28,6 @@ public class AccountResourceBO {
 
     private String note;
 
-    private List<AccountResourceBO> children;
+    private List<BaseAccountResourceBO> children;
 
 }

@@ -70,7 +70,7 @@ public class AccountServiceTest extends BaseSpringTest {
         String note = "new note";
         Byte status = BizConstants.STATUS.DISABLE;
         accountService.update(account, null, phone, email, note, status, operator);
-        BaseAccountBO accountAfterUpdate = accountService.queryAccount(account);
+        BaseAccountBO accountAfterUpdate = accountService.queryBaseAccount(account);
         Assert.notNull(accountAfterUpdate, "account no found");
         Assert.isTrue(phone.equals(accountAfterUpdate.getPhone()), "phone update failed. not equals");
         Assert.isTrue(email.equals(accountAfterUpdate.getEmail()), "email update failed. not equals");

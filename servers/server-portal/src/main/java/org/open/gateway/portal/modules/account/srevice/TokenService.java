@@ -15,22 +15,21 @@ public interface TokenService {
      * @param account 帐户
      * @return token字符串
      */
-    String storeToken(BaseAccountBO account);
+    String generateToken(BaseAccountBO account);
 
     /**
      * 删除token
      *
      * @param account 帐户
-     * @param token   token字符串
      * @return 删除结果
      */
-    Boolean deleteToken(String account, String token);
+    Boolean deleteToken(String account);
 
     /**
-     * 载入token信息
+     * 载入token用户信息
      *
      * @param token token字符串
-     * @return token存储信息
+     * @return token用户信息
      */
     BaseAccountBO loadTokenUser(String token);
 
