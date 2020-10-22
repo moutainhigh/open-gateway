@@ -1,4 +1,4 @@
-package org.open.gateway.route.security.filter;
+package org.open.gateway.route.filter;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
