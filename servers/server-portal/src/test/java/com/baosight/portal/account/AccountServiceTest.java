@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.open.gateway.common.utils.JSON;
 import org.open.gateway.portal.constants.BizConstants;
 import org.open.gateway.portal.constants.DateTimeFormatters;
-import org.open.gateway.portal.exception.AccountExistsException;
+import org.open.gateway.portal.exception.AccountAlreadyExistsException;
 import org.open.gateway.portal.exception.AccountNotAvailableException;
 import org.open.gateway.portal.exception.AccountNotExistsException;
 import org.open.gateway.portal.exception.AccountPasswordInvalidException;
@@ -39,7 +39,7 @@ public class AccountServiceTest extends BaseSpringTest {
     AccountService accountService;
 
     // 注册账户
-    private BaseAccountBO registerAccount() throws AccountNotAvailableException, AccountExistsException {
+    private BaseAccountBO registerAccount() throws AccountNotAvailableException, AccountAlreadyExistsException {
         BaseAccountBO accountBO = accountService.register(account, password, "17521125571", "oni-miko@outlook.com", "系统管理员", "10.60.86.128", operator);
         log.info("register account is:{}", accountBO);
         return accountBO;
@@ -48,7 +48,7 @@ public class AccountServiceTest extends BaseSpringTest {
     @Test
     @Transactional
     @Rollback
-    public void testRegisterAndLogin() throws AccountExistsException, AccountNotAvailableException, AccountPasswordInvalidException, AccountNotExistsException {
+    public void testRegisterAndLogin() throws AccountAlreadyExistsException, AccountNotAvailableException, AccountPasswordInvalidException, AccountNotExistsException {
         // 注册
         BaseAccountBO accountBO = registerAccount();
         Assert.notNull(accountBO.getId(), "account id is null");
@@ -60,7 +60,7 @@ public class AccountServiceTest extends BaseSpringTest {
     @Test
     @Transactional
     @Rollback
-    public void testRegisterAndUpdate() throws AccountNotExistsException, AccountNotAvailableException, AccountExistsException {
+    public void testRegisterAndUpdate() throws AccountNotExistsException, AccountNotAvailableException, AccountAlreadyExistsException {
         // 注册
         BaseAccountBO accountBO = registerAccount();
         Assert.notNull(accountBO.getId(), "account id is null");

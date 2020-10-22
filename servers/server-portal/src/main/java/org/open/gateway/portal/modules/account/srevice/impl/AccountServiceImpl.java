@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.common.utils.StringUtil;
 import org.open.gateway.portal.constants.BizConstants;
-import org.open.gateway.portal.exception.AccountExistsException;
+import org.open.gateway.portal.exception.AccountAlreadyExistsException;
 import org.open.gateway.portal.exception.AccountNotAvailableException;
 import org.open.gateway.portal.exception.AccountNotExistsException;
 import org.open.gateway.portal.exception.AccountPasswordInvalidException;
@@ -57,10 +57,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp, String operator) throws AccountNotAvailableException, AccountExistsException {
+    public BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp, String operator) throws AccountNotAvailableException, AccountAlreadyExistsException {
         BaseAccountBO accountBO = queryBaseAccount(account);
         if (accountBO != null) {
-            throw new AccountExistsException();
+            throw new AccountAlreadyExistsException();
         }
         String salt = StringUtil.randomLetter(16); // 生成摘要加密盐
         String secretPassword = BizUtil.getSecretPassword(plainPassword, salt);

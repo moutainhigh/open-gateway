@@ -1,6 +1,6 @@
 package org.open.gateway.portal.modules.account.srevice;
 
-import org.open.gateway.portal.exception.AccountExistsException;
+import org.open.gateway.portal.exception.AccountAlreadyExistsException;
 import org.open.gateway.portal.exception.AccountNotAvailableException;
 import org.open.gateway.portal.exception.AccountNotExistsException;
 import org.open.gateway.portal.exception.AccountPasswordInvalidException;
@@ -45,9 +45,9 @@ public interface AccountService {
      * @param operator      操作人
      * @return 用户信息
      * @throws AccountNotAvailableException 帐户不可用
-     * @throws AccountExistsException       帐户已经存在
+     * @throws AccountAlreadyExistsException       帐户已经存在
      */
-    BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp, String operator) throws AccountNotAvailableException, AccountExistsException;
+    BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp, String operator) throws AccountNotAvailableException, AccountAlreadyExistsException;
 
     /**
      * 修改

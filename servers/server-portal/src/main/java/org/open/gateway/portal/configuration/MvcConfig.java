@@ -27,7 +27,7 @@ public class MvcConfig {
     public Validator validator() {
         ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
                 .configure()
-//                .failFast(true)
+                .failFast(true)
                 .buildValidatorFactory();
         return validatorFactory.getValidator();
     }

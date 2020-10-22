@@ -50,7 +50,7 @@ public class AccountController {
     }
 
     @PostMapping(EndPoints.ACCOUNT_REGISTER)
-    public Result register(@Valid @RequestBody AccountRegisterRequest request, HttpServletRequest servletRequest, @AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) throws AccountNotAvailableException, AccountExistsException {
+    public Result register(@Valid @RequestBody AccountRegisterRequest request, HttpServletRequest servletRequest, @AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) throws AccountNotAvailableException, AccountAlreadyExistsException {
         String ip = ServletRequestUtil.getIpFromRequest(servletRequest);
         log.info("request ip is:{}", ip);
         BaseAccountBO accountBO = accountService.register(request.getAccount(), request.getPassword(), request.getPhone(), request.getEmail(), request.getNote(), ip, account.getAccount());

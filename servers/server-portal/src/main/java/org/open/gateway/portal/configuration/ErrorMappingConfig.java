@@ -60,7 +60,7 @@ public class ErrorMappingConfig {
         if (e instanceof AccountPasswordInvalidException) {
             return ResultCode.ACCOUNT_PASSWORD_INVALID;
         }
-        if (e instanceof AccountExistsException) {
+        if (e instanceof AccountAlreadyExistsException) {
             return ResultCode.ACCOUNT_IS_EXISTS;
         }
         throw new IllegalStateException("Unmapping exception:" + e.getClass().getName());
