@@ -7,18 +7,24 @@ package org.open.gateway.portal.constants;
  */
 public interface BizConstants {
 
-    String DEFAULT_OPERATE_PERSON = "portal";
-
     String ROOT_CODE = "ROOT";
 
+    /**
+     * 状态
+     */
     interface STATUS {
 
+        // 正常
         byte NORMAL = 1;
 
+        // 禁用
         byte DISABLE = 0;
 
     }
 
+    /**
+     * 删除标记
+     */
     interface DEL_FLAG {
 
         // 已删除

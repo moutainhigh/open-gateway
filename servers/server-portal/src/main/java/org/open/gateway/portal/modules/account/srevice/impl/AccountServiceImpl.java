@@ -40,15 +40,12 @@ public class AccountServiceImpl implements AccountService {
     private final BaseResourceMapperExt baseResourceMapper;
 
     @Override
-    public BaseAccountBO queryBaseAccountByCode(String account) throws AccountNotAvailableException {
+    public BaseAccountBO queryAccount(String account) {
         log.info("parameter account is:{}", account);
         BaseAccount baseAccount = baseAccountMapper.selectByAccount(account);
         if (baseAccount == null) {
-            log.info("account no found. param account is:{}", account);
+            log.info("account:{} no found.", account);
             return null;
-        }
-        if (BizConstants.STATUS.NORMAL != baseAccount.getStatus()) {
-            throw new AccountNotAvailableException();
         }
         BaseAccountBO baseAccountBO = toBaseAccountBO(baseAccount);
         log.info("result data is:{}", baseAccountBO);
@@ -56,8 +53,20 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp) throws AccountNotAvailableException, AccountExistsException {
-        BaseAccountBO accountBO = queryBaseAccountByCode(account);
+    public BaseAccountBO queryValidAccountByCode(String account) throws AccountNotExistsException, AccountNotAvailableException {
+        BaseAccountBO baseAccount = queryAccount(account);
+        if (baseAccount == null) {
+            throw new AccountNotExistsException();
+        }
+        if (BizConstants.STATUS.NORMAL != baseAccount.getStatus()) {
+            throw new AccountNotAvailableException();
+        }
+        return baseAccount;
+    }
+
+    @Override
+    public BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp, String operator) throws AccountNotAvailableException, AccountExistsException {
+        BaseAccountBO accountBO = queryAccount(account);
         if (accountBO != null) {
             throw new AccountExistsException();
         }
@@ -74,12 +83,34 @@ public class AccountServiceImpl implements AccountService {
         baseAccount.setEmail(email);
         baseAccount.setNote(note);
         baseAccount.setCreateTime(now);
-        baseAccount.setCreatePerson(BizConstants.DEFAULT_OPERATE_PERSON);
-        baseAccount.setUpdateTime(now);
-        baseAccount.setUpdatePerson(BizConstants.DEFAULT_OPERATE_PERSON);
+        baseAccount.setCreatePerson(operator);
         baseAccount.setIsDel(BizConstants.DEL_FLAG.NO);
         BizUtil.checkUpdate(baseAccountMapper.insertSelective(baseAccount));
+        log.info("register finished. account:{} operator:{}", account, operator);
         return toBaseAccountBO(baseAccount);
+    }
+
+    @Override
+    public void update(String account, String plainPassword, String phone, String email, String note, Byte status, String operator) throws AccountNotExistsException, AccountNotAvailableException {
+        BaseAccountBO accountBO = queryValidAccountByCode(account);
+        Date now = new Date();
+        BaseAccount baseAccount = new BaseAccount();
+        baseAccount.setId(accountBO.getId());
+        // 传了密码就更新密码
+        if (StringUtil.isNotBlank(plainPassword)) {
+            String salt = StringUtil.randomLetter(16); // 生成摘要加密盐
+            String secretPassword = BizUtil.getSecretPassword(plainPassword, salt);
+            baseAccount.setPassword(secretPassword);
+            baseAccount.setSalt(salt);
+        }
+        baseAccount.setStatus(status);
+        baseAccount.setPhone(phone);
+        baseAccount.setEmail(email);
+        baseAccount.setNote(note);
+        baseAccount.setUpdateTime(now);
+        baseAccount.setUpdatePerson(operator);
+        BizUtil.checkUpdate(baseAccountMapper.updateByPrimaryKeySelective(baseAccount));
+        log.info("update finished. account:{} operator:{}", account, operator);
     }
 
     private BaseAccountBO toBaseAccountBO(BaseAccount baseAccount) {
@@ -104,10 +135,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public String login(String account, String plainPassword) throws AccountPasswordInvalidException, AccountNotExistsException, AccountNotAvailableException {
         // 查询账号
-        BaseAccountBO accountBO = queryBaseAccountByCode(account);
-        if (accountBO == null) {
-            throw new AccountNotExistsException();
-        }
+        BaseAccountBO accountBO = queryValidAccountByCode(account);
         // 校验密码
         checkAccountPassword(plainPassword, accountBO.getSalt(), accountBO.getPassword());
         // 生成token

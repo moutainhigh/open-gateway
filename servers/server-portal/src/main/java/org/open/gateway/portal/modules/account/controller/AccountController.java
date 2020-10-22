@@ -47,20 +47,26 @@ public class AccountController {
         return Result.data(response).ok();
     }
 
+    @PostMapping(EndPoints.ACCOUNT_REGISTER)
+    public Result register(@Valid @RequestBody AccountRegisterRequest request, HttpServletRequest servletRequest, @AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) throws AccountNotAvailableException, AccountExistsException {
+        String ip = ServletRequestUtil.getIpFromRequest(servletRequest);
+        log.info("request ip is:{}", ip);
+        BaseAccountBO accountBO = accountService.register(request.getAccount(), request.getPassword(), request.getPhone(), request.getEmail(), request.getNote(), ip, account.getAccount());
+        AccountRegisterResponse response = toAccountRegisterResponse(accountBO);
+        // 生成返回对象
+        return Result.data(response).ok();
+    }
+
     @PostMapping(EndPoints.ACCOUNT_LOGOUT)
     public Result logout(@Valid @RequestBody AccountLogoutRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) {
         accountService.logout(account.getAccount(), request.getToken());
         return Result.ok();
     }
 
-    @PostMapping(EndPoints.ACCOUNT_REGISTER)
-    public Result register(@Valid @RequestBody AccountRegisterRequest request, HttpServletRequest servletRequest) throws AccountNotAvailableException, AccountExistsException {
-        String ip = ServletRequestUtil.getIpFromRequest(servletRequest);
-        log.info("Request ip is:{}", ip);
-        BaseAccountBO accountBO = accountService.register(request.getAccount(), request.getPassword(), request.getPhone(), request.getEmail(), request.getNote(), ip);
-        AccountRegisterResponse response = toAccountRegisterResponse(accountBO);
-        // 生成返回对象
-        return Result.data(response).ok();
+    @PostMapping(EndPoints.ACCOUNT_UPDATE)
+    public Result update(@Valid @RequestBody AccountUpdateRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) throws AccountNotExistsException, AccountNotAvailableException {
+        accountService.update(request.getAccount(), request.getPassword(), request.getPhone(), request.getEmail(), request.getNote(), request.getStatus(), account.getAccount());
+        return Result.ok();
     }
 
     @PostMapping(EndPoints.ACCOUNT_RESOURCES)

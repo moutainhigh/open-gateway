@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.open.gateway.common.utils.JSON;
+import org.open.gateway.portal.constants.BizConstants;
 import org.open.gateway.portal.constants.DateTimeFormatters;
 import org.open.gateway.portal.exception.AccountExistsException;
 import org.open.gateway.portal.exception.AccountNotAvailableException;
@@ -28,24 +29,55 @@ import java.time.LocalDateTime;
  * @author MIKO
  */
 @Slf4j
-public class AccountTest extends BaseSpringTest {
+public class AccountServiceTest extends BaseSpringTest {
+
+    private final String account = "junit_test";
+    private final String password = "admin123";
+    private final String operator = "junit";
 
     @Autowired
     AccountService accountService;
+
+    // 注册账户
+    private BaseAccountBO registerAccount() throws AccountNotAvailableException, AccountExistsException {
+        BaseAccountBO accountBO = accountService.register(account, password, "17521125571", "oni-miko@outlook.com", "系统管理员", "10.60.86.128", operator);
+        log.info("register account is:{}", accountBO);
+        return accountBO;
+    }
 
     @Test
     @Transactional
     @Rollback
     public void testRegisterAndLogin() throws AccountExistsException, AccountNotAvailableException, AccountPasswordInvalidException, AccountNotExistsException {
         // 注册
-        String account = "junit_test";
-        String password = "admin123";
-        BaseAccountBO accountBO = accountService.register(account, password, "17521125571", "oni-miko@outlook.com", "系统管理员", "10.60.86.128");
-        log.info("register account is:{}", accountBO);
-        // 登录
+        BaseAccountBO accountBO = registerAccount();
         Assert.notNull(accountBO.getId(), "account id is null");
+        // 登录
         String token = accountService.login(account, password);
         log.info("login finished token is:{}", token);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testRegisterAndUpdate() throws AccountNotExistsException, AccountNotAvailableException, AccountExistsException {
+        // 注册
+        BaseAccountBO accountBO = registerAccount();
+        Assert.notNull(accountBO.getId(), "account id is null");
+        // 修改
+        String phone = "17521125570";
+        String email = "834563385@qq.com";
+        String note = "new note";
+        Byte status = BizConstants.STATUS.DISABLE;
+        accountService.update(account, null, phone, email, note, status, operator);
+        BaseAccountBO accountAfterUpdate = accountService.queryAccount(account);
+        Assert.notNull(accountAfterUpdate, "account no found");
+        Assert.isTrue(phone.equals(accountAfterUpdate.getPhone()), "phone update failed. not equals");
+        Assert.isTrue(email.equals(accountAfterUpdate.getEmail()), "email update failed. not equals");
+        Assert.isTrue(note.equals(accountAfterUpdate.getNote()), "note update failed. not equals");
+        Assert.isTrue(status.equals(accountAfterUpdate.getStatus()), "status update failed. not equals");
+        Assert.isTrue(accountBO.getPassword().equals(accountAfterUpdate.getPassword()), "password changed after update. should equals before update.");
+        Assert.isTrue(accountBO.getSalt().equals(accountAfterUpdate.getSalt()), "salt changed after update. should equals before update.");
     }
 
     @Test

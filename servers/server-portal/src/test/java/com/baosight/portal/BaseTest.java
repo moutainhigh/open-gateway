@@ -18,6 +18,8 @@ import java.util.stream.Stream;
  */
 public class BaseTest {
 
+    private static final char[] keyGen = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789".toCharArray();
+
     public static void sleep(long time) {
         try {
             Thread.sleep(time);
@@ -41,8 +43,6 @@ public class BaseTest {
     public static String getUUIDWithoutDash() {
         return UUID.randomUUID().toString().replace("-", "");
     }
-
-    private static final char[] keyGen = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789".toCharArray();
 
     public static String generateRandomStr(String prefix, int len) {
         if (prefix == null || prefix.isEmpty()) {

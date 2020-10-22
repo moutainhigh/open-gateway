@@ -23,13 +23,23 @@ public class StringUtil {
     };
 
     /**
+     * 是否没有内容
+     *
+     * @param str 字符串
+     * @return true没有内容, false有内容
+     */
+    public static boolean isBlank(String str) {
+        return str == null || str.trim().length() == 0;
+    }
+
+    /**
      * 是否有内容
      *
      * @param str 字符串
      * @return true有内容, false没有内容
      */
-    public static boolean isBlank(String str) {
-        return str == null || str.trim().length() == 0;
+    public static boolean isNotBlank(String str) {
+        return str != null && str.trim().length() > 0;
     }
 
     /**
@@ -40,6 +50,16 @@ public class StringUtil {
      */
     public static boolean isEmpty(String str) {
         return str == null || str.length() == 0;
+    }
+
+    /**
+     * 是否不为空
+     *
+     * @param str 字符串
+     * @return true不为空, false为空
+     */
+    public static boolean isNotEmpty(String str) {
+        return str != null && str.length() > 0;
     }
 
     /**

@@ -13,8 +13,8 @@ public interface EndPoints {
     String ACCOUNT_REGISTER = "/account/register";
     // 用户-退出登录
     String ACCOUNT_LOGOUT = "/account/logout";
-    // 用户-新增/修改
-    String ACCOUNT_SAVE = "/account/save";
+    // 用户-修改
+    String ACCOUNT_UPDATE = "/account/update";
     // 用户-删除
     String ACCOUNT_DELETE = "/account/delete";
     // 用户-分页列表
