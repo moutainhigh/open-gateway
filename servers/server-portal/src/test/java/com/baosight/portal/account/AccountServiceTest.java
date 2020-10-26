@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.open.gateway.common.utils.JSON;
-import org.open.gateway.portal.constants.BizConstants;
 import org.open.gateway.portal.constants.DateTimeFormatters;
 import org.open.gateway.portal.exception.AccountAlreadyExistsException;
 import org.open.gateway.portal.exception.AccountNotAvailableException;
@@ -68,14 +67,12 @@ public class AccountServiceTest extends BaseSpringTest {
         String phone = "17521125570";
         String email = "834563385@qq.com";
         String note = "new note";
-        Byte status = BizConstants.STATUS.DISABLE;
-        accountService.update(account, null, phone, email, note, status, operator);
+        accountService.update(account, null, phone, email, note, operator);
         BaseAccountBO accountAfterUpdate = accountService.queryBaseAccount(account);
         Assert.notNull(accountAfterUpdate, "account no found");
         Assert.isTrue(phone.equals(accountAfterUpdate.getPhone()), "phone update failed. not equals");
         Assert.isTrue(email.equals(accountAfterUpdate.getEmail()), "email update failed. not equals");
         Assert.isTrue(note.equals(accountAfterUpdate.getNote()), "note update failed. not equals");
-        Assert.isTrue(status.equals(accountAfterUpdate.getStatus()), "status update failed. not equals");
         Assert.isTrue(accountBO.getPassword().equals(accountAfterUpdate.getPassword()), "password changed after update. should equals before update.");
         Assert.isTrue(accountBO.getSalt().equals(accountAfterUpdate.getSalt()), "salt changed after update. should equals before update.");
     }

@@ -14,8 +14,8 @@ public interface BizConstants {
      */
     interface STATUS {
 
-        // 正常
-        byte NORMAL = 1;
+        // 启用
+        byte ENABLE = 1;
 
         // 禁用
         byte DISABLE = 0;
@@ -31,6 +31,22 @@ public interface BizConstants {
         byte YES = 1;
         // 未删除
         byte NO = 0;
+
+    }
+
+    /**
+     * 资源类型(D目录 M菜单 B按钮)
+     */
+    interface RESOURCE_TYPE {
+
+        // 目录
+        String DIRECTORY = "d";
+
+        // 菜单
+        String MENU = "m";
+
+        // 按钮
+        String BUTTON = "b";
 
     }
 

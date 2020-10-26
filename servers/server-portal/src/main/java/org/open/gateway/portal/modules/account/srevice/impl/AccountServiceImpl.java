@@ -8,15 +8,18 @@ import org.open.gateway.portal.exception.AccountAlreadyExistsException;
 import org.open.gateway.portal.exception.AccountNotAvailableException;
 import org.open.gateway.portal.exception.AccountNotExistsException;
 import org.open.gateway.portal.exception.AccountPasswordInvalidException;
+import org.open.gateway.portal.modules.account.srevice.AccountResourceService;
 import org.open.gateway.portal.modules.account.srevice.AccountService;
 import org.open.gateway.portal.modules.account.srevice.TokenService;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
 import org.open.gateway.portal.persistence.mapper.BaseAccountMapperExt;
 import org.open.gateway.portal.persistence.po.BaseAccount;
+import org.open.gateway.portal.security.AccountDetails;
 import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by miko on 9/24/20.
@@ -29,6 +32,7 @@ import java.util.Date;
 public class AccountServiceImpl implements AccountService {
 
     private final TokenService tokenService;
+    private final AccountResourceService accountResourceService;
     private final BaseAccountMapperExt baseAccountMapper;
 
     @Override
@@ -45,15 +49,30 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public BaseAccountBO queryValidBaseAccountByCode(String account) throws AccountNotExistsException, AccountNotAvailableException {
+    public BaseAccountBO queryExistsBaseAccount(String account) throws AccountNotExistsException {
         BaseAccountBO baseAccount = queryBaseAccount(account);
         if (baseAccount == null) {
             throw new AccountNotExistsException();
         }
-        if (BizConstants.STATUS.NORMAL != baseAccount.getStatus()) {
+        return baseAccount;
+    }
+
+    @Override
+    public BaseAccountBO queryValidBaseAccount(String account) throws AccountNotExistsException, AccountNotAvailableException {
+        BaseAccountBO baseAccount = queryExistsBaseAccount(account);
+        if (BizConstants.STATUS.ENABLE != baseAccount.getStatus()) {
             throw new AccountNotAvailableException();
         }
         return baseAccount;
+    }
+
+    @Override
+    public AccountDetails queryAccountDetails(String account) throws AccountNotExistsException, AccountNotAvailableException {
+        // 查询账号
+        BaseAccountBO accountBO = queryValidBaseAccount(account);
+        // 获取资源
+        Set<String> perms = accountResourceService.queryPermsByAccount(account);
+        return toAccountDetails(accountBO, perms);
     }
 
     @Override
@@ -65,44 +84,115 @@ public class AccountServiceImpl implements AccountService {
         String salt = StringUtil.randomLetter(16); // 生成摘要加密盐
         String secretPassword = BizUtil.getSecretPassword(plainPassword, salt);
         Date now = new Date();
-        BaseAccount baseAccount = new BaseAccount();
-        baseAccount.setAccount(account);
-        baseAccount.setPassword(secretPassword);
-        baseAccount.setSalt(salt);
-        baseAccount.setRegisterIp(registerIp);
-        baseAccount.setStatus(BizConstants.STATUS.NORMAL);
-        baseAccount.setPhone(phone);
-        baseAccount.setEmail(email);
-        baseAccount.setNote(note);
-        baseAccount.setCreateTime(now);
-        baseAccount.setCreatePerson(operator);
-        baseAccount.setIsDel(BizConstants.DEL_FLAG.NO);
-        BizUtil.checkUpdate(baseAccountMapper.insertSelective(baseAccount));
+        BaseAccount param = new BaseAccount();
+        param.setAccount(account);
+        param.setPassword(secretPassword);
+        param.setSalt(salt);
+        param.setRegisterIp(registerIp);
+        param.setStatus(BizConstants.STATUS.ENABLE);
+        param.setPhone(phone);
+        param.setEmail(email);
+        param.setNote(note);
+        param.setCreateTime(now);
+        param.setCreatePerson(operator);
+        param.setIsDel(BizConstants.DEL_FLAG.NO);
+        BizUtil.checkUpdate(baseAccountMapper.insertSelective(param));
         log.info("register finished. account:{} operator:{}", account, operator);
-        return toBaseAccountBO(baseAccount);
+        return toBaseAccountBO(param);
     }
 
     @Override
-    public void update(String account, String plainPassword, String phone, String email, String note, Byte status, String operator) throws AccountNotExistsException, AccountNotAvailableException {
-        BaseAccountBO accountBO = queryValidBaseAccountByCode(account);
+    public void update(String account, String plainPassword, String phone, String email, String note, String operator) throws AccountNotExistsException, AccountNotAvailableException {
+        BaseAccountBO accountBO = queryValidBaseAccount(account);
         Date now = new Date();
-        BaseAccount baseAccount = new BaseAccount();
-        baseAccount.setId(accountBO.getId());
+        BaseAccount param = new BaseAccount();
+        param.setId(accountBO.getId());
         // 传了密码就更新密码
         if (StringUtil.isNotBlank(plainPassword)) {
             String salt = StringUtil.randomLetter(16); // 生成摘要加密盐
             String secretPassword = BizUtil.getSecretPassword(plainPassword, salt);
-            baseAccount.setPassword(secretPassword);
-            baseAccount.setSalt(salt);
+            param.setPassword(secretPassword);
+            param.setSalt(salt);
         }
-        baseAccount.setStatus(status);
-        baseAccount.setPhone(phone);
-        baseAccount.setEmail(email);
-        baseAccount.setNote(note);
-        baseAccount.setUpdateTime(now);
-        baseAccount.setUpdatePerson(operator);
-        BizUtil.checkUpdate(baseAccountMapper.updateByPrimaryKeySelective(baseAccount));
+        param.setPhone(phone);
+        param.setEmail(email);
+        param.setNote(note);
+        param.setUpdateTime(now);
+        param.setUpdatePerson(operator);
+        BizUtil.checkUpdate(baseAccountMapper.updateByPrimaryKeySelective(param));
         log.info("update finished. account:{} operator:{}", account, operator);
+    }
+
+    @Override
+    public void enable(String account, String operator) throws AccountNotExistsException {
+        BaseAccountBO accountBO = queryExistsBaseAccount(account);
+        BaseAccount param = new BaseAccount();
+        param.setId(accountBO.getId());
+        param.setStatus(BizConstants.STATUS.ENABLE);
+        param.setUpdateTime(new Date());
+        param.setUpdatePerson(operator);
+        BizUtil.checkUpdate(baseAccountMapper.updateByPrimaryKeySelective(param));
+        log.info("enable account:{} finished. operator is:{}", accountBO.getAccount(), operator);
+    }
+
+    @Override
+    public void disable(String account, String operator) throws AccountNotExistsException {
+        BaseAccountBO accountBO = queryExistsBaseAccount(account);
+        BaseAccount param = new BaseAccount();
+        param.setId(accountBO.getId());
+        param.setStatus(BizConstants.STATUS.DISABLE);
+        param.setUpdateTime(new Date());
+        param.setUpdatePerson(operator);
+        BizUtil.checkUpdate(baseAccountMapper.updateByPrimaryKeySelective(param));
+        log.info("updated account:{} status to disable status:{}", account, param.getStatus());
+        tokenService.deleteToken(account);
+        log.info("disable account:{} finished. operator is:{}", accountBO.getAccount(), operator);
+    }
+
+    @Override
+    public String login(String account, String plainPassword) throws AccountPasswordInvalidException, AccountNotExistsException, AccountNotAvailableException {
+        // 查询账号
+        BaseAccountBO accountBO = queryValidBaseAccount(account);
+        // 校验密码
+        checkAccountPassword(plainPassword, accountBO.getSalt(), accountBO.getPassword());
+        // 获取资源
+        Set<String> perms = accountResourceService.queryPermsByAccount(account);
+        // 生成token
+        return tokenService.generateToken(toAccountDetails(accountBO, perms));
+    }
+
+    @Override
+    public void logout(String account) {
+        Boolean result = tokenService.deleteToken(account);
+        log.info("logout finished by account:{} result:{}", account, result);
+    }
+
+    @Override
+    public void delete(String account, String operator) throws AccountNotExistsException {
+        BaseAccountBO accountBO = queryExistsBaseAccount(account);
+        BaseAccount param = new BaseAccount();
+        param.setId(accountBO.getId());
+        param.setUpdatePerson(operator);
+        param.setUpdateTime(new Date());
+        param.setIsDel(BizConstants.DEL_FLAG.YES);
+        BizUtil.checkUpdate(baseAccountMapper.updateByPrimaryKeySelective(param), 1);
+        log.info("logic delete account:{} finished. operator is:{}", account, operator);
+    }
+
+    /**
+     * 校验账户秘密
+     *
+     * @param plainPassword  密码明文
+     * @param salt           摘要加密盐
+     * @param secretPassword 密码密文
+     * @throws AccountPasswordInvalidException 无效的账户密码
+     */
+    private void checkAccountPassword(String plainPassword, String salt, String secretPassword) throws AccountPasswordInvalidException {
+        String tempSecretPassword = BizUtil.getSecretPassword(plainPassword, salt);
+        if (!tempSecretPassword.equals(secretPassword)) {
+            throw new AccountPasswordInvalidException();
+        }
+        log.info("check account password finished");
     }
 
     private BaseAccountBO toBaseAccountBO(BaseAccount baseAccount) {
@@ -124,51 +214,13 @@ public class AccountServiceImpl implements AccountService {
         return baseAccountBO;
     }
 
-    @Override
-    public String login(String account, String plainPassword) throws AccountPasswordInvalidException, AccountNotExistsException, AccountNotAvailableException {
-        // 查询账号
-        BaseAccountBO accountBO = queryValidBaseAccountByCode(account);
-        // 校验密码
-        checkAccountPassword(plainPassword, accountBO.getSalt(), accountBO.getPassword());
-        // 生成token
-        return tokenService.generateToken(accountBO);
-    }
-
-    @Override
-    public void logout(String account) {
-        Boolean result = tokenService.deleteToken(account);
-        log.info("logout finished by account:{} result:{}", account, result);
-    }
-
-    @Override
-    public void delete(String account, String operator) throws AccountNotExistsException {
-        BaseAccountBO accountBO = queryBaseAccount(account);
-        if (accountBO == null) {
-            throw new AccountNotExistsException();
-        }
-        BaseAccount baseAccount = new BaseAccount();
-        baseAccount.setId(accountBO.getId());
-        baseAccount.setUpdatePerson(operator);
-        baseAccount.setUpdateTime(new Date());
-        baseAccount.setIsDel(BizConstants.DEL_FLAG.YES);
-        BizUtil.checkUpdate(baseAccountMapper.updateByPrimaryKeySelective(baseAccount), 1);
-        log.info("logic delete account:{} finished. operator is:{}", account, operator);
-    }
-
-    /**
-     * 校验账户秘密
-     *
-     * @param plainPassword  密码明文
-     * @param salt           摘要加密盐
-     * @param secretPassword 密码密文
-     * @throws AccountPasswordInvalidException 无效的账户密码
-     */
-    private void checkAccountPassword(String plainPassword, String salt, String secretPassword) throws AccountPasswordInvalidException {
-        String tempSecretPassword = BizUtil.getSecretPassword(plainPassword, salt);
-        if (!tempSecretPassword.equals(secretPassword)) {
-            throw new AccountPasswordInvalidException();
-        }
-        log.info("check account password finished");
+    private AccountDetails toAccountDetails(BaseAccountBO baseAccountBO, Set<String> perms) {
+        AccountDetails accountDetails = new AccountDetails();
+        accountDetails.setId(baseAccountBO.getId());
+        accountDetails.setAccount(baseAccountBO.getAccount());
+        accountDetails.setPassword(baseAccountBO.getPassword());
+        accountDetails.setAuthorities(perms);
+        return accountDetails;
     }
 
 }

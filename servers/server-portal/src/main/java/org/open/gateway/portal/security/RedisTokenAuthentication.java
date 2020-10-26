@@ -1,11 +1,13 @@
 package org.open.gateway.portal.security;
 
-import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by miko on 10/20/20.
@@ -15,20 +17,25 @@ import java.util.Objects;
 public class RedisTokenAuthentication implements Authentication {
 
     private boolean authenticated;
-    private final BaseAccountBO principal;
+    private final AccountDetails principal;
+    private final Set<GrantedAuthority> authorities;
 
-    public RedisTokenAuthentication(BaseAccountBO principal) {
+    public RedisTokenAuthentication(AccountDetails principal) {
         this.principal = Objects.requireNonNull(principal);
+        this.authorities = principal.getAuthorities()
+                .stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.authorities;
     }
 
     @Override
     public Object getCredentials() {
-        return null;
+        return this.principal.getPassword();
     }
 
     @Override

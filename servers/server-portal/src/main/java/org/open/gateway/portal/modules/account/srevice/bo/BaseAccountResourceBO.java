@@ -20,7 +20,11 @@ public class BaseAccountResourceBO {
 
     private String resourceName;
 
+    private String resourceType;
+
     private String parentCode;
+
+    private String perms;
 
     private String url;
 

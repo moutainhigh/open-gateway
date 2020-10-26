@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -29,7 +30,7 @@ public class AccountResourceServiceImpl implements AccountResourceService {
     @Override
     public List<BaseAccountResourceBO> queryResourcesByAccount(String account) {
         // 查询所有资源
-        List<BaseResource> resources = baseResourceMapper.selectResourcesByAccount(account);
+        List<BaseResource> resources = baseResourceMapper.selectResourcesByAccountAndResourceType(account, null);
         log.info("account:{} resources num:{}", account, resources.size());
         // 按照父代码分组
         Map<String, List<BaseAccountResourceBO>> resourcesGroup = resources.stream()
@@ -41,11 +42,22 @@ public class AccountResourceServiceImpl implements AccountResourceService {
         return rootResources;
     }
 
+    @Override
+    public Set<String> queryPermsByAccount(String account) {
+        List<BaseResource> baseResources = baseResourceMapper.selectResourcesByAccountAndResourceType(account, BizConstants.RESOURCE_TYPE.BUTTON);
+        log.info("query perms num:{}", baseResources.size());
+        return baseResources.stream()
+                .map(BaseResource::getPerms)
+                .collect(Collectors.toSet());
+    }
+
     private BaseAccountResourceBO toAccountResourceBO(BaseResource br) {
         BaseAccountResourceBO ar = new BaseAccountResourceBO();
         ar.setResourceCode(br.getResourceCode());
         ar.setResourceName(br.getResourceName());
+        ar.setResourceType(br.getResourceType());
         ar.setParentCode(br.getParentCode());
+        ar.setPerms(br.getPerms());
         ar.setUrl(br.getUrl());
         ar.setSort(br.getSort());
         ar.setNote(br.getNote());

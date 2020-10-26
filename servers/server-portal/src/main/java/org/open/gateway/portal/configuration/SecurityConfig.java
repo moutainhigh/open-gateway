@@ -8,6 +8,7 @@ import org.open.gateway.portal.security.RedisTokenAuthenticationConverter;
 import org.open.gateway.portal.security.RedisTokenAuthenticationFilter;
 import org.open.gateway.portal.security.RedisTokenAuthenticationManager;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,9 +21,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * @author MIKO
  */
 @Slf4j
+@AllArgsConstructor
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final TokenService tokenService;

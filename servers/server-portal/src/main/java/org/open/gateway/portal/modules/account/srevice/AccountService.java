@@ -5,6 +5,8 @@ import org.open.gateway.portal.exception.AccountNotAvailableException;
 import org.open.gateway.portal.exception.AccountNotExistsException;
 import org.open.gateway.portal.exception.AccountPasswordInvalidException;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
+import org.open.gateway.portal.security.AccountDetails;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 /**
@@ -24,6 +26,16 @@ public interface AccountService {
     BaseAccountBO queryBaseAccount(String account);
 
     /**
+     * 查询存在的账户
+     *
+     * @param account 账户
+     * @return 账户信息
+     * @throws AccountNotExistsException 账户不存在
+     */
+    @NonNull
+    BaseAccountBO queryExistsBaseAccount(String account) throws AccountNotExistsException;
+
+    /**
      * 查询有效的帐户
      *
      * @param account 帐户
@@ -31,7 +43,19 @@ public interface AccountService {
      * @throws AccountNotExistsException    帐户不存在
      * @throws AccountNotAvailableException 帐户不可用
      */
-    BaseAccountBO queryValidBaseAccountByCode(String account) throws AccountNotExistsException, AccountNotAvailableException;
+    @NonNull
+    BaseAccountBO queryValidBaseAccount(String account) throws AccountNotExistsException, AccountNotAvailableException;
+
+    /**
+     * 查询账户以及权限
+     *
+     * @param account 账户
+     * @return 账户信息
+     * @throws AccountNotExistsException    帐户不存在
+     * @throws AccountNotAvailableException 帐户不可用
+     */
+    @NonNull
+    AccountDetails queryAccountDetails(String account) throws AccountNotExistsException, AccountNotAvailableException;
 
     /**
      * 注册
@@ -44,9 +68,10 @@ public interface AccountService {
      * @param registerIp    ip地址
      * @param operator      操作人
      * @return 用户信息
-     * @throws AccountNotAvailableException 帐户不可用
-     * @throws AccountAlreadyExistsException       帐户已经存在
+     * @throws AccountNotAvailableException  帐户不可用
+     * @throws AccountAlreadyExistsException 帐户已经存在
      */
+    @NonNull
     BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp, String operator) throws AccountNotAvailableException, AccountAlreadyExistsException;
 
     /**
@@ -57,12 +82,29 @@ public interface AccountService {
      * @param phone         电话
      * @param email         邮箱
      * @param note          描述
-     * @param status        帐户状态
      * @param operator      操作人
      * @throws AccountNotAvailableException 帐户不可用
      * @throws AccountNotExistsException    帐户不存在
      */
-    void update(String account, String plainPassword, String phone, String email, String note, Byte status, String operator) throws AccountNotExistsException, AccountNotAvailableException;
+    void update(String account, String plainPassword, String phone, String email, String note, String operator) throws AccountNotExistsException, AccountNotAvailableException;
+
+    /**
+     * 启用
+     *
+     * @param account  账户
+     * @param operator 操作人
+     * @throws AccountNotExistsException 帐户不存在
+     */
+    void enable(String account, String operator) throws AccountNotExistsException;
+
+    /**
+     * 禁用
+     *
+     * @param account  账户
+     * @param operator 操作人
+     * @throws AccountNotExistsException 帐户不存在
+     */
+    void disable(String account, String operator) throws AccountNotExistsException;
 
     /**
      * 登录

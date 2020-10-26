@@ -45,9 +45,4 @@ public class AccountUpdateRequest {
      */
     private String note;
 
-    /**
-     * 状态
-     */
-    private Byte status;
-
 }

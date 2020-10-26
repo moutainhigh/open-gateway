@@ -7,8 +7,10 @@
 		<result column="resource_name" jdbcType="VARCHAR" property="resourceName"/>
 		<result column="parent_code" jdbcType="VARCHAR" property="parentCode"/>
 		<result column="url" jdbcType="VARCHAR" property="url"/>
-		<result column="sort" jdbcType="INTEGER" property="sort"/>
+		<result column="resource_type" jdbcType="CHAR" property="resourceType"/>
+		<result column="perms" jdbcType="VARCHAR" property="perms"/>
 		<result column="note" jdbcType="VARCHAR" property="note"/>
+		<result column="sort" jdbcType="INTEGER" property="sort"/>
 		<result column="status" jdbcType="TINYINT" property="status"/>
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
 		<result column="create_person" jdbcType="VARCHAR" property="createPerson"/>
@@ -17,8 +19,8 @@
 		<result column="is_del" jdbcType="TINYINT" property="isDel"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-    id, resource_code, resource_name, parent_code, url, sort, note, status, create_time, 
-    create_person, update_time, update_person, is_del
+    id, resource_code, resource_name, parent_code, url, resource_type, perms, note, sort, 
+    status, create_time, create_person, update_time, update_person, is_del
   </sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		select
@@ -29,11 +31,13 @@
 	<insert id="insert" keyColumn="id" keyProperty="id"
 			parameterType="org.open.gateway.portal.persistence.po.BaseResource" useGeneratedKeys="true">
     insert into base_resource (resource_code, resource_name, parent_code, 
-      url, sort, note, status, 
+      url, resource_type, perms, 
+      note, sort, status, 
       create_time, create_person, update_time, 
       update_person, is_del)
     values (#{resourceCode,jdbcType=VARCHAR}, #{resourceName,jdbcType=VARCHAR}, #{parentCode,jdbcType=VARCHAR}, 
-      #{url,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{note,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
+      #{url,jdbcType=VARCHAR}, #{resourceType,jdbcType=CHAR}, #{perms,jdbcType=VARCHAR}, 
+      #{note,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{status,jdbcType=TINYINT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updatePerson,jdbcType=VARCHAR}, #{isDel,jdbcType=TINYINT})
   </insert>
@@ -53,11 +57,17 @@
 			<if test="url != null">
 				url,
 			</if>
-			<if test="sort != null">
-				sort,
+			<if test="resourceType != null">
+				resource_type,
+			</if>
+			<if test="perms != null">
+				perms,
 			</if>
 			<if test="note != null">
 				note,
+			</if>
+			<if test="sort != null">
+				sort,
 			</if>
 			<if test="status != null">
 				status,
@@ -91,11 +101,17 @@
 			<if test="url != null">
 				#{url,jdbcType=VARCHAR},
 			</if>
-			<if test="sort != null">
-				#{sort,jdbcType=INTEGER},
+			<if test="resourceType != null">
+				#{resourceType,jdbcType=CHAR},
+			</if>
+			<if test="perms != null">
+				#{perms,jdbcType=VARCHAR},
 			</if>
 			<if test="note != null">
 				#{note,jdbcType=VARCHAR},
+			</if>
+			<if test="sort != null">
+				#{sort,jdbcType=INTEGER},
 			</if>
 			<if test="status != null">
 				#{status,jdbcType=TINYINT},
@@ -132,11 +148,17 @@
 			<if test="url != null">
 				url = #{url,jdbcType=VARCHAR},
 			</if>
-			<if test="sort != null">
-				sort = #{sort,jdbcType=INTEGER},
+			<if test="resourceType != null">
+				resource_type = #{resourceType,jdbcType=CHAR},
+			</if>
+			<if test="perms != null">
+				perms = #{perms,jdbcType=VARCHAR},
 			</if>
 			<if test="note != null">
 				note = #{note,jdbcType=VARCHAR},
+			</if>
+			<if test="sort != null">
+				sort = #{sort,jdbcType=INTEGER},
 			</if>
 			<if test="status != null">
 				status = #{status,jdbcType=TINYINT},
@@ -165,8 +187,10 @@
       resource_name = #{resourceName,jdbcType=VARCHAR},
       parent_code = #{parentCode,jdbcType=VARCHAR},
       url = #{url,jdbcType=VARCHAR},
-      sort = #{sort,jdbcType=INTEGER},
+      resource_type = #{resourceType,jdbcType=CHAR},
+      perms = #{perms,jdbcType=VARCHAR},
       note = #{note,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
       status = #{status,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       create_person = #{createPerson,jdbcType=VARCHAR},

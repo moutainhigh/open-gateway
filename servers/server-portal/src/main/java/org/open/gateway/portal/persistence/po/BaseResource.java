@@ -13,9 +13,13 @@ public class BaseResource {
 
     private String url;
 
-    private Integer sort;
+    private String resourceType;
+
+    private String perms;
 
     private String note;
+
+    private Integer sort;
 
     private Byte status;
 
@@ -69,12 +73,20 @@ public class BaseResource {
         this.url = url == null ? null : url.trim();
     }
 
-    public Integer getSort() {
-        return sort;
+    public String getResourceType() {
+        return resourceType;
     }
 
-    public void setSort(Integer sort) {
-        this.sort = sort;
+    public void setResourceType(String resourceType) {
+        this.resourceType = resourceType == null ? null : resourceType.trim();
+    }
+
+    public String getPerms() {
+        return perms;
+    }
+
+    public void setPerms(String perms) {
+        this.perms = perms == null ? null : perms.trim();
     }
 
     public String getNote() {
@@ -83,6 +95,14 @@ public class BaseResource {
 
     public void setNote(String note) {
         this.note = note == null ? null : note.trim();
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 
     public Byte getStatus() {

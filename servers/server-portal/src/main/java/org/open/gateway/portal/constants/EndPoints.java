@@ -15,16 +15,20 @@ public interface EndPoints {
     String ACCOUNT_LOGOUT = "/account/logout";
     // 用户-修改
     String ACCOUNT_UPDATE = "/account/update";
+    // 用户-启用
+    String ACCOUNT_ENABLE = "/account/enable";
+    // 用户-禁用
+    String ACCOUNT_DISABLE = "/account/disable";
     // 用户-删除
     String ACCOUNT_DELETE = "/account/delete";
     // 用户-分页列表
     String ACCOUNT_PAGE_LIST = "/account/pageList";
+    // 用户-资源列表
+    String ACCOUNT_RESOURCES = "/account/resources";
     // 用户-角色列表
     String ACCOUNT_ROLES = "/account/roles";
     // 用户-角色新增/修改
     String ACCOUNT_ROLE_SAVE = "/account/roles/save";
-    // 用户-资源列表
-    String ACCOUNT_RESOURCES = "/account/resources";
 
     // 网关-路由刷新
     String GATEWAY_ROUTES_REFRESH = "/gateway/routes/refresh";

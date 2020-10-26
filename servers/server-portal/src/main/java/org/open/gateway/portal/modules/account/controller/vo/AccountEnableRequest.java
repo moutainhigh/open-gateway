@@ -7,18 +7,15 @@ import lombok.ToString;
 import javax.validation.constraints.NotBlank;
 
 /**
- * Created by miko on 10/22/20.
+ * Created by miko on 10/26/20.
  *
  * @author MIKO
  */
 @Getter
 @Setter
 @ToString
-public class AccountDeleteRequest {
+public class AccountEnableRequest {
 
-    /**
-     * 账户
-     */
     @NotBlank
     private String account;
 

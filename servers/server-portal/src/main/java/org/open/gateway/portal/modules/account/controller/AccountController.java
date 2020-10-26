@@ -12,9 +12,11 @@ import org.open.gateway.portal.modules.account.srevice.AccountResourceService;
 import org.open.gateway.portal.modules.account.srevice.AccountService;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
 import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountResourceBO;
+import org.open.gateway.portal.security.AccountDetails;
 import org.open.gateway.portal.utils.BizUtil;
 import org.open.gateway.portal.utils.ServletRequestUtil;
 import org.open.gateway.portal.vo.Result;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,7 +52,7 @@ public class AccountController {
     }
 
     @PostMapping(EndPoints.ACCOUNT_REGISTER)
-    public Result register(@Valid @RequestBody AccountRegisterRequest request, HttpServletRequest servletRequest, @AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) throws AccountNotAvailableException, AccountAlreadyExistsException {
+    public Result register(@Valid @RequestBody AccountRegisterRequest request, HttpServletRequest servletRequest, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotAvailableException, AccountAlreadyExistsException {
         String ip = ServletRequestUtil.getIpFromRequest(servletRequest);
         log.info("request ip is:{}", ip);
         BaseAccountBO accountBO = accountService.register(request.getAccount(), request.getPassword(), request.getPhone(), request.getEmail(), request.getNote(), ip, account.getAccount());
@@ -60,31 +62,48 @@ public class AccountController {
     }
 
     @PostMapping(EndPoints.ACCOUNT_LOGOUT)
-    public Result logout(@AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) {
+    public Result logout(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
         accountService.logout(account.getAccount());
         return Result.ok();
     }
 
+    @PreAuthorize("#account.hasPermission('account:post:update')")
     @PostMapping(EndPoints.ACCOUNT_UPDATE)
-    public Result update(@Valid @RequestBody AccountUpdateRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) throws AccountNotExistsException, AccountNotAvailableException {
-        accountService.update(request.getAccount(), request.getPassword(), request.getPhone(), request.getEmail(), request.getNote(), request.getStatus(), account.getAccount());
+    public Result update(@Valid @RequestBody AccountUpdateRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException, AccountNotAvailableException {
+        accountService.update(request.getAccount(), request.getPassword(), request.getPhone(), request.getEmail(), request.getNote(), account.getAccount());
         return Result.ok();
     }
 
+    @PreAuthorize("#account.hasPermission('account:post:enable')")
+    @PostMapping(EndPoints.ACCOUNT_ENABLE)
+    public Result enable(@Valid @RequestBody AccountEnableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException, AccountNotAvailableException {
+        accountService.enable(request.getAccount(), account.getAccount());
+        return Result.ok();
+    }
+
+    @PreAuthorize("#account.hasPermission('account:post:disable')")
+    @PostMapping(EndPoints.ACCOUNT_DISABLE)
+    public Result disable(@Valid @RequestBody AccountDisableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException, AccountNotAvailableException {
+        accountService.disable(request.getAccount(), account.getAccount());
+        return Result.ok();
+    }
+
+    @PreAuthorize("#account.hasPermission('account:post:delete')")
     @PostMapping(EndPoints.ACCOUNT_DELETE)
-    public Result delete(AccountDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) throws AccountNotExistsException {
+    public Result delete(@Valid @RequestBody AccountDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException {
         accountService.delete(request.getAccount(), account.getAccount());
         return Result.ok();
     }
 
     @PostMapping(EndPoints.ACCOUNT_RESOURCES)
-    public Result accountResources(@AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) {
+    public Result resources(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
         List<BaseAccountResourceBO> resources = accountResourceService.queryResourcesByAccount(account.getAccount());
         return Result.data(resources).ok();
     }
 
+    @PreAuthorize("#account.hasPermission('account:post:pageList')")
     @PostMapping(EndPoints.ACCOUNT_PAGE_LIST)
-    public Result pageList(@AuthenticationPrincipal(errorOnInvalidType = true) BaseAccountBO account) {
+    public Result pageList(@Valid @RequestBody AccountPageListRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
         // TODO
         return Result.ok();
     }
