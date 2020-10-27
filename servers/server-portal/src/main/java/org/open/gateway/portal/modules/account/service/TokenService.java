@@ -1,4 +1,4 @@
-package org.open.gateway.portal.modules.account.srevice;
+package org.open.gateway.portal.modules.account.service;
 
 import org.open.gateway.portal.security.AccountDetails;
 import org.springframework.lang.NonNull;

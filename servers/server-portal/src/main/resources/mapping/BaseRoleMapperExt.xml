@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.open.gateway.portal.persistence.mapper.BaseRoleMapperExt">
+
+	<sql id="base_role_columns">
+		br.id, br.role_code, br.role_name, br.note, br.status, br.create_time, br.create_person, br.update_time,
+		br.update_person, br.is_del
+	</sql>
+
+	<select id="selectRolesByAccount" resultMap="BaseResultMap">
+		SELECT
+		<include refid="base_role_columns"/>
+		FROM base_account ba
+		INNER JOIN base_account_role bar ON ba.id = bar.account_id
+		INNER JOIN base_role br ON br.id = bar.role_id
+		WHERE ba.is_del = '0' AND br.is_del = '0'
+		AND ba.`status` = '1' AND br.`status` = '1'
+		AND ba.account = #{account}
+	</select>
+
+	<select id="selectRoleByCode" resultMap="BaseResultMap">
+		SELECT
+		<include refid="base_role_columns"/>
+		FROM base_role br
+		WHERE br.is_del = '0' AND br.role_code = #{roleCode}
+	</select>
+
+</mapper>

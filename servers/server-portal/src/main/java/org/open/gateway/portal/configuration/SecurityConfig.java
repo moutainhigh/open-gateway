@@ -3,7 +3,7 @@ package org.open.gateway.portal.configuration;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.portal.constants.EndPoints;
-import org.open.gateway.portal.modules.account.srevice.TokenService;
+import org.open.gateway.portal.modules.account.service.TokenService;
 import org.open.gateway.portal.security.RedisTokenAuthenticationConverter;
 import org.open.gateway.portal.security.RedisTokenAuthenticationFilter;
 import org.open.gateway.portal.security.RedisTokenAuthenticationManager;

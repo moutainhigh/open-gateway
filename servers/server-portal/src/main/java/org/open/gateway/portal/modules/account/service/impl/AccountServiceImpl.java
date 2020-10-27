@@ -1,4 +1,4 @@
-package org.open.gateway.portal.modules.account.srevice.impl;
+package org.open.gateway.portal.modules.account.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,10 +8,11 @@ import org.open.gateway.portal.exception.AccountAlreadyExistsException;
 import org.open.gateway.portal.exception.AccountNotAvailableException;
 import org.open.gateway.portal.exception.AccountNotExistsException;
 import org.open.gateway.portal.exception.AccountPasswordInvalidException;
-import org.open.gateway.portal.modules.account.srevice.AccountResourceService;
-import org.open.gateway.portal.modules.account.srevice.AccountService;
-import org.open.gateway.portal.modules.account.srevice.TokenService;
-import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
+import org.open.gateway.portal.modules.account.service.AccountResourceService;
+import org.open.gateway.portal.modules.account.service.AccountService;
+import org.open.gateway.portal.modules.account.service.TokenService;
+import org.open.gateway.portal.modules.account.service.bo.BaseAccountBO;
+import org.open.gateway.portal.modules.account.service.bo.BaseAccountQuery;
 import org.open.gateway.portal.persistence.mapper.BaseAccountMapperExt;
 import org.open.gateway.portal.persistence.po.BaseAccount;
 import org.open.gateway.portal.security.AccountDetails;
@@ -19,7 +20,9 @@ import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by miko on 9/24/20.
@@ -73,6 +76,15 @@ public class AccountServiceImpl implements AccountService {
         // 获取资源
         Set<String> perms = accountResourceService.queryPermsByAccount(account);
         return toAccountDetails(accountBO, perms);
+    }
+
+    @Override
+    public List<BaseAccountBO> queryBaseAccounts(BaseAccountQuery query) {
+        List<BaseAccount> baseAccounts = baseAccountMapper.selectByCondition(query);
+        log.info("query base accounts result num:{} param:{}", baseAccounts.size(), query);
+        return baseAccounts.stream()
+                .map(this::toBaseAccountBO)
+                .collect(Collectors.toList());
     }
 
     @Override

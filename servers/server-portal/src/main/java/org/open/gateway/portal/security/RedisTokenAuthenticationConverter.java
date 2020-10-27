@@ -1,7 +1,7 @@
 package org.open.gateway.portal.security;
 
 import lombok.AllArgsConstructor;
-import org.open.gateway.portal.modules.account.srevice.TokenService;
+import org.open.gateway.portal.modules.account.service.TokenService;
 import org.open.gateway.portal.security.exception.InvalidTokenException;
 import org.open.gateway.portal.security.exception.TokenExpiredException;
 import org.springframework.http.HttpHeaders;

@@ -1,6 +1,7 @@
 package org.open.gateway.portal.modules.account.controller;
 
 import cn.hutool.crypto.SecureUtil;
+import com.github.pagehelper.Page;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.portal.constants.DateTimeFormatters;
@@ -8,10 +9,13 @@ import org.open.gateway.portal.constants.EndPoints;
 import org.open.gateway.portal.constants.ResultCode;
 import org.open.gateway.portal.exception.*;
 import org.open.gateway.portal.modules.account.controller.vo.*;
-import org.open.gateway.portal.modules.account.srevice.AccountResourceService;
-import org.open.gateway.portal.modules.account.srevice.AccountService;
-import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
-import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountResourceBO;
+import org.open.gateway.portal.modules.account.service.AccountResourceService;
+import org.open.gateway.portal.modules.account.service.AccountRoleService;
+import org.open.gateway.portal.modules.account.service.AccountService;
+import org.open.gateway.portal.modules.account.service.bo.BaseAccountBO;
+import org.open.gateway.portal.modules.account.service.bo.BaseAccountQuery;
+import org.open.gateway.portal.modules.account.service.bo.BaseResourceBO;
+import org.open.gateway.portal.modules.account.service.bo.BaseRoleBO;
 import org.open.gateway.portal.security.AccountDetails;
 import org.open.gateway.portal.utils.BizUtil;
 import org.open.gateway.portal.utils.ServletRequestUtil;
@@ -26,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by miko on 9/24/20.
@@ -39,6 +44,7 @@ public class AccountController {
 
     private final AccountService accountService;
     private final AccountResourceService accountResourceService;
+    private final AccountRoleService accountRoleService;
 
     @PostMapping(EndPoints.ACCOUNT_LOGIN)
     public Result login(@Valid @RequestBody AccountLoginRequest request) throws AccountPasswordInvalidException, AccountNotExistsException, AccountNotAvailableException {
@@ -96,16 +102,62 @@ public class AccountController {
     }
 
     @PostMapping(EndPoints.ACCOUNT_RESOURCES)
-    public Result resources(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
-        List<BaseAccountResourceBO> resources = accountResourceService.queryResourcesByAccount(account.getAccount());
+    public Result resources(@Valid @RequestBody AccountRolesRequest request) {
+        List<BaseResourceBO> resources = accountResourceService.queryResourcesByAccount(request.getAccount());
         return Result.data(resources).ok();
     }
 
     @PreAuthorize("#account.hasPermission('account:post:pageList')")
     @PostMapping(EndPoints.ACCOUNT_PAGE_LIST)
     public Result pageList(@Valid @RequestBody AccountPageListRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
-        // TODO
+        BaseAccountQuery query = toBaseAccountQuery(request);
+        Page<?> page = request.startPage();
+        List<BaseAccountBO> accounts = accountService.queryBaseAccounts(query);
+        List<AccountPageListResponse> responses = accounts.stream()
+                .map(this::toAccountPageListResponse)
+                .collect(Collectors.toList());
+        log.info("response num:{}", responses.size());
+        return Result.data(responses).pageInfo(page).ok();
+    }
+
+    @PostMapping(EndPoints.ACCOUNT_ROLES)
+    public Result roles(@Valid @RequestBody AccountRolesRequest request) {
+        List<BaseRoleBO> baseRoleBOS = accountRoleService.queryRolesByAccount(request.getAccount());
+        return Result.data(baseRoleBOS).ok();
+    }
+
+    @PreAuthorize("#account.hasPermission('account:post:roleSave')")
+    @PostMapping(EndPoints.ACCOUNT_ROLE_SAVE)
+    public Result roleSave(@Valid @RequestBody AccountRoleSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
+        accountRoleService.saveRole(request.getRoleCode(), request.getRoleName(), request.getNote(), request.getStatus(), account.getAccount());
         return Result.ok();
+    }
+
+    private BaseAccountQuery toBaseAccountQuery(AccountPageListRequest request) {
+        BaseAccountQuery query = new BaseAccountQuery();
+        query.setAccount(request.getAccount());
+        query.setStatus(request.getStatus());
+        query.setPhone(request.getPhone());
+        query.setEmail(request.getEmail());
+        query.setCreateTimeBegin(request.getCreateDateBegin());
+        query.setCreateTimeEnd(request.getCreateDateEnd());
+        return query;
+    }
+
+    private AccountPageListResponse toAccountPageListResponse(BaseAccountBO accountBO) {
+        AccountPageListResponse response = new AccountPageListResponse();
+        response.setId(accountBO.getId());
+        response.setAccount(accountBO.getAccount());
+        response.setStatus(accountBO.getStatus());
+        response.setPhone(accountBO.getPhone());
+        response.setEmail(accountBO.getEmail());
+        response.setNote(accountBO.getNote());
+        response.setCreateTime(accountBO.getCreateTime());
+        response.setCreatePerson(accountBO.getCreatePerson());
+        response.setUpdateTime(accountBO.getUpdateTime());
+        response.setUpdatePerson(accountBO.getUpdatePerson());
+        response.setRegisterIp(accountBO.getRegisterIp());
+        return response;
     }
 
     private AccountRegisterResponse toAccountRegisterResponse(BaseAccountBO accountBO) {

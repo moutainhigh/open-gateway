@@ -1,4 +1,4 @@
-package org.open.gateway.portal.modules.account.srevice.bo;
+package org.open.gateway.portal.modules.account.service.bo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class BaseAccountResourceBO {
+public class BaseResourceBO {
 
     private String resourceCode;
 
@@ -32,6 +32,6 @@ public class BaseAccountResourceBO {
 
     private String note;
 
-    private List<BaseAccountResourceBO> children;
+    private List<BaseResourceBO> children;
 
 }

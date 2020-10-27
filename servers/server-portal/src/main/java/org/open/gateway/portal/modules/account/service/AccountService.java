@@ -1,13 +1,16 @@
-package org.open.gateway.portal.modules.account.srevice;
+package org.open.gateway.portal.modules.account.service;
 
 import org.open.gateway.portal.exception.AccountAlreadyExistsException;
 import org.open.gateway.portal.exception.AccountNotAvailableException;
 import org.open.gateway.portal.exception.AccountNotExistsException;
 import org.open.gateway.portal.exception.AccountPasswordInvalidException;
-import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountBO;
+import org.open.gateway.portal.modules.account.service.bo.BaseAccountBO;
+import org.open.gateway.portal.modules.account.service.bo.BaseAccountQuery;
 import org.open.gateway.portal.security.AccountDetails;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+
+import java.util.List;
 
 /**
  * Created by miko on 9/24/20.
@@ -56,6 +59,15 @@ public interface AccountService {
      */
     @NonNull
     AccountDetails queryAccountDetails(String account) throws AccountNotExistsException, AccountNotAvailableException;
+
+    /**
+     * 查询账户列表
+     *
+     * @param query 查询条件
+     * @return 账户列表
+     */
+    @NonNull
+    List<BaseAccountBO> queryBaseAccounts(BaseAccountQuery query);
 
     /**
      * 注册

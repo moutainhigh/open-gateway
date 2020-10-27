@@ -1,5 +1,6 @@
 package org.open.gateway.portal.vo;
 
+import com.github.pagehelper.Page;
 import lombok.Getter;
 import org.open.gateway.portal.constants.ResultCode;
 
@@ -55,6 +56,10 @@ public class Result {
         public ResponseBuilder pageInfo(PageInfo pageInfo) {
             this.pageInfo = pageInfo;
             return this;
+        }
+
+        public ResponseBuilder pageInfo(Page<?> page) {
+            return pageInfo(PageInfo.of(page));
         }
 
         public Result ok() {

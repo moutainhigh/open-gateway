@@ -1,9 +1,9 @@
-package org.open.gateway.portal.modules.account.srevice.impl;
+package org.open.gateway.portal.modules.account.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.common.utils.IdUtil;
 import org.open.gateway.common.utils.JSON;
-import org.open.gateway.portal.modules.account.srevice.TokenService;
+import org.open.gateway.portal.modules.account.service.TokenService;
 import org.open.gateway.portal.security.AccountDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;

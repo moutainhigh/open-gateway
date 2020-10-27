@@ -1,10 +1,10 @@
-package org.open.gateway.portal.modules.account.srevice.impl;
+package org.open.gateway.portal.modules.account.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.portal.constants.BizConstants;
-import org.open.gateway.portal.modules.account.srevice.AccountResourceService;
-import org.open.gateway.portal.modules.account.srevice.bo.BaseAccountResourceBO;
+import org.open.gateway.portal.modules.account.service.AccountResourceService;
+import org.open.gateway.portal.modules.account.service.bo.BaseResourceBO;
 import org.open.gateway.portal.persistence.mapper.BaseResourceMapperExt;
 import org.open.gateway.portal.persistence.po.BaseResource;
 import org.springframework.stereotype.Service;
@@ -28,18 +28,28 @@ public class AccountResourceServiceImpl implements AccountResourceService {
     private final BaseResourceMapperExt baseResourceMapper;
 
     @Override
-    public List<BaseAccountResourceBO> queryResourcesByAccount(String account) {
-        // 查询所有资源
+    public List<BaseResourceBO> queryResourcesByAccount(String account) {
+        // 查询资源
         List<BaseResource> resources = baseResourceMapper.selectResourcesByAccountAndResourceType(account, null);
-        log.info("account:{} resources num:{}", account, resources.size());
+        log.info("query resources num:{} by account:{}", resources.size(), account);
         // 按照父代码分组
-        Map<String, List<BaseAccountResourceBO>> resourcesGroup = resources.stream()
-                .map(this::toAccountResourceBO)
-                .collect(Collectors.groupingBy(BaseAccountResourceBO::getParentCode));
+        Map<String, List<BaseResourceBO>> resourcesGroup = resources.stream()
+                .map(this::toBaseResourceBO)
+                .collect(Collectors.groupingBy(BaseResourceBO::getParentCode));
         // 根节点
-        List<BaseAccountResourceBO> rootResources = toResourceTree(BizConstants.ROOT_CODE, resourcesGroup);
+        List<BaseResourceBO> rootResources = toResourceTree(BizConstants.ROOT_CODE, resourcesGroup);
         log.info("root resources num:{}", rootResources.size());
         return rootResources;
+    }
+
+    @Override
+    public List<BaseResourceBO> queryResourcesByRole(String roleCode) {
+        // 查询资源
+        List<BaseResource> resources = baseResourceMapper.selectResourcesByRole(roleCode);
+        log.info("query resources num:{} by role:{}", resources.size(), roleCode);
+        return resources.stream()
+                .map(this::toBaseResourceBO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -51,8 +61,8 @@ public class AccountResourceServiceImpl implements AccountResourceService {
                 .collect(Collectors.toSet());
     }
 
-    private BaseAccountResourceBO toAccountResourceBO(BaseResource br) {
-        BaseAccountResourceBO ar = new BaseAccountResourceBO();
+    private BaseResourceBO toBaseResourceBO(BaseResource br) {
+        BaseResourceBO ar = new BaseResourceBO();
         ar.setResourceCode(br.getResourceCode());
         ar.setResourceName(br.getResourceName());
         ar.setResourceType(br.getResourceType());
@@ -64,10 +74,10 @@ public class AccountResourceServiceImpl implements AccountResourceService {
         return ar;
     }
 
-    private List<BaseAccountResourceBO> toResourceTree(String parentCode, Map<String, List<BaseAccountResourceBO>> resourcesGroup) {
-        List<BaseAccountResourceBO> resources = resourcesGroup.getOrDefault(parentCode, new ArrayList<>());
+    private List<BaseResourceBO> toResourceTree(String parentCode, Map<String, List<BaseResourceBO>> resourcesGroup) {
+        List<BaseResourceBO> resources = resourcesGroup.getOrDefault(parentCode, new ArrayList<>());
         if (resources != null) {
-            for (BaseAccountResourceBO r : resources) {
+            for (BaseResourceBO r : resources) {
                 r.setChildren(toResourceTree(r.getResourceCode(), resourcesGroup));
             }
         }

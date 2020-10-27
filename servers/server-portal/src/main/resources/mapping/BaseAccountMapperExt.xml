@@ -10,4 +10,40 @@
 		and is_del = 0
 	</select>
 
+	<select id="selectByCondition" parameterType="org.open.gateway.portal.modules.account.service.bo.BaseAccountQuery"
+			resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from base_account
+		<where>
+			<if test="account != null">
+				and account = #{account},
+			</if>
+			<if test="registerIp != null">
+				and register_ip = #{registerIp},
+			</if>
+			<if test="status != null">
+				and status = ${status},
+			</if>
+			<if test="phone != null">
+				<bind name="phone" value="phone + '%'"/>
+				and phone like #{phone},
+			</if>
+			<if test="email != null">
+				<bind name="email" value="email + '%'"/>
+				and email like #{email},
+			</if>
+			<if test="createTimeBegin != null">
+				and create_time >= #{createTimeBegin},
+			</if>
+			<if test="createTimeEnd != null">
+				and create_time &lt; #{createTimeEnd},
+			</if>
+			<if test="createPerson != null">
+				and create_person = #{createPerson},
+			</if>
+			and is_del = 0
+		</where>
+	</select>
+
 </mapper>

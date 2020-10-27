@@ -8,7 +8,6 @@ import org.open.gateway.portal.modules.log.controller.vo.AccessLogsPageListRespo
 import org.open.gateway.portal.persistence.mapper.GatewayAccessLogsMapperExt;
 import org.open.gateway.portal.persistence.po.GatewayAccessLogs;
 import org.open.gateway.portal.utils.Beans;
-import org.open.gateway.portal.vo.PageInfo;
 import org.open.gateway.portal.vo.Result;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,9 +41,7 @@ public class GatewayAccessLogsController {
         List<AccessLogsPageListResponse> responses = logs.stream()
                 .map(log -> Beans.from(log).convert(AccessLogsPageListResponse::new))
                 .collect(Collectors.toList());
-        return Result.data(responses)
-                .pageInfo(PageInfo.of(logs))
-                .ok();
+        return Result.data(responses).pageInfo(logs).ok();
     }
 
 }

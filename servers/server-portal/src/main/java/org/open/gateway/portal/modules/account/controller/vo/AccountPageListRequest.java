@@ -27,4 +27,6 @@ public class AccountPageListRequest extends PageRequest {
 
     private Date createDateEnd;
 
+    private Byte status;
+
 }

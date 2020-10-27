@@ -2,10 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.open.gateway.portal.persistence.mapper.BaseResourceMapperExt">
 
-	<select id="selectResourcesByAccountAndResourceType" resultMap="BaseResultMap">
-		SELECT
+	<sql id="base_resource_columns">
 		r.id, r.resource_code, r.resource_name, r.parent_code, r.url, r.resource_type, r.perms, r.sort, r.note,
 		r.status, r.create_time, r.create_person, r.update_time, r.update_person, r.is_del
+	</sql>
+
+	<select id="selectResourcesByAccountAndResourceType" resultMap="BaseResultMap">
+		SELECT
+		<include refid="base_resource_columns"/>
 		FROM base_account ba
 		INNER JOIN base_account_role bar ON ba.id = bar.account_id
 		INNER JOIN base_role br ON br.id = bar.role_id
@@ -17,6 +21,17 @@
 		<if test="resourceType != null">
 			AND r.resource_type = #{resourceType}
 		</if>
+	</select>
+
+	<select id="selectResourcesByRole" resultMap="BaseResultMap">
+		SELECT
+		<include refid="base_resource_columns"/>
+		FROM base_role br
+		INNER JOIN base_role_resource brr ON brr.role_id = br.id
+		INNER JOIN base_resource r ON r.id = brr.resource_id
+		WHERE br.is_del = '0' AND r.is_del = '0'
+		AND br.`status` = '1' AND r.`status` = '1'
+		AND br.role_code = #{roleCode}
 	</select>
 
 </mapper>
