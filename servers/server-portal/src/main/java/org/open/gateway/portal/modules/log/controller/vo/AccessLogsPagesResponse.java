@@ -14,7 +14,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class AccessLogsPageListResponse {
+public class AccessLogsPagesResponse {
 
     /**
      * 请求访问的地址

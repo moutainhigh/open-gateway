@@ -4,20 +4,25 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.common.utils.StringUtil;
 import org.open.gateway.portal.constants.BizConstants;
-import org.open.gateway.portal.exception.AccountAlreadyExistsException;
-import org.open.gateway.portal.exception.AccountNotAvailableException;
-import org.open.gateway.portal.exception.AccountNotExistsException;
-import org.open.gateway.portal.exception.AccountPasswordInvalidException;
+import org.open.gateway.portal.exception.ServiceException;
+import org.open.gateway.portal.exception.account.AccountAlreadyExistsException;
+import org.open.gateway.portal.exception.account.AccountNotAvailableException;
+import org.open.gateway.portal.exception.account.AccountNotExistsException;
+import org.open.gateway.portal.exception.account.AccountPasswordInvalidException;
 import org.open.gateway.portal.modules.account.service.AccountResourceService;
 import org.open.gateway.portal.modules.account.service.AccountService;
 import org.open.gateway.portal.modules.account.service.TokenService;
 import org.open.gateway.portal.modules.account.service.bo.BaseAccountBO;
 import org.open.gateway.portal.modules.account.service.bo.BaseAccountQuery;
 import org.open.gateway.portal.persistence.mapper.BaseAccountMapperExt;
+import org.open.gateway.portal.persistence.mapper.BaseAccountRoleMapperExt;
 import org.open.gateway.portal.persistence.po.BaseAccount;
+import org.open.gateway.portal.persistence.po.BaseAccountRole;
 import org.open.gateway.portal.security.AccountDetails;
 import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -37,6 +42,7 @@ public class AccountServiceImpl implements AccountService {
     private final TokenService tokenService;
     private final AccountResourceService accountResourceService;
     private final BaseAccountMapperExt baseAccountMapper;
+    private final BaseAccountRoleMapperExt baseAccountRoleMapper;
 
     @Override
     public BaseAccountBO queryBaseAccount(String account) {
@@ -88,17 +94,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp, String operator) throws AccountNotAvailableException, AccountAlreadyExistsException {
+    public BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp, String operator) throws AccountAlreadyExistsException {
         BaseAccountBO accountBO = queryBaseAccount(account);
         if (accountBO != null) {
             throw new AccountAlreadyExistsException();
         }
         String salt = StringUtil.randomLetter(16); // 生成摘要加密盐
-        String secretPassword = BizUtil.getSecretPassword(plainPassword, salt);
+        String digestPassword = BizUtil.generateDigestPassword(plainPassword, salt);
         Date now = new Date();
         BaseAccount param = new BaseAccount();
         param.setAccount(account);
-        param.setPassword(secretPassword);
+        param.setPassword(digestPassword);
         param.setSalt(salt);
         param.setRegisterIp(registerIp);
         param.setStatus(BizConstants.STATUS.ENABLE);
@@ -113,8 +119,9 @@ public class AccountServiceImpl implements AccountService {
         return toBaseAccountBO(param);
     }
 
+    @Transactional(rollbackFor = {ServiceException.class, RuntimeException.class})
     @Override
-    public void update(String account, String plainPassword, String phone, String email, String note, String operator) throws AccountNotExistsException, AccountNotAvailableException {
+    public void update(String account, String plainPassword, String phone, String email, String note, String operator, List<Integer> roleIds) throws AccountNotExistsException, AccountNotAvailableException {
         BaseAccountBO accountBO = queryValidBaseAccount(account);
         Date now = new Date();
         BaseAccount param = new BaseAccount();
@@ -122,8 +129,8 @@ public class AccountServiceImpl implements AccountService {
         // 传了密码就更新密码
         if (StringUtil.isNotBlank(plainPassword)) {
             String salt = StringUtil.randomLetter(16); // 生成摘要加密盐
-            String secretPassword = BizUtil.getSecretPassword(plainPassword, salt);
-            param.setPassword(secretPassword);
+            String digestPassword = BizUtil.generateDigestPassword(plainPassword, salt);
+            param.setPassword(digestPassword);
             param.setSalt(salt);
         }
         param.setPhone(phone);
@@ -132,11 +139,21 @@ public class AccountServiceImpl implements AccountService {
         param.setUpdateTime(now);
         param.setUpdatePerson(operator);
         BizUtil.checkUpdate(baseAccountMapper.updateByPrimaryKeySelective(param));
-        log.info("update finished. account:{} operator:{}", account, operator);
+        log.info("update account:{} finished", account);
+        if (!CollectionUtils.isEmpty(roleIds)) {
+            BizUtil.checkUpdate(baseAccountRoleMapper.deleteByAccountId(accountBO.getId()));
+            log.info("delete exists role by account id:{} account:{}", accountBO.getId(), accountBO.getAccount());
+            BizUtil.checkUpdate(baseAccountRoleMapper.insertBatch(roleIds.stream()
+                    .map(roleId -> toBaseAccountRole(operator, accountBO, roleId))
+                    .collect(Collectors.toList())), roleIds.size());
+            log.info("insert roles finished. num:{} account:{}", roleIds.size(), accountBO.getAccount());
+        }
+        log.info("update transactional finished. account:{} operator:{}", account, operator);
     }
 
     @Override
     public void enable(String account, String operator) throws AccountNotExistsException {
+        // 查询存在的账户
         BaseAccountBO accountBO = queryExistsBaseAccount(account);
         BaseAccount param = new BaseAccount();
         param.setId(accountBO.getId());
@@ -149,6 +166,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void disable(String account, String operator) throws AccountNotExistsException {
+        // 查询存在的账户
         BaseAccountBO accountBO = queryExistsBaseAccount(account);
         BaseAccount param = new BaseAccount();
         param.setId(accountBO.getId());
@@ -196,12 +214,12 @@ public class AccountServiceImpl implements AccountService {
      *
      * @param plainPassword  密码明文
      * @param salt           摘要加密盐
-     * @param secretPassword 密码密文
+     * @param digestPassword 密码密文
      * @throws AccountPasswordInvalidException 无效的账户密码
      */
-    private void checkAccountPassword(String plainPassword, String salt, String secretPassword) throws AccountPasswordInvalidException {
-        String tempSecretPassword = BizUtil.getSecretPassword(plainPassword, salt);
-        if (!tempSecretPassword.equals(secretPassword)) {
+    private void checkAccountPassword(String plainPassword, String salt, String digestPassword) throws AccountPasswordInvalidException {
+        String newDigestPassword = BizUtil.generateDigestPassword(plainPassword, salt);
+        if (!newDigestPassword.equals(digestPassword)) {
             throw new AccountPasswordInvalidException();
         }
         log.info("check account password finished");
@@ -233,6 +251,15 @@ public class AccountServiceImpl implements AccountService {
         accountDetails.setPassword(baseAccountBO.getPassword());
         accountDetails.setAuthorities(perms);
         return accountDetails;
+    }
+
+    private BaseAccountRole toBaseAccountRole(String operator, BaseAccountBO accountBO, Integer roleId) {
+        BaseAccountRole baseAccountRole = new BaseAccountRole();
+        baseAccountRole.setCreateTime(new Date());
+        baseAccountRole.setCreatePerson(operator);
+        baseAccountRole.setAccountId(accountBO.getId());
+        baseAccountRole.setRoleId(roleId);
+        return baseAccountRole;
     }
 
 }

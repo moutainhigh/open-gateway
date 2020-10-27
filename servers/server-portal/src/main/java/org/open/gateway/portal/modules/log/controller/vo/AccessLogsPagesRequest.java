@@ -15,7 +15,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class AccessLogsPageListRequest extends PageRequest {
+public class AccessLogsPagesRequest extends PageRequest {
 
     /**
      * 请求ip

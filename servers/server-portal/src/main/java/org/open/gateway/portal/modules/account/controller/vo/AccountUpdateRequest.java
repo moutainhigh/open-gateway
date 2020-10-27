@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 /**
  * Created by miko on 10/22/20.
@@ -24,9 +25,8 @@ public class AccountUpdateRequest {
     private String account;
 
     /**
-     * 加密后的密码
+     * 密码
      */
-    @NotBlank
     private String password;
 
     /**
@@ -44,5 +44,10 @@ public class AccountUpdateRequest {
      * 备注
      */
     private String note;
+
+    /**
+     * 角色id集合
+     */
+    private List<Integer> roleIds;
 
 }

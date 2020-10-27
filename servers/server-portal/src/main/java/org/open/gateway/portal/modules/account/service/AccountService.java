@@ -1,9 +1,9 @@
 package org.open.gateway.portal.modules.account.service;
 
-import org.open.gateway.portal.exception.AccountAlreadyExistsException;
-import org.open.gateway.portal.exception.AccountNotAvailableException;
-import org.open.gateway.portal.exception.AccountNotExistsException;
-import org.open.gateway.portal.exception.AccountPasswordInvalidException;
+import org.open.gateway.portal.exception.account.AccountAlreadyExistsException;
+import org.open.gateway.portal.exception.account.AccountNotAvailableException;
+import org.open.gateway.portal.exception.account.AccountNotExistsException;
+import org.open.gateway.portal.exception.account.AccountPasswordInvalidException;
 import org.open.gateway.portal.modules.account.service.bo.BaseAccountBO;
 import org.open.gateway.portal.modules.account.service.bo.BaseAccountQuery;
 import org.open.gateway.portal.security.AccountDetails;
@@ -80,11 +80,10 @@ public interface AccountService {
      * @param registerIp    ip地址
      * @param operator      操作人
      * @return 用户信息
-     * @throws AccountNotAvailableException  帐户不可用
      * @throws AccountAlreadyExistsException 帐户已经存在
      */
     @NonNull
-    BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp, String operator) throws AccountNotAvailableException, AccountAlreadyExistsException;
+    BaseAccountBO register(String account, String plainPassword, String phone, String email, String note, String registerIp, String operator) throws AccountAlreadyExistsException;
 
     /**
      * 修改
@@ -95,10 +94,11 @@ public interface AccountService {
      * @param email         邮箱
      * @param note          描述
      * @param operator      操作人
+     * @param roleIds       角色id集合
      * @throws AccountNotAvailableException 帐户不可用
      * @throws AccountNotExistsException    帐户不存在
      */
-    void update(String account, String plainPassword, String phone, String email, String note, String operator) throws AccountNotExistsException, AccountNotAvailableException;
+    void update(String account, String plainPassword, String phone, String email, String note, String operator, List<Integer> roleIds) throws AccountNotExistsException, AccountNotAvailableException;
 
     /**
      * 启用

@@ -14,7 +14,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class AccountPageListResponse {
+public class AccountPagesResponse {
 
     private Integer id;
 

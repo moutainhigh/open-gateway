@@ -13,7 +13,7 @@ import org.open.gateway.portal.vo.PageRequest;
 @Getter
 @Setter
 @ToString
-public class RoutePageListRequest extends PageRequest {
+public class RoutePagesRequest extends PageRequest {
 
 
 }

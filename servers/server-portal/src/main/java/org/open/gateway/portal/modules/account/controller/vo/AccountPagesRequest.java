@@ -15,7 +15,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class AccountPageListRequest extends PageRequest {
+public class AccountPagesRequest extends PageRequest {
 
     private String account;
 

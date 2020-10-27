@@ -22,13 +22,13 @@ public interface EndPoints {
     // 用户-删除
     String ACCOUNT_DELETE = "/account/delete";
     // 用户-分页列表
-    String ACCOUNT_PAGE_LIST = "/account/pageList";
-    // 用户-资源列表
-    String ACCOUNT_RESOURCES = "/account/resources";
+    String ACCOUNT_PAGES = "/account/pages";
+    // 用户-资源列表(所有)
+    String ACCOUNT_RESOURCE_LIST = "/account/resource/list";
     // 用户-角色列表
-    String ACCOUNT_ROLES = "/account/roles";
+    String ACCOUNT_ROLE_PAGES = "/account/role/pages";
     // 用户-角色新增/修改
-    String ACCOUNT_ROLE_SAVE = "/account/roles/save";
+    String ACCOUNT_ROLE_SAVE = "/account/role/save";
 
     // 网关-路由刷新
     String GATEWAY_ROUTES_REFRESH = "/gateway/routes/refresh";
@@ -38,10 +38,10 @@ public interface EndPoints {
     String GATEWAY_IP_LIMITS_REFRESH = "/gateway/ipLimits/refresh";
 
     // 日志-分页列表
-    String ACCESS_LOGS_PAGE_LIST = "/accessLogs/pageList";
+    String ACCESS_LOGS_PAGES = "/accessLogs/pages";
 
     // 路由-分页列表
-    String ROUTES_PAGE_LIST = "/routes/pageList";
+    String ROUTES_PAGES = "/routes/pages";
     // 路由-列表(所有)
     String ROUTES_LIST = "/routes/list";
     // 路由-新增/修改
@@ -52,7 +52,7 @@ public interface EndPoints {
     String ROUTES_TYPES = "/routes/types";
 
     // 应用-分页列表
-    String APP_PAGE_LIST = "/app/pageList";
+    String APP_PAGES = "/app/pages";
     // 应用-新增/修改
     String APP_SAVE = "/app/save";
     // 应用-更新所拥有的接口
@@ -61,21 +61,21 @@ public interface EndPoints {
     String APP_DELETE = "/app/delete";
 
     // 接口-分页列表
-    String API_PAGE_LIST = "/api/pageList";
+    String API_PAGES = "/api/pages";
     // 接口-新增/修改
     String API_SAVE = "/api/save";
     // 接口-删除
     String API_DELETE = "/api/delete";
 
     // 接口分类-列表(所有)
-    String API_CLASSIFICATION_LIST = "/api/classification/list";
+    String API_CLASSIFICATION = "/api/classification/list";
     // 接口分类-新增/修改
     String API_CLASSIFICATION_SAVE = "/api/classification/save";
     // 接口分类-删除
     String API_CLASSIFICATION_DELETE = "/api/classification/delete";
 
     // 策略-限流-分页列表
-    String POLICY_RATE_LIMIT_PAGE_LIST = "/policy/rateLimit/pageList";
+    String POLICY_RATE_LIMIT_PAGES = "/policy/rateLimit/pages";
     // 策略-限流-新增/修改
     String POLICY_RATE_LIMIT_SAVE = "/policy/rateLimit/save";
     // 策略-限流-删除
@@ -86,7 +86,7 @@ public interface EndPoints {
     String POLICY_RATE_LIMIT_TYPES = "/policy/rateLimit/types";
 
     // 策略-黑白名单-分页列表
-    String POLICY_IP_LIMIT_PAGE_LIST = "/policy/ipLimit/pageList";
+    String POLICY_IP_LIMIT_PAGES = "/policy/ipLimit/pages";
     // 策略-黑白名单-新增/修改
     String POLICY_IP_LIMIT_PAGE_SAVE = "/policy/ipLimit/save";
     // 策略-黑白名单-删除

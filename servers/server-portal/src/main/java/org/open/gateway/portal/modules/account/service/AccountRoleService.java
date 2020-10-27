@@ -1,5 +1,6 @@
 package org.open.gateway.portal.modules.account.service;
 
+import org.open.gateway.portal.exception.role.RoleNotExistsException;
 import org.open.gateway.portal.modules.account.service.bo.BaseRoleBO;
 
 import java.util.List;
@@ -25,9 +26,24 @@ public interface AccountRoleService {
      * @param roleCode 角色代码
      * @param roleName 角色名称
      * @param note     备注
-     * @param status   状态
      * @param operator 操作人
      */
-    void saveRole(String roleCode, String roleName, String note, Byte status, String operator);
+    void saveRole(String roleCode, String roleName, String note, String operator);
+
+    /**
+     * 启用
+     *
+     * @param roleCode 角色代码
+     * @param operator 操作人
+     */
+    void enable(String roleCode, String operator) throws RoleNotExistsException;
+
+    /**
+     * 禁用
+     *
+     * @param roleCode 角色代码
+     * @param operator 操作人
+     */
+    void disable(String roleCode, String operator) throws RoleNotExistsException;
 
 }

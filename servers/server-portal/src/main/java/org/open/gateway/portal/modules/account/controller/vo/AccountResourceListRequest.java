@@ -14,13 +14,9 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @ToString
-public class AccountRoleSaveRequest {
+public class AccountResourceListRequest {
 
     @NotBlank
-    private String roleCode;
-
-    private String roleName;
-
-    private String note;
+    private String account;
 
 }

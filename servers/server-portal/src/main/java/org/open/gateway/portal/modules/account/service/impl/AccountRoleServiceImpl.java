@@ -3,6 +3,7 @@ package org.open.gateway.portal.modules.account.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.portal.constants.BizConstants;
+import org.open.gateway.portal.exception.role.RoleNotExistsException;
 import org.open.gateway.portal.modules.account.service.AccountRoleService;
 import org.open.gateway.portal.modules.account.service.bo.BaseRoleBO;
 import org.open.gateway.portal.persistence.mapper.BaseRoleMapperExt;
@@ -36,30 +37,58 @@ public class AccountRoleServiceImpl implements AccountRoleService {
     }
 
     @Override
-    public void saveRole(String roleCode, String roleName, String note, Byte status, String operator) {
-        BaseRole baseRole = baseRoleMapper.selectRoleByCode(roleCode);
-        if (baseRole == null) {
+    public void saveRole(String roleCode, String roleName, String note, String operator) {
+        BaseRole param = baseRoleMapper.selectRoleByCode(roleCode);
+        if (param == null) {
             log.info("role code:{} not exists. starting insert.", roleCode);
-            baseRole = new BaseRole();
-            baseRole.setRoleCode(roleCode);
-            baseRole.setRoleName(roleName);
-            baseRole.setNote(note);
-            baseRole.setStatus(status);
-            baseRole.setCreateTime(new Date());
-            baseRole.setCreatePerson(operator);
-            baseRole.setIsDel(BizConstants.DEL_FLAG.NO);
-            BizUtil.checkUpdate(baseRoleMapper.insertSelective(baseRole));
-            log.info("insert role:{} finished. operator is:{} new id is:{}", roleCode, operator, baseRole.getId());
+            param = new BaseRole();
+            param.setRoleCode(roleCode);
+            param.setRoleName(roleName);
+            param.setNote(note);
+            param.setCreateTime(new Date());
+            param.setCreatePerson(operator);
+            param.setIsDel(BizConstants.DEL_FLAG.NO);
+            BizUtil.checkUpdate(baseRoleMapper.insertSelective(param));
+            log.info("insert role:{} finished. operator is:{} new id is:{}", roleCode, operator, param.getId());
         } else {
             log.info("role code:{} exists. starting update.", roleCode);
-            baseRole.setRoleName(roleName);
-            baseRole.setNote(note);
-            baseRole.setStatus(status);
-            baseRole.setUpdateTime(new Date());
-            baseRole.setUpdatePerson(operator);
-            BizUtil.checkUpdate(baseRoleMapper.updateByPrimaryKeySelective(baseRole));
+            param.setRoleName(roleName);
+            param.setNote(note);
+            param.setUpdateTime(new Date());
+            param.setUpdatePerson(operator);
+            BizUtil.checkUpdate(baseRoleMapper.updateByPrimaryKeySelective(param));
             log.info("update role:{} finished. operator is:{}", roleCode, operator);
         }
+    }
+
+    @Override
+    public void enable(String roleCode, String operator) throws RoleNotExistsException {
+        BaseRole baseRole = baseRoleMapper.selectRoleByCode(roleCode);
+        if (baseRole == null) {
+            throw new RoleNotExistsException();
+        }
+        BaseRole param = new BaseRole();
+        param.setId(baseRole.getId());
+        param.setStatus(BizConstants.STATUS.ENABLE);
+        param.setUpdateTime(new Date());
+        param.setUpdatePerson(operator);
+        BizUtil.checkUpdate(baseRoleMapper.updateByPrimaryKeySelective(param));
+        log.info("enable role:{} finished. operator is:{}", roleCode, operator);
+    }
+
+    @Override
+    public void disable(String roleCode, String operator) throws RoleNotExistsException {
+        BaseRole baseRole = baseRoleMapper.selectRoleByCode(roleCode);
+        if (baseRole == null) {
+            throw new RoleNotExistsException();
+        }
+        BaseRole param = new BaseRole();
+        param.setId(baseRole.getId());
+        param.setStatus(BizConstants.STATUS.DISABLE);
+        param.setUpdateTime(new Date());
+        param.setUpdatePerson(operator);
+        BizUtil.checkUpdate(baseRoleMapper.updateByPrimaryKeySelective(param));
+        log.info("enable role:{} finished. operator is:{}", roleCode, operator);
     }
 
     private BaseRoleBO toBaseRoleBO(BaseRole baseRole) {

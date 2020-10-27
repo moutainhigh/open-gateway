@@ -2,7 +2,7 @@ package org.open.gateway.portal.modules.route.controller;
 
 import lombok.AllArgsConstructor;
 import org.open.gateway.portal.constants.EndPoints;
-import org.open.gateway.portal.modules.route.controller.vo.RoutePageListRequest;
+import org.open.gateway.portal.modules.route.controller.vo.RoutePagesRequest;
 import org.open.gateway.portal.vo.Result;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,8 +19,8 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class GatewayRouteController {
 
-    @PostMapping(EndPoints.ROUTES_PAGE_LIST)
-    public Result pageList(@Valid @RequestBody RoutePageListRequest request) {
+    @PostMapping(EndPoints.ROUTES_PAGES)
+    public Result pages(@Valid @RequestBody RoutePagesRequest request) {
         // TODO
         return Result.ok();
     }

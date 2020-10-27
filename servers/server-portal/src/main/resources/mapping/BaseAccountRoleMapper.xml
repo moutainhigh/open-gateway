@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.open.gateway.portal.persistence.mapper.BaseAccountRoleMapper">
+<mapper namespace="org.open.gateway.portal.persistence.mapper.BaseAccountRoleMapperExt">
 	<resultMap id="BaseResultMap" type="org.open.gateway.portal.persistence.po.BaseAccountRole">
 		<id column="account_id" jdbcType="INTEGER" property="accountId"/>
 		<id column="role_id" jdbcType="INTEGER" property="roleId"/>

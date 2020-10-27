@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.open.gateway.portal.persistence.mapper.BaseAccountRoleMapperExt">
+
+	<delete id="deleteByAccountId">
+        delete from base_account_role where account_id = #{accountId,jdbcType=INTEGER}
+    </delete>
+
+	<insert id="insertBatch">
+		insert into base_account_role (<include refid="Base_Column_List"/>)
+		VALUES
+		<foreach collection="list" item="data" separator=",">
+			(#{data.accountId,jdbcType=INTEGER},
+			#{data.roleId,jdbcType=INTEGER},
+			#{data.createTime,jdbcType=TIMESTAMP},
+			#{data.createPerson,jdbcType=VARCHAR})
+		</foreach>
+	</insert>
+
+</mapper>

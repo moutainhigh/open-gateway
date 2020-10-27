@@ -33,6 +33,10 @@ public enum ResultCode {
      */
     ACCOUNT_LOGIN_REQUEST_EXPIRED("1004", "登录请求过期"),
     /**
+     * 角色不存在
+     */
+    ROLE_NOT_EXISTS("1100", "角色已存在"),
+    /**
      * 成功
      */
     SUCCESS("0000", "OK");

@@ -36,15 +36,15 @@ public class BizUtil {
     }
 
     /**
-     * 摘要加密密码
+     * 生成摘要加密密码
      *
      * @param plainPassword 明文密码
      * @param salt          摘要加密盐
      * @return 密文
      */
-    public static String getSecretPassword(String plainPassword, String salt) {
+    public static String generateDigestPassword(String plainPassword, String salt) {
         Digester digester = SecureUtil.sha256();
-        return digester.digestHex(digester.digestHex(plainPassword) + digester.digestHex(salt));
+        return digester.digestHex(digester.digestHex(plainPassword) + salt);
     }
 
     /**

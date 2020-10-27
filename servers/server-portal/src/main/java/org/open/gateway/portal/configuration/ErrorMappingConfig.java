@@ -2,7 +2,13 @@ package org.open.gateway.portal.configuration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.portal.constants.ResultCode;
-import org.open.gateway.portal.exception.*;
+import org.open.gateway.portal.exception.ResultException;
+import org.open.gateway.portal.exception.ServiceException;
+import org.open.gateway.portal.exception.account.AccountAlreadyExistsException;
+import org.open.gateway.portal.exception.account.AccountNotAvailableException;
+import org.open.gateway.portal.exception.account.AccountNotExistsException;
+import org.open.gateway.portal.exception.account.AccountPasswordInvalidException;
+import org.open.gateway.portal.exception.role.RoleNotExistsException;
 import org.open.gateway.portal.vo.Result;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -62,6 +68,9 @@ public class ErrorMappingConfig {
         }
         if (e instanceof AccountAlreadyExistsException) {
             return ResultCode.ACCOUNT_IS_EXISTS;
+        }
+        if (e instanceof RoleNotExistsException) {
+            return ResultCode.ROLE_NOT_EXISTS;
         }
         throw new IllegalStateException("Unmapping exception:" + e.getClass().getName());
     }

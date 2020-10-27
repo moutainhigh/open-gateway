@@ -7,15 +7,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.portal.constants.DateTimeFormatters;
 import org.open.gateway.portal.constants.EndPoints;
 import org.open.gateway.portal.constants.ResultCode;
-import org.open.gateway.portal.exception.*;
+import org.open.gateway.portal.exception.ResultException;
+import org.open.gateway.portal.exception.account.AccountAlreadyExistsException;
+import org.open.gateway.portal.exception.account.AccountNotAvailableException;
+import org.open.gateway.portal.exception.account.AccountNotExistsException;
+import org.open.gateway.portal.exception.account.AccountPasswordInvalidException;
 import org.open.gateway.portal.modules.account.controller.vo.*;
 import org.open.gateway.portal.modules.account.service.AccountResourceService;
-import org.open.gateway.portal.modules.account.service.AccountRoleService;
 import org.open.gateway.portal.modules.account.service.AccountService;
 import org.open.gateway.portal.modules.account.service.bo.BaseAccountBO;
 import org.open.gateway.portal.modules.account.service.bo.BaseAccountQuery;
 import org.open.gateway.portal.modules.account.service.bo.BaseResourceBO;
-import org.open.gateway.portal.modules.account.service.bo.BaseRoleBO;
 import org.open.gateway.portal.security.AccountDetails;
 import org.open.gateway.portal.utils.BizUtil;
 import org.open.gateway.portal.utils.ServletRequestUtil;
@@ -44,7 +46,6 @@ public class AccountController {
 
     private final AccountService accountService;
     private final AccountResourceService accountResourceService;
-    private final AccountRoleService accountRoleService;
 
     @PostMapping(EndPoints.ACCOUNT_LOGIN)
     public Result login(@Valid @RequestBody AccountLoginRequest request) throws AccountPasswordInvalidException, AccountNotExistsException, AccountNotAvailableException {
@@ -61,9 +62,10 @@ public class AccountController {
     public Result register(@Valid @RequestBody AccountRegisterRequest request, HttpServletRequest servletRequest, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotAvailableException, AccountAlreadyExistsException {
         String ip = ServletRequestUtil.getIpFromRequest(servletRequest);
         log.info("request ip is:{}", ip);
+        // 注册
         BaseAccountBO accountBO = accountService.register(request.getAccount(), request.getPassword(), request.getPhone(), request.getEmail(), request.getNote(), ip, account.getAccount());
-        AccountRegisterResponse response = toAccountRegisterResponse(accountBO);
         // 生成返回对象
+        AccountRegisterResponse response = toAccountRegisterResponse(accountBO);
         return Result.data(response).ok();
     }
 
@@ -73,67 +75,54 @@ public class AccountController {
         return Result.ok();
     }
 
-    @PreAuthorize("#account.hasPermission('account:post:update')")
+    @PreAuthorize("#account.hasPermission('account:update:post')")
     @PostMapping(EndPoints.ACCOUNT_UPDATE)
     public Result update(@Valid @RequestBody AccountUpdateRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException, AccountNotAvailableException {
-        accountService.update(request.getAccount(), request.getPassword(), request.getPhone(), request.getEmail(), request.getNote(), account.getAccount());
+        accountService.update(request.getAccount(), request.getPassword(), request.getPhone(), request.getEmail(), request.getNote(), account.getAccount(), request.getRoleIds());
         return Result.ok();
     }
 
-    @PreAuthorize("#account.hasPermission('account:post:enable')")
+    @PreAuthorize("#account.hasPermission('account:enable:post')")
     @PostMapping(EndPoints.ACCOUNT_ENABLE)
     public Result enable(@Valid @RequestBody AccountEnableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException, AccountNotAvailableException {
         accountService.enable(request.getAccount(), account.getAccount());
         return Result.ok();
     }
 
-    @PreAuthorize("#account.hasPermission('account:post:disable')")
+    @PreAuthorize("#account.hasPermission('account:disable:post')")
     @PostMapping(EndPoints.ACCOUNT_DISABLE)
     public Result disable(@Valid @RequestBody AccountDisableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException, AccountNotAvailableException {
         accountService.disable(request.getAccount(), account.getAccount());
         return Result.ok();
     }
 
-    @PreAuthorize("#account.hasPermission('account:post:delete')")
+    @PreAuthorize("#account.hasPermission('account:delete:post')")
     @PostMapping(EndPoints.ACCOUNT_DELETE)
     public Result delete(@Valid @RequestBody AccountDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException {
         accountService.delete(request.getAccount(), account.getAccount());
         return Result.ok();
     }
 
-    @PostMapping(EndPoints.ACCOUNT_RESOURCES)
-    public Result resources(@Valid @RequestBody AccountRolesRequest request) {
+    @PostMapping(EndPoints.ACCOUNT_RESOURCE_LIST)
+    public Result resourceList(@Valid @RequestBody AccountResourceListRequest request) {
         List<BaseResourceBO> resources = accountResourceService.queryResourcesByAccount(request.getAccount());
         return Result.data(resources).ok();
     }
 
-    @PreAuthorize("#account.hasPermission('account:post:pageList')")
-    @PostMapping(EndPoints.ACCOUNT_PAGE_LIST)
-    public Result pageList(@Valid @RequestBody AccountPageListRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
+    @PreAuthorize("#account.hasPermission('account:pages:post')")
+    @PostMapping(EndPoints.ACCOUNT_PAGES)
+    public Result pages(@Valid @RequestBody AccountPagesRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
         BaseAccountQuery query = toBaseAccountQuery(request);
         Page<?> page = request.startPage();
         List<BaseAccountBO> accounts = accountService.queryBaseAccounts(query);
-        List<AccountPageListResponse> responses = accounts.stream()
+        List<AccountPagesResponse> responses = accounts.stream()
                 .map(this::toAccountPageListResponse)
                 .collect(Collectors.toList());
         log.info("response num:{}", responses.size());
         return Result.data(responses).pageInfo(page).ok();
     }
 
-    @PostMapping(EndPoints.ACCOUNT_ROLES)
-    public Result roles(@Valid @RequestBody AccountRolesRequest request) {
-        List<BaseRoleBO> baseRoleBOS = accountRoleService.queryRolesByAccount(request.getAccount());
-        return Result.data(baseRoleBOS).ok();
-    }
-
-    @PreAuthorize("#account.hasPermission('account:post:roleSave')")
-    @PostMapping(EndPoints.ACCOUNT_ROLE_SAVE)
-    public Result roleSave(@Valid @RequestBody AccountRoleSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
-        accountRoleService.saveRole(request.getRoleCode(), request.getRoleName(), request.getNote(), request.getStatus(), account.getAccount());
-        return Result.ok();
-    }
-
-    private BaseAccountQuery toBaseAccountQuery(AccountPageListRequest request) {
+    private BaseAccountQuery toBaseAccountQuery(AccountPagesRequest request) {
         BaseAccountQuery query = new BaseAccountQuery();
         query.setAccount(request.getAccount());
         query.setStatus(request.getStatus());
@@ -144,8 +133,8 @@ public class AccountController {
         return query;
     }
 
-    private AccountPageListResponse toAccountPageListResponse(BaseAccountBO accountBO) {
-        AccountPageListResponse response = new AccountPageListResponse();
+    private AccountPagesResponse toAccountPageListResponse(BaseAccountBO accountBO) {
+        AccountPagesResponse response = new AccountPagesResponse();
         response.setId(accountBO.getId());
         response.setAccount(accountBO.getAccount());
         response.setStatus(accountBO.getStatus());

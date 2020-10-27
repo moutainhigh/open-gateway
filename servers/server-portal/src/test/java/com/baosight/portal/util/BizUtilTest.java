@@ -54,4 +54,12 @@ public class BizUtilTest {
         System.out.println("token2:" + token2);
     }
 
+    @Test
+    @Disabled
+    public void testGenerateDigestPassword() {
+        // 295ea4895ff1fbaa777efc7b3df883c797eceda286894ab34b5e037cc93b5e7a
+        String digestPassword = BizUtil.generateDigestPassword("admin123", "BqxqYtJulqcBHBzU");
+        System.out.println("digestPassword is:" + digestPassword);
+    }
+
 }

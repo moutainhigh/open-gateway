@@ -3,8 +3,8 @@ package org.open.gateway.portal.modules.log.controller;
 import com.github.pagehelper.Page;
 import lombok.AllArgsConstructor;
 import org.open.gateway.portal.constants.EndPoints;
-import org.open.gateway.portal.modules.log.controller.vo.AccessLogsPageListRequest;
-import org.open.gateway.portal.modules.log.controller.vo.AccessLogsPageListResponse;
+import org.open.gateway.portal.modules.log.controller.vo.AccessLogsPagesRequest;
+import org.open.gateway.portal.modules.log.controller.vo.AccessLogsPagesResponse;
 import org.open.gateway.portal.persistence.mapper.GatewayAccessLogsMapperExt;
 import org.open.gateway.portal.persistence.po.GatewayAccessLogs;
 import org.open.gateway.portal.utils.Beans;
@@ -29,8 +29,8 @@ public class GatewayAccessLogsController {
 
     private final GatewayAccessLogsMapperExt gatewayAccessLogsMapper;
 
-    @PostMapping(EndPoints.ACCESS_LOGS_PAGE_LIST)
-    public Result queryPageList(@Valid @RequestBody AccessLogsPageListRequest request) {
+    @PostMapping(EndPoints.ACCESS_LOGS_PAGES)
+    public Result pages(@Valid @RequestBody AccessLogsPagesRequest request) {
         // 查询分页列表
         Page<GatewayAccessLogs> logs = request.doSelectPage(() -> gatewayAccessLogsMapper.selectList(
                 request.getIp(), request.getApiCode(), request.getRouteCode(),
@@ -38,8 +38,8 @@ public class GatewayAccessLogsController {
                 request.getUsedTimeBegin(), request.getUsedTimeEnd()
         ));
         // 转换对象
-        List<AccessLogsPageListResponse> responses = logs.stream()
-                .map(log -> Beans.from(log).convert(AccessLogsPageListResponse::new))
+        List<AccessLogsPagesResponse> responses = logs.stream()
+                .map(log -> Beans.from(log).convert(AccessLogsPagesResponse::new))
                 .collect(Collectors.toList());
         return Result.data(responses).pageInfo(logs).ok();
     }

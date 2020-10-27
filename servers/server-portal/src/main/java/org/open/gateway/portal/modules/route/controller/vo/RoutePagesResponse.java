@@ -12,5 +12,5 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class RoutePageListResponse {
+public class RoutePagesResponse {
 }
