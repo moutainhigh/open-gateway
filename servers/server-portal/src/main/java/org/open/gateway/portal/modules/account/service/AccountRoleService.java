@@ -23,12 +23,13 @@ public interface AccountRoleService {
     /**
      * 新增/修改角色
      *
-     * @param roleCode 角色代码
-     * @param roleName 角色名称
-     * @param note     备注
-     * @param operator 操作人
+     * @param roleCode    角色代码
+     * @param roleName    角色名称
+     * @param note        备注
+     * @param operator    操作人
+     * @param resourceIds 资源id集合
      */
-    void saveRole(String roleCode, String roleName, String note, String operator);
+    void saveRole(String roleCode, String roleName, String note, String operator, List<Integer> resourceIds);
 
     /**
      * 启用

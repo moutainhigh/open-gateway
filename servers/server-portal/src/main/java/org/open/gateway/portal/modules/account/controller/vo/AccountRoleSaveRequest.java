@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 /**
  * Created by miko on 10/26/20.
@@ -22,5 +23,10 @@ public class AccountRoleSaveRequest {
     private String roleName;
 
     private String note;
+
+    /**
+     * 资源id集合
+     */
+    private List<Integer> resourceIds;
 
 }

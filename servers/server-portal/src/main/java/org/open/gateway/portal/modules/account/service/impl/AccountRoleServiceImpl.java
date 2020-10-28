@@ -10,6 +10,7 @@ import org.open.gateway.portal.persistence.mapper.BaseRoleMapperExt;
 import org.open.gateway.portal.persistence.po.BaseRole;
 import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -36,8 +37,9 @@ public class AccountRoleServiceImpl implements AccountRoleService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
-    public void saveRole(String roleCode, String roleName, String note, String operator) {
+    public void saveRole(String roleCode, String roleName, String note, String operator, List<Integer> resourceIds) {
         BaseRole param = baseRoleMapper.selectRoleByCode(roleCode);
         if (param == null) {
             log.info("role code:{} not exists. starting insert.", roleCode);

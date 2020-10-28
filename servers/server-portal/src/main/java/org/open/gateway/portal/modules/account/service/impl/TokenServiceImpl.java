@@ -71,7 +71,7 @@ public class TokenServiceImpl implements TokenService {
             throw new IllegalStateException("token is null");
         }
         String tokenKey = getRedisTokenKey(token);
-        setJson(tokenKey, accountDetails);
+        this.setJson(tokenKey, accountDetails);
         log.info("update token finished. new token value is:{}", accountDetails);
     }
 

@@ -104,8 +104,8 @@ public class AccountController {
     }
 
     @PostMapping(EndPoints.ACCOUNT_RESOURCE_LIST)
-    public Result resourceList(@Valid @RequestBody AccountResourceListRequest request) {
-        List<BaseResourceBO> resources = accountResourceService.queryResourcesByAccount(request.getAccount());
+    public Result resourceList(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
+        List<BaseResourceBO> resources = accountResourceService.queryResourcesByAccount(account.getAccount());
         return Result.data(resources).ok();
     }
 

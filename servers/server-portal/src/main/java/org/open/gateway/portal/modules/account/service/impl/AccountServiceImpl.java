@@ -22,7 +22,6 @@ import org.open.gateway.portal.security.AccountDetails;
 import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -73,15 +72,6 @@ public class AccountServiceImpl implements AccountService {
             throw new AccountNotAvailableException();
         }
         return baseAccount;
-    }
-
-    @Override
-    public AccountDetails queryAccountDetails(String account) throws AccountNotExistsException, AccountNotAvailableException {
-        // 查询账号
-        BaseAccountBO accountBO = queryValidBaseAccount(account);
-        // 获取资源
-        Set<String> perms = accountResourceService.queryPermsByAccount(account);
-        return toAccountDetails(accountBO, perms);
     }
 
     @Override
@@ -140,13 +130,16 @@ public class AccountServiceImpl implements AccountService {
         param.setUpdatePerson(operator);
         BizUtil.checkUpdate(baseAccountMapper.updateByPrimaryKeySelective(param));
         log.info("update account:{} finished", account);
-        if (!CollectionUtils.isEmpty(roleIds)) {
+        if (roleIds != null) {
             BizUtil.checkUpdate(baseAccountRoleMapper.deleteByAccountId(accountBO.getId()));
             log.info("delete exists role by account id:{} account:{}", accountBO.getId(), accountBO.getAccount());
-            BizUtil.checkUpdate(baseAccountRoleMapper.insertBatch(roleIds.stream()
-                    .map(roleId -> toBaseAccountRole(operator, accountBO, roleId))
-                    .collect(Collectors.toList())), roleIds.size());
-            log.info("insert roles finished. num:{} account:{}", roleIds.size(), accountBO.getAccount());
+            if (!roleIds.isEmpty()) {
+                BizUtil.checkUpdate(baseAccountRoleMapper.insertBatch(roleIds.stream()
+                        .map(roleId -> toBaseAccountRole(operator, accountBO, roleId))
+                        .collect(Collectors.toList())), roleIds.size());
+                log.info("insert roles finished. num:{} account:{}", roleIds.size(), accountBO.getAccount());
+            }
+            tokenService.updateToken(toAccountDetails(accountBO));
         }
         log.info("update transactional finished. account:{} operator:{}", account, operator);
     }
@@ -185,10 +178,10 @@ public class AccountServiceImpl implements AccountService {
         BaseAccountBO accountBO = queryValidBaseAccount(account);
         // 校验密码
         checkAccountPassword(plainPassword, accountBO.getSalt(), accountBO.getPassword());
-        // 获取资源
-        Set<String> perms = accountResourceService.queryPermsByAccount(account);
+        // 获取账户权限信息
+        AccountDetails accountDetails = toAccountDetails(accountBO);
         // 生成token
-        return tokenService.generateToken(toAccountDetails(accountBO, perms));
+        return tokenService.generateToken(accountDetails);
     }
 
     @Override
@@ -244,11 +237,13 @@ public class AccountServiceImpl implements AccountService {
         return baseAccountBO;
     }
 
-    private AccountDetails toAccountDetails(BaseAccountBO baseAccountBO, Set<String> perms) {
+    private AccountDetails toAccountDetails(BaseAccountBO baseAccountBO) {
         AccountDetails accountDetails = new AccountDetails();
         accountDetails.setId(baseAccountBO.getId());
         accountDetails.setAccount(baseAccountBO.getAccount());
         accountDetails.setPassword(baseAccountBO.getPassword());
+        // 获取资源
+        Set<String> perms = accountResourceService.queryPermsByAccount(baseAccountBO.getAccount());
         accountDetails.setAuthorities(perms);
         return accountDetails;
     }

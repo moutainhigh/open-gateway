@@ -43,7 +43,7 @@ public class RoleController {
     @PreAuthorize("#account.hasPermission('account:role:save:post')")
     @PostMapping(EndPoints.ACCOUNT_ROLE_SAVE)
     public Result save(@Valid @RequestBody AccountRoleSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
-        accountRoleService.saveRole(request.getRoleCode(), request.getRoleName(), request.getNote(), account.getAccount());
+        accountRoleService.saveRole(request.getRoleCode(), request.getRoleName(), request.getNote(), account.getAccount(), request.getResourceIds());
         return Result.ok();
     }
 

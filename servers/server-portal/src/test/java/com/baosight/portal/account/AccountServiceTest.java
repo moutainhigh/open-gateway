@@ -83,7 +83,7 @@ public class AccountServiceTest extends BaseSpringTest {
         LocalDateTime requestTime = LocalDateTime.now();
         String requestTimeString = requestTime.format(DateTimeFormatters.yyyy_MM_dd_HH_mm_ss);
         log.info("requestTimeString:{}", requestTimeString);
-        String password = BizUtil.encodePassword("password", SecureUtil.md5(requestTimeString));
+        String password = BizUtil.encodePassword("admin123", SecureUtil.md5(requestTimeString));
         AccountLoginRequest request = new AccountLoginRequest();
         request.setAccount("admin");
         request.setPassword(password);

@@ -6,7 +6,6 @@ import org.open.gateway.portal.exception.account.AccountNotExistsException;
 import org.open.gateway.portal.exception.account.AccountPasswordInvalidException;
 import org.open.gateway.portal.modules.account.service.bo.BaseAccountBO;
 import org.open.gateway.portal.modules.account.service.bo.BaseAccountQuery;
-import org.open.gateway.portal.security.AccountDetails;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -48,17 +47,6 @@ public interface AccountService {
      */
     @NonNull
     BaseAccountBO queryValidBaseAccount(String account) throws AccountNotExistsException, AccountNotAvailableException;
-
-    /**
-     * 查询账户以及权限
-     *
-     * @param account 账户
-     * @return 账户信息
-     * @throws AccountNotExistsException    帐户不存在
-     * @throws AccountNotAvailableException 帐户不可用
-     */
-    @NonNull
-    AccountDetails queryAccountDetails(String account) throws AccountNotExistsException, AccountNotAvailableException;
 
     /**
      * 查询账户列表
