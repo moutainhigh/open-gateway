@@ -7,7 +7,10 @@ package org.open.gateway.portal.constants;
  */
 public interface BizConstants {
 
-    String ROOT_CODE = "ROOT";
+    /**
+     * 根资源代码
+     */
+    String RESOURCE_ROOT_CODE = "ROOT";
 
     /**
      * 状态
@@ -40,13 +43,13 @@ public interface BizConstants {
     interface RESOURCE_TYPE {
 
         // 目录
-        String DIRECTORY = "d";
+        String DIRECTORY = "D";
 
         // 菜单
-        String MENU = "m";
+        String MENU = "M";
 
         // 按钮
-        String BUTTON = "b";
+        String BUTTON = "B";
 
     }
 

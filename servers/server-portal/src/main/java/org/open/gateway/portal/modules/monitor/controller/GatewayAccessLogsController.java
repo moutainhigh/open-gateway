@@ -1,10 +1,10 @@
-package org.open.gateway.portal.modules.log.controller;
+package org.open.gateway.portal.modules.monitor.controller;
 
 import com.github.pagehelper.Page;
 import lombok.AllArgsConstructor;
-import org.open.gateway.portal.constants.EndPoints;
-import org.open.gateway.portal.modules.log.controller.vo.AccessLogsPagesRequest;
-import org.open.gateway.portal.modules.log.controller.vo.AccessLogsPagesResponse;
+import org.open.gateway.portal.constants.Endpoints;
+import org.open.gateway.portal.modules.monitor.controller.vo.AccessLogsPagesRequest;
+import org.open.gateway.portal.modules.monitor.controller.vo.AccessLogsPagesResponse;
 import org.open.gateway.portal.persistence.mapper.GatewayAccessLogsMapperExt;
 import org.open.gateway.portal.persistence.po.GatewayAccessLogs;
 import org.open.gateway.portal.utils.Beans;
@@ -29,7 +29,7 @@ public class GatewayAccessLogsController {
 
     private final GatewayAccessLogsMapperExt gatewayAccessLogsMapper;
 
-    @PostMapping(EndPoints.ACCESS_LOGS_PAGES)
+    @PostMapping(Endpoints.MONITOR_LOGS_PAGES)
     public Result pages(@Valid @RequestBody AccessLogsPagesRequest request) {
         // 查询分页列表
         Page<GatewayAccessLogs> logs = request.doSelectPage(() -> gatewayAccessLogsMapper.selectList(

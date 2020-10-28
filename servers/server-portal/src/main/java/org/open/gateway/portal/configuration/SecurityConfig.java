@@ -2,7 +2,7 @@ package org.open.gateway.portal.configuration;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.open.gateway.portal.constants.EndPoints;
+import org.open.gateway.portal.constants.Endpoints;
 import org.open.gateway.portal.modules.account.service.TokenService;
 import org.open.gateway.portal.security.RedisTokenAuthenticationConverter;
 import org.open.gateway.portal.security.RedisTokenAuthenticationFilter;
@@ -27,6 +27,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String[] AUTH_WHITELIST = {
+            // -- swagger ui
+            "/swagger-ui.html",
+            "/swagger-ui/*",
+            "/swagger-resources/**",
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/webjars/**",
+            // -- portal
+            Endpoints.ACCOUNT_LOGIN,
+            Endpoints.ACCOUNT_REGISTER
+    };
+
     private final TokenService tokenService;
 
     //安全拦截机制
@@ -35,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers(EndPoints.ACCOUNT_LOGIN, EndPoints.ACCOUNT_REGISTER).permitAll()
+                .antMatchers(AUTH_WHITELIST).permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter.class);

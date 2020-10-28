@@ -5,6 +5,7 @@ import org.hibernate.validator.HibernateValidator;
 import org.open.gateway.common.utils.JSON;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -16,7 +17,7 @@ import javax.validation.ValidatorFactory;
  * @author MIKO
  */
 @Configuration
-public class MvcConfig {
+public class MvcConfig implements WebMvcConfigurer {
 
     @Bean
     public ObjectMapper objectMapper() {

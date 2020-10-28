@@ -32,7 +32,7 @@ public class AccountRegisterRequest {
     /**
      * 手机号码
      */
-    @Pattern(regexp = "[0-9]{13}")
+    @Pattern(regexp = "[0-9]{11}")
     @NotBlank
     private String phone;
 

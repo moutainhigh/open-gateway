@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class AccountRoleSaveRequest {
+public class RoleSaveRequest {
 
     @NotBlank
     private String roleCode;

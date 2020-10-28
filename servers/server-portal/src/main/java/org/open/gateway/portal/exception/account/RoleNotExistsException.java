@@ -1,4 +1,4 @@
-package org.open.gateway.portal.exception.role;
+package org.open.gateway.portal.exception.account;
 
 import org.open.gateway.portal.exception.ServiceException;
 

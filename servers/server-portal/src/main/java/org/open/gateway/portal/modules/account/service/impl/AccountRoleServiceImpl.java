@@ -3,7 +3,7 @@ package org.open.gateway.portal.modules.account.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.portal.constants.BizConstants;
-import org.open.gateway.portal.exception.role.RoleNotExistsException;
+import org.open.gateway.portal.exception.account.RoleNotExistsException;
 import org.open.gateway.portal.modules.account.service.AccountRoleService;
 import org.open.gateway.portal.modules.account.service.bo.BaseRoleBO;
 import org.open.gateway.portal.persistence.mapper.BaseRoleMapperExt;
@@ -30,7 +30,7 @@ public class AccountRoleServiceImpl implements AccountRoleService {
 
     @Override
     public List<BaseRoleBO> queryRolesByAccount(String account) {
-        List<BaseRole> baseRoles = baseRoleMapper.selectRolesByAccount(account);
+        List<BaseRole> baseRoles = baseRoleMapper.selectByAccount(account);
         log.info("query roles num:{} by account:{}", baseRoles.size(), account);
         return baseRoles.stream()
                 .map(this::toBaseRoleBO)
@@ -39,33 +39,33 @@ public class AccountRoleServiceImpl implements AccountRoleService {
 
     @Transactional
     @Override
-    public void saveRole(String roleCode, String roleName, String note, String operator, List<Integer> resourceIds) {
-        BaseRole param = baseRoleMapper.selectRoleByCode(roleCode);
-        if (param == null) {
+    public void save(String roleCode, String roleName, String note, String operator, List<Integer> resourceIds) {
+        BaseRole role = baseRoleMapper.selectByCode(roleCode);
+        if (role == null) {
             log.info("role code:{} not exists. starting insert.", roleCode);
-            param = new BaseRole();
-            param.setRoleCode(roleCode);
-            param.setRoleName(roleName);
-            param.setNote(note);
-            param.setCreateTime(new Date());
-            param.setCreatePerson(operator);
-            param.setIsDel(BizConstants.DEL_FLAG.NO);
-            BizUtil.checkUpdate(baseRoleMapper.insertSelective(param));
-            log.info("insert role:{} finished. operator is:{} new id is:{}", roleCode, operator, param.getId());
+            role = new BaseRole();
+            role.setRoleCode(roleCode);
+            role.setRoleName(roleName);
+            role.setNote(note);
+            role.setCreateTime(new Date());
+            role.setCreatePerson(operator);
+            role.setIsDel(BizConstants.DEL_FLAG.NO);
+            BizUtil.checkUpdate(baseRoleMapper.insertSelective(role));
+            log.info("insert role:{} finished. operator is:{} new id is:{}", roleCode, operator, role.getId());
         } else {
-            log.info("role code:{} exists. starting update.", roleCode);
-            param.setRoleName(roleName);
-            param.setNote(note);
-            param.setUpdateTime(new Date());
-            param.setUpdatePerson(operator);
-            BizUtil.checkUpdate(baseRoleMapper.updateByPrimaryKeySelective(param));
+            log.info("role code:{} exists. starting update id:{}.", roleCode, role.getId());
+            role.setRoleName(roleName);
+            role.setNote(note);
+            role.setUpdateTime(new Date());
+            role.setUpdatePerson(operator);
+            BizUtil.checkUpdate(baseRoleMapper.updateByPrimaryKey(role));
             log.info("update role:{} finished. operator is:{}", roleCode, operator);
         }
     }
 
     @Override
     public void enable(String roleCode, String operator) throws RoleNotExistsException {
-        BaseRole baseRole = baseRoleMapper.selectRoleByCode(roleCode);
+        BaseRole baseRole = baseRoleMapper.selectByCode(roleCode);
         if (baseRole == null) {
             throw new RoleNotExistsException();
         }
@@ -80,7 +80,7 @@ public class AccountRoleServiceImpl implements AccountRoleService {
 
     @Override
     public void disable(String roleCode, String operator) throws RoleNotExistsException {
-        BaseRole baseRole = baseRoleMapper.selectRoleByCode(roleCode);
+        BaseRole baseRole = baseRoleMapper.selectByCode(roleCode);
         if (baseRole == null) {
             throw new RoleNotExistsException();
         }
@@ -91,6 +91,21 @@ public class AccountRoleServiceImpl implements AccountRoleService {
         param.setUpdatePerson(operator);
         BizUtil.checkUpdate(baseRoleMapper.updateByPrimaryKeySelective(param));
         log.info("enable role:{} finished. operator is:{}", roleCode, operator);
+    }
+
+    @Override
+    public void delete(String roleCode, String operator) throws RoleNotExistsException {
+        BaseRole baseRole = baseRoleMapper.selectByCode(roleCode);
+        if (baseRole == null) {
+            throw new RoleNotExistsException();
+        }
+        BaseRole param = new BaseRole();
+        param.setId(baseRole.getId());
+        param.setIsDel(BizConstants.DEL_FLAG.YES);
+        param.setUpdateTime(new Date());
+        param.setUpdatePerson(operator);
+        BizUtil.checkUpdate(baseRoleMapper.updateByPrimaryKeySelective(param));
+        log.info("logic delete role:{} finished. operator is:{}", roleCode, operator);
     }
 
     private BaseRoleBO toBaseRoleBO(BaseRole baseRole) {

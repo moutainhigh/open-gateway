@@ -34,6 +34,12 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class SecurityConfig {
 
+    // 白名单
+    private static final String[] AUTH_WHITELIST = {
+            Endpoints.OAUTH_TOKEN, // 获取token
+            Endpoints.OAUTH_AUTHORIZE // 获取授权码
+    };
+
     private final ServerAuthenticationConverter serverAuthenticationConverter;
     private final RefreshableRouteDefinitionRepository resourceService;
     private final RefreshableClientResourcesRepository clientResourceService;
@@ -47,7 +53,7 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .logout().disable()
                 .authorizeExchange()
-                .pathMatchers(Endpoints.OAUTH_TOKEN, Endpoints.OAUTH_AUTHORIZE).permitAll()
+                .pathMatchers(AUTH_WHITELIST).permitAll()
                 .anyExchange()
                 .access(authorizationManager()) // 使用自定义授权管理器
                 .and()

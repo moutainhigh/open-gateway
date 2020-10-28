@@ -9,8 +9,12 @@ import java.util.List;
 @Mapper
 public interface BaseResourceMapperExt extends BaseResourceMapper {
 
-    List<BaseResource> selectResourcesByAccountAndResourceType(@Param("account") String account, @Param("resourceType") String resourceType);
+    List<BaseResource> selectAll();
 
-    List<BaseResource> selectResourcesByRole(@Param("roleCode") String roleCode);
+    List<BaseResource> selectByAccountAndResourceType(@Param("account") String account, @Param("resourceType") String resourceType);
+
+    List<BaseResource> selectByRole(@Param("roleCode") String roleCode);
+
+    BaseResource selectByCode(@Param("resourceCode") String resourceCode);
 
 }

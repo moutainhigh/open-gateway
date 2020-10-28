@@ -35,7 +35,11 @@ public enum ResultCode {
     /**
      * 角色不存在
      */
-    ROLE_NOT_EXISTS("1100", "角色已存在"),
+    ROLE_NOT_EXISTS("1100", "角色不存在"),
+    /**
+     * 资源不存在
+     */
+    RESOURCE_NOT_EXISTS("1200", "资源不存在"),
     /**
      * 成功
      */

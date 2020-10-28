@@ -5,7 +5,7 @@ package org.open.gateway.portal.constants;
  *
  * @author MIKO
  */
-public interface EndPoints {
+public interface Endpoints {
 
     // 用户-登录
     String ACCOUNT_LOGIN = "/account/login";
@@ -23,12 +23,26 @@ public interface EndPoints {
     String ACCOUNT_DELETE = "/account/delete";
     // 用户-分页列表
     String ACCOUNT_PAGES = "/account/pages";
-    // 用户-资源列表(所有)
-    String ACCOUNT_RESOURCE_LIST = "/account/resource/list";
+    // 用户-资源列表
+    String ACCOUNT_RESOURCES = "/account/resources";
     // 用户-角色列表
     String ACCOUNT_ROLE_PAGES = "/account/role/pages";
     // 用户-角色新增/修改
     String ACCOUNT_ROLE_SAVE = "/account/role/save";
+    // 用户-角色启用
+    String ACCOUNT_ROLE_ENABLE = "/account/role/enable";
+    // 用户-角色禁用
+    String ACCOUNT_ROLE_DISABLE = "/account/role/disable";
+    // 用户-角色删除
+    String ACCOUNT_ROLE_DELETE = "/account/role/delete";
+    // 用户-角色资源列表
+    String ACCOUNT_ROLE_RESOURCES = "/account/role/resources";
+    // 用户-资源列表(所有)
+    String ACCOUNT_RESOURCE_LIST = "/account/resource/list";
+    // 用户-资源新增/修改
+    String ACCOUNT_RESOURCE_SAVE = "/account/resource/save";
+    // 用户-资源删除
+    String ACCOUNT_RESOURCE_DELETE = "/account/resource/delete";
 
     // 网关-路由刷新
     String GATEWAY_ROUTES_REFRESH = "/gateway/routes/refresh";
@@ -37,8 +51,8 @@ public interface EndPoints {
     // 网关-限流刷新
     String GATEWAY_IP_LIMITS_REFRESH = "/gateway/ipLimits/refresh";
 
-    // 日志-分页列表
-    String ACCESS_LOGS_PAGES = "/accessLogs/pages";
+    // 监控-日志-分页列表
+    String MONITOR_LOGS_PAGES = "/monitor/accessLogs/pages";
 
     // 路由-分页列表
     String ROUTES_PAGES = "/routes/pages";
@@ -67,7 +81,7 @@ public interface EndPoints {
     // 接口-删除
     String API_DELETE = "/api/delete";
 
-    // 接口分类-列表(所有)
+    // 接口分类-列表
     String API_CLASSIFICATION = "/api/classification/list";
     // 接口分类-新增/修改
     String API_CLASSIFICATION_SAVE = "/api/classification/save";

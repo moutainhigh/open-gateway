@@ -7,7 +7,14 @@
 		r.status, r.create_time, r.create_person, r.update_time, r.update_person, r.is_del
 	</sql>
 
-	<select id="selectResourcesByAccountAndResourceType" resultMap="BaseResultMap">
+	<select id="selectAll" resultMap="BaseResultMap">
+		SELECT
+		<include refid="base_resource_columns"/>
+		FROM base_resource r
+		WHERE r.is_del = '0' AND r.`status` = '1'
+	</select>
+
+	<select id="selectByAccountAndResourceType" resultMap="BaseResultMap">
 		SELECT
 		<include refid="base_resource_columns"/>
 		FROM base_account ba
@@ -23,7 +30,7 @@
 		</if>
 	</select>
 
-	<select id="selectResourcesByRole" resultMap="BaseResultMap">
+	<select id="selectByRole" resultMap="BaseResultMap">
 		SELECT
 		<include refid="base_resource_columns"/>
 		FROM base_role br
@@ -32,6 +39,14 @@
 		WHERE br.is_del = '0' AND r.is_del = '0'
 		AND br.`status` = '1' AND r.`status` = '1'
 		AND br.role_code = #{roleCode}
+	</select>
+
+	<select id="selectByCode" resultMap="BaseResultMap">
+		SELECT
+		<include refid="base_resource_columns"/>
+		FROM base_resource r
+		WHERE r.is_del = '0' AND r.`status` = '1'
+		AND r.resource_code = #{resourceCode}
 	</select>
 
 </mapper>

@@ -11,7 +11,7 @@ import org.open.gateway.portal.exception.ServiceException;
 public class AccountPasswordInvalidException extends ServiceException {
 
     public AccountPasswordInvalidException() {
-        super("account password invalid");
+        super("invalid account password");
     }
 
 }

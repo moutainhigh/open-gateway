@@ -9,8 +9,8 @@ import java.util.List;
 @Mapper
 public interface BaseRoleMapperExt extends BaseRoleMapper {
 
-    List<BaseRole> selectRolesByAccount(@Param("account") String account);
+    List<BaseRole> selectByAccount(@Param("account") String account);
 
-    BaseRole selectRoleByCode(@Param("roleCode") String roleCode);
+    BaseRole selectByCode(@Param("roleCode") String roleCode);
 
 }

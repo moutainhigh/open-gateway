@@ -14,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @ToString
-public class AccountRoleDisableRequest {
+public class RoleDisableRequest {
 
     @NotBlank
     private String roleCode;

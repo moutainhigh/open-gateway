@@ -7,16 +7,16 @@ import lombok.ToString;
 import javax.validation.constraints.NotBlank;
 
 /**
- * Created by miko on 10/26/20.
+ * Created by miko on 10/22/20.
  *
  * @author MIKO
  */
 @Getter
 @Setter
 @ToString
-public class AccountRolesRequest {
+public class RoleDeleteRequest {
 
     @NotBlank
-    private String account;
+    private String roleCode;
 
 }
