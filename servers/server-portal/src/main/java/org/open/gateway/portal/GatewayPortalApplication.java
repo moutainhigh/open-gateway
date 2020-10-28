@@ -5,14 +5,12 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import springfox.documentation.oas.annotations.EnableOpenApi;
 
 /**
  * Created by miko on 2020/6/30.
  *
  * @author MIKO
  */
-@EnableOpenApi
 @SpringBootApplication
 @EnableDiscoveryClient
 @MapperScan(basePackages = "org.open.gateway.portal.persistence.mapper", annotationClass = Mapper.class)
