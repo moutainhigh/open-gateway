@@ -13,8 +13,8 @@
 		FROM base_account ba
 		INNER JOIN base_account_role bar ON ba.id = bar.account_id
 		INNER JOIN base_role br ON br.id = bar.role_id
-		WHERE ba.is_del = '0' AND br.is_del = '0'
-		AND ba.`status` = '1' AND br.`status` = '1'
+		WHERE ba.is_del = 0 AND br.is_del = 0
+		AND ba.`status` = 1 AND br.`status` = 1
 		AND ba.account = #{account}
 	</select>
 
@@ -22,7 +22,7 @@
 		SELECT
 		<include refid="base_role_columns"/>
 		FROM base_role br
-		WHERE br.is_del = '0' AND br.role_code = #{roleCode}
+		WHERE br.is_del = 0 AND br.role_code = #{roleCode}
 	</select>
 
 </mapper>

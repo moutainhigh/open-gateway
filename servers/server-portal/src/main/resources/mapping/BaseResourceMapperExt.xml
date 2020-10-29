@@ -11,7 +11,7 @@
 		SELECT
 		<include refid="base_resource_columns"/>
 		FROM base_resource r
-		WHERE r.is_del = '0' AND r.`status` = '1'
+		WHERE r.is_del = 0 AND r.`status` = 1
 	</select>
 
 	<select id="selectByAccountAndResourceType" resultMap="BaseResultMap">
@@ -22,8 +22,8 @@
 		INNER JOIN base_role br ON br.id = bar.role_id
 		INNER JOIN base_role_resource brr ON brr.role_id = br.id
 		INNER JOIN base_resource r ON r.id = brr.resource_id
-		WHERE ba.is_del = '0' AND br.is_del = '0' AND r.is_del = '0'
-		AND ba.`status` = '1' AND br.`status` = '1' AND r.`status` = '1'
+		WHERE ba.is_del = 0 AND br.is_del = 0 AND r.is_del = 0
+		AND ba.`status` = 1 AND br.`status` = 1 AND r.`status` = 1
 		AND ba.account = #{account}
 		<if test="resourceType != null">
 			AND r.resource_type = #{resourceType}
@@ -36,8 +36,8 @@
 		FROM base_role br
 		INNER JOIN base_role_resource brr ON brr.role_id = br.id
 		INNER JOIN base_resource r ON r.id = brr.resource_id
-		WHERE br.is_del = '0' AND r.is_del = '0'
-		AND br.`status` = '1' AND r.`status` = '1'
+		WHERE br.is_del = 0 AND r.is_del = 0
+		AND br.`status` = 1 AND r.`status` = 1
 		AND br.role_code = #{roleCode}
 	</select>
 
@@ -45,7 +45,7 @@
 		SELECT
 		<include refid="base_resource_columns"/>
 		FROM base_resource r
-		WHERE r.is_del = '0' AND r.`status` = '1'
+		WHERE r.is_del = 0 AND r.`status` = 1
 		AND r.resource_code = #{resourceCode}
 	</select>
 

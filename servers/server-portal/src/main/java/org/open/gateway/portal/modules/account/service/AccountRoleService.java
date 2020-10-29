@@ -2,6 +2,7 @@ package org.open.gateway.portal.modules.account.service;
 
 import org.open.gateway.portal.exception.account.RoleNotExistsException;
 import org.open.gateway.portal.modules.account.service.bo.BaseRoleBO;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public interface AccountRoleService {
      * @param account 账户
      * @return 角色列表
      */
+    @NonNull
     List<BaseRoleBO> queryRolesByAccount(String account);
 
     /**

@@ -21,7 +21,6 @@ import java.time.Duration;
 public class TokenServiceImpl implements TokenService {
 
     private final Duration duration;
-
     private final StringRedisTemplate redisTemplate;
 
 
@@ -68,10 +67,12 @@ public class TokenServiceImpl implements TokenService {
         String accountKey = getRedisAccountKey(accountDetails.getAccount());
         String token = redisTemplate.opsForValue().get(accountKey);
         if (token == null) {
-            throw new IllegalStateException("token is null");
+            log.warn("token is expired");
+            return;
         }
         String tokenKey = getRedisTokenKey(token);
         this.setJson(tokenKey, accountDetails);
+        this.set(accountKey, token);
         log.info("update token finished. new token value is:{}", accountDetails);
     }
 
@@ -90,11 +91,23 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public AccountDetails loadTokenUser(String token) {
-        String tokenValue = redisTemplate.opsForValue().get(getRedisTokenKey(token));
+        String tokenKey = getRedisTokenKey(token);
+        String tokenValue = redisTemplate.opsForValue().get(tokenKey);
         if (tokenValue == null) {
             return null;
         }
-        return JSON.parse(tokenValue, AccountDetails.class);
+        AccountDetails accountDetails = JSON.parse(tokenValue, AccountDetails.class);
+        // 刷新过期时间
+        refreshRedisKey(getRedisAccountKey(accountDetails.getAccount()), tokenKey);
+        return accountDetails;
+    }
+
+    private void refreshRedisKey(String accountKey, String tokenKey) {
+        // 重新设置过期时间
+        redisTemplate.expire(accountKey, duration);
+        // 重新设置过期时间
+        redisTemplate.expire(tokenKey, duration);
+        log.debug("refresh redis key finished.");
     }
 
     private void set(String key, String o) {

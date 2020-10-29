@@ -19,7 +19,7 @@ public class InValidator implements ConstraintValidator<In, String> {
         if (value == null) {
             return false;
         }
-        for (String r : in.range()) {
+        for (String r : in.value()) {
             if (value.equals(r)) {
                 return true;
             }

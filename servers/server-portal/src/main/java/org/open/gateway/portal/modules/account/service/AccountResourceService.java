@@ -2,6 +2,7 @@ package org.open.gateway.portal.modules.account.service;
 
 import org.open.gateway.portal.exception.account.ResourceNotExistsException;
 import org.open.gateway.portal.modules.account.service.bo.BaseResourceBO;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.Set;
@@ -18,6 +19,7 @@ public interface AccountResourceService {
      *
      * @return 资源
      */
+    @NonNull
     List<BaseResourceBO> queryResources();
 
     /**
@@ -26,6 +28,7 @@ public interface AccountResourceService {
      * @param account 帐户
      * @return 资源
      */
+    @NonNull
     List<BaseResourceBO> queryResourcesByAccount(String account);
 
     /**
@@ -34,6 +37,7 @@ public interface AccountResourceService {
      * @param roleCode 角色代码
      * @return 资源
      */
+    @NonNull
     List<BaseResourceBO> queryResourcesByRole(String roleCode);
 
     /**
@@ -42,6 +46,7 @@ public interface AccountResourceService {
      * @param account 账户
      * @return 权限
      */
+    @NonNull
     Set<String> queryPermsByAccount(String account);
 
     /**
@@ -57,7 +62,7 @@ public interface AccountResourceService {
      * @param note         描述
      * @param operator     操作人
      */
-    void save(String resourceCode, String resourceName, String resourceType, String parentCode, String perms, String url, Integer sort, String note, String operator);
+    void save(String resourceCode, String resourceName, String resourceType, String parentCode, String perms, String url, Integer sort, String note, String operator) throws ResourceNotExistsException;
 
     /**
      * 删除资源

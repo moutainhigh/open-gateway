@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.open.gateway.portal.persistence.mapper.BaseRoleResourceMapperExt">
+
+	<delete id="deleteByRoleId">
+        delete from base_role_resource where role_id = #{roleId,jdbcType=INTEGER}
+    </delete>
+
+	<insert id="insertBatch">
+		insert into base_role_resource (<include refid="Base_Column_List"/>)
+		VALUES
+		<foreach collection="list" item="data" separator=",">
+			(#{data.roleId,jdbcType=INTEGER},
+			#{data.resourceId,jdbcType=INTEGER},
+			#{data.createTime,jdbcType=TIMESTAMP},
+			#{data.createPerson,jdbcType=VARCHAR})
+		</foreach>
+	</insert>
+
+</mapper>

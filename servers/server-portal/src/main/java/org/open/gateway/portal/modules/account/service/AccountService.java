@@ -116,6 +116,7 @@ public interface AccountService {
      * @throws AccountNotExistsException       帐户不存在
      * @throws AccountNotAvailableException    帐户不可用
      */
+    @NonNull
     String login(String account, String plainPassword) throws AccountPasswordInvalidException, AccountNotExistsException, AccountNotAvailableException;
 
     /**

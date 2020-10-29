@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.common.utils.StringUtil;
 import org.open.gateway.portal.constants.BizConstants;
-import org.open.gateway.portal.exception.ServiceException;
 import org.open.gateway.portal.exception.account.AccountAlreadyExistsException;
 import org.open.gateway.portal.exception.account.AccountNotAvailableException;
 import org.open.gateway.portal.exception.account.AccountNotExistsException;
@@ -21,7 +20,6 @@ import org.open.gateway.portal.persistence.po.BaseAccountRole;
 import org.open.gateway.portal.security.AccountDetails;
 import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -109,7 +107,6 @@ public class AccountServiceImpl implements AccountService {
         return toBaseAccountBO(param);
     }
 
-    @Transactional(rollbackFor = {ServiceException.class, RuntimeException.class})
     @Override
     public void update(String account, String plainPassword, String phone, String email, String note, String operator, List<Integer> roleIds) throws AccountNotExistsException, AccountNotAvailableException {
         BaseAccountBO accountBO = queryValidBaseAccount(account);
@@ -131,11 +128,11 @@ public class AccountServiceImpl implements AccountService {
         BizUtil.checkUpdate(baseAccountMapper.updateByPrimaryKeySelective(param));
         log.info("update account:{} finished", account);
         if (roleIds != null) {
-            BizUtil.checkUpdate(baseAccountRoleMapper.deleteByAccountId(accountBO.getId()));
-            log.info("delete exists role by account id:{} account:{}", accountBO.getId(), accountBO.getAccount());
+            int count = baseAccountRoleMapper.deleteByAccountId(accountBO.getId());
+            log.info("delete exists role by account id:{} count:{} operator:{}", accountBO.getId(), count, operator);
             if (!roleIds.isEmpty()) {
                 BizUtil.checkUpdate(baseAccountRoleMapper.insertBatch(roleIds.stream()
-                        .map(roleId -> toBaseAccountRole(operator, accountBO, roleId))
+                        .map(roleId -> toBaseAccountRole(accountBO, roleId, operator))
                         .collect(Collectors.toList())), roleIds.size());
                 log.info("insert roles finished. num:{} account:{}", roleIds.size(), accountBO.getAccount());
             }
@@ -244,11 +241,12 @@ public class AccountServiceImpl implements AccountService {
         accountDetails.setPassword(baseAccountBO.getPassword());
         // 获取资源
         Set<String> perms = accountResourceService.queryPermsByAccount(baseAccountBO.getAccount());
+        log.info("account:{} perms:{}", baseAccountBO.getAccount(), perms);
         accountDetails.setAuthorities(perms);
         return accountDetails;
     }
 
-    private BaseAccountRole toBaseAccountRole(String operator, BaseAccountBO accountBO, Integer roleId) {
+    private BaseAccountRole toBaseAccountRole(BaseAccountBO accountBO, Integer roleId, String operator) {
         BaseAccountRole baseAccountRole = new BaseAccountRole();
         baseAccountRole.setCreateTime(new Date());
         baseAccountRole.setCreatePerson(operator);

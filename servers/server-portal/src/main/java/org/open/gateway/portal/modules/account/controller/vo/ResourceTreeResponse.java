@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class ResourceTreeResponse {
+public class ResourceTreeResponse implements Comparable<ResourceTreeResponse> {
 
     private Integer id;
 
@@ -35,5 +35,19 @@ public class ResourceTreeResponse {
     private String note;
 
     private List<ResourceTreeResponse> children;
+
+    @Override
+    public int compareTo(ResourceTreeResponse o) {
+        if (o == null || o.getSort() == null) {
+            throw new NullPointerException("compare object or sort is null");
+        }
+        if (this.getSort().equals(o.getSort())) {
+            if (this.getParentCode() == null || o.getResourceCode() == null) {
+                return 0;
+            }
+            return this.getParentCode().compareTo(o.getResourceCode());
+        }
+        return this.getSort() - o.getSort();
+    }
 
 }

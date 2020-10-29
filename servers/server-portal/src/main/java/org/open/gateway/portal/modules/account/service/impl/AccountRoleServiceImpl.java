@@ -7,7 +7,9 @@ import org.open.gateway.portal.exception.account.RoleNotExistsException;
 import org.open.gateway.portal.modules.account.service.AccountRoleService;
 import org.open.gateway.portal.modules.account.service.bo.BaseRoleBO;
 import org.open.gateway.portal.persistence.mapper.BaseRoleMapperExt;
+import org.open.gateway.portal.persistence.mapper.BaseRoleResourceMapperExt;
 import org.open.gateway.portal.persistence.po.BaseRole;
+import org.open.gateway.portal.persistence.po.BaseRoleResource;
 import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 public class AccountRoleServiceImpl implements AccountRoleService {
 
     private final BaseRoleMapperExt baseRoleMapper;
+    private final BaseRoleResourceMapperExt baseRoleResourceMapper;
 
     @Override
     public List<BaseRoleBO> queryRolesByAccount(String account) {
@@ -54,12 +57,26 @@ public class AccountRoleServiceImpl implements AccountRoleService {
             log.info("insert role:{} finished. operator is:{} new id is:{}", roleCode, operator, role.getId());
         } else {
             log.info("role code:{} exists. starting update id:{}.", roleCode, role.getId());
+            role.setRoleCode(roleCode);
             role.setRoleName(roleName);
             role.setNote(note);
             role.setUpdateTime(new Date());
             role.setUpdatePerson(operator);
-            BizUtil.checkUpdate(baseRoleMapper.updateByPrimaryKey(role));
+            BizUtil.checkUpdate(baseRoleMapper.updateByPrimaryKeySelective(role));
             log.info("update role:{} finished. operator is:{}", roleCode, operator);
+        }
+        if (resourceIds != null) {
+            Integer roleId = role.getId();
+            int count = baseRoleResourceMapper.deleteByRoleId(roleId);
+            log.info("delete exists resource by role id:{} delete count:{} operator:{}", roleId, count, operator);
+            if (!resourceIds.isEmpty()) {
+                BizUtil.checkUpdate(baseRoleResourceMapper.insertBatch(
+                        resourceIds.stream()
+                                .map(rid -> this.toBaseRoleResource(roleId, rid, operator))
+                                .collect(Collectors.toList())
+                ), resourceIds.size());
+                log.info("insert batch resources finished. operator is:{}", operator);
+            }
         }
     }
 
@@ -120,6 +137,15 @@ public class AccountRoleServiceImpl implements AccountRoleService {
         entity.setUpdateTime(baseRole.getUpdateTime());
         entity.setUpdatePerson(baseRole.getUpdatePerson());
         return entity;
+    }
+
+    private BaseRoleResource toBaseRoleResource(Integer roleId, Integer resourceId, String operator) {
+        BaseRoleResource response = new BaseRoleResource();
+        response.setCreateTime(new Date());
+        response.setCreatePerson(operator);
+        response.setRoleId(roleId);
+        response.setResourceId(resourceId);
+        return response;
     }
 
 }

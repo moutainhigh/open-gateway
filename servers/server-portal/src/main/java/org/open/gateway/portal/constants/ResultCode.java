@@ -41,6 +41,10 @@ public enum ResultCode {
      */
     RESOURCE_NOT_EXISTS("1200", "资源不存在"),
     /**
+     * 网关应用不存在
+     */
+    GATEWAY_APP_NOT_EXISTS("2000", "网关应用不存在"),
+    /**
      * 成功
      */
     SUCCESS("0000", "OK");

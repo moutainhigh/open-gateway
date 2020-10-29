@@ -16,8 +16,8 @@ import java.util.Set;
  * @author MIKO
  */
 @Slf4j
-@Service
 @AllArgsConstructor
+@Service
 public class GatewayServiceImpl implements GatewayService {
 
     private final AmqpTemplate rabbitTemplate;

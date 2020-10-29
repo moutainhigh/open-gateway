@@ -5,6 +5,8 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.Digester;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by miko on 2020/7/22.
@@ -93,6 +95,32 @@ public class BizUtil {
     public static String generateToken(String account, String password, long seed) {
         // base64(base64(帐户+随机种子) + des(sha256(密码 + 随机种子))(帐户))
         return Base64.encode(Base64.encode(account + seed) + SecureUtil.des(SecureUtil.sha256().digest(password + seed)).encryptHex(account));
+    }
+
+    /**
+     * 切分数组字符串
+     *
+     * @param arrayStr 数组字符串
+     * @return 数组
+     */
+    public static List<String> splitArrayString(String arrayStr) {
+        if (arrayStr == null) {
+            return null;
+        }
+        return Arrays.asList(arrayStr.split(","));
+    }
+
+    /**
+     * 拼接数组为字符串
+     *
+     * @param array 数组
+     * @return 数组字符串
+     */
+    public static String joinStringArray(Iterable<String> array) {
+        if (array == null) {
+            return null;
+        }
+        return String.join(",", array);
     }
 
 }

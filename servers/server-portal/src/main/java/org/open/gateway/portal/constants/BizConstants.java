@@ -13,6 +13,11 @@ public interface BizConstants {
     String RESOURCE_ROOT_CODE = "ROOT";
 
     /**
+     * 默认的排序
+     */
+    int DEFAULT_SORT = 1;
+
+    /**
      * 状态
      */
     interface STATUS {

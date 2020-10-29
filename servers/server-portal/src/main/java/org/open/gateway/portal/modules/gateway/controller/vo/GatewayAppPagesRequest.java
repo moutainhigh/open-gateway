@@ -1,4 +1,4 @@
-package org.open.gateway.portal.modules.route.controller.vo;
+package org.open.gateway.portal.modules.gateway.controller.vo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,10 @@ import org.open.gateway.portal.vo.PageRequest;
 @Getter
 @Setter
 @ToString
-public class RoutePagesRequest extends PageRequest {
+public class GatewayAppPagesRequest extends PageRequest {
 
+    private String clientId;
+
+    private String appName;
 
 }

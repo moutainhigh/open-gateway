@@ -69,7 +69,7 @@ public interface SQLS {
                     "from gateway_ip_limit gil " +
                     "inner join gateway_ip_limit_api gila on gil.id = gila.policy_id " +
                     "inner join gateway_api ga on ga.id = gila.api_id " +
-                    "where gil.is_del = 0 and gil.status  = 1"
+                    "where gil.is_del = 0 and gil.status = 1"
     );
 
 }

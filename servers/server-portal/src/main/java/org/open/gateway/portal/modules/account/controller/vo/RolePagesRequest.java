@@ -3,6 +3,7 @@ package org.open.gateway.portal.modules.account.controller.vo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.open.gateway.portal.vo.PageRequest;
 
 import javax.validation.constraints.NotBlank;
 
@@ -14,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @ToString
-public class RolesRequest {
+public class RolePagesRequest extends PageRequest {
 
     @NotBlank
     private String account;

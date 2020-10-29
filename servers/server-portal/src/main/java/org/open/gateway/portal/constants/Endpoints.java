@@ -25,45 +25,33 @@ public interface Endpoints {
     String ACCOUNT_PAGES = "/account/pages";
     // 用户-资源列表
     String ACCOUNT_RESOURCES = "/account/resources";
-    // 用户-角色列表
-    String ACCOUNT_ROLE_PAGES = "/account/role/pages";
-    // 用户-角色新增/修改
-    String ACCOUNT_ROLE_SAVE = "/account/role/save";
-    // 用户-角色启用
-    String ACCOUNT_ROLE_ENABLE = "/account/role/enable";
-    // 用户-角色禁用
-    String ACCOUNT_ROLE_DISABLE = "/account/role/disable";
-    // 用户-角色删除
-    String ACCOUNT_ROLE_DELETE = "/account/role/delete";
-    // 用户-角色资源列表
-    String ACCOUNT_ROLE_RESOURCES = "/account/role/resources";
+
+    // 角色-分页列表
+    String ROLE_PAGES = "/role/pages";
+    // 角色-新增/修改
+    String ROLE_SAVE = "/role/save";
+    // 角色-启用
+    String ROLE_ENABLE = "/role/enable";
+    // 角色-禁用
+    String ROLE_DISABLE = "/role/disable";
+    // 角色-删除
+    String ROLE_DELETE = "/role/delete";
+    // 角色-资源列表
+    String ROLE_RESOURCES = "/role/resources";
+
     // 用户-资源列表(所有)
-    String ACCOUNT_RESOURCE_LIST = "/account/resource/list";
+    String RESOURCE_LIST = "/resource/list";
     // 用户-资源新增/修改
-    String ACCOUNT_RESOURCE_SAVE = "/account/resource/save";
+    String RESOURCE_SAVE = "/resource/save";
     // 用户-资源删除
-    String ACCOUNT_RESOURCE_DELETE = "/account/resource/delete";
+    String RESOURCE_DELETE = "/resource/delete";
 
     // 网关-路由刷新
-    String GATEWAY_ROUTES_REFRESH = "/gateway/routes/refresh";
+    String GATEWAY_ROUTES_REFRESH = "/gateway/route/refresh";
     // 网关-资源刷新
-    String GATEWAY_RESOURCES_REFRESH = "/gateway/resources/refresh";
+    String GATEWAY_RESOURCES_REFRESH = "/gateway/resource/refresh";
     // 网关-限流刷新
-    String GATEWAY_IP_LIMITS_REFRESH = "/gateway/ipLimits/refresh";
-
-    // 监控-日志-分页列表
-    String MONITOR_LOGS_PAGES = "/monitor/accessLogs/pages";
-
-    // 路由-分页列表
-    String ROUTES_PAGES = "/routes/pages";
-    // 路由-列表(所有)
-    String ROUTES_LIST = "/routes/list";
-    // 路由-新增/修改
-    String ROUTES_SAVE = "/routes/save";
-    // 路由-删除
-    String ROUTES_DELETE = "/routes/delete";
-    // 路由-查询所有类型
-    String ROUTES_TYPES = "/routes/types";
+    String GATEWAY_IP_LIMITS_REFRESH = "/gateway/ipLimit/refresh";
 
     // 应用-分页列表
     String APP_PAGES = "/app/pages";
@@ -73,6 +61,17 @@ public interface Endpoints {
     String APP_SAVE_APIS = "/app/save/apis";
     // 应用-删除
     String APP_DELETE = "/app/delete";
+
+    // 路由-分页列表
+    String ROUTES_PAGES = "/gateway/route/pages";
+    // 路由-列表(所有)
+    String ROUTES_LIST = "/gateway/route/list";
+    // 路由-新增/修改
+    String ROUTES_SAVE = "/gateway/route/save";
+    // 路由-删除
+    String ROUTES_DELETE = "/gateway/route/delete";
+    // 路由-查询所有类型
+    String ROUTES_TYPES = "/gateway/route/types";
 
     // 接口-分页列表
     String API_PAGES = "/api/pages";
@@ -109,5 +108,8 @@ public interface Endpoints {
     String POLICY_IP_LIMIT_PAGE_SAVE_APIS = "/policy/ipLimit/save/apis";
     // 策略-黑白名单-查询所有类型
     String POLICY_IP_LIMIT_TYPES = "/policy/ipLimit/types";
+
+    // 监控-日志-分页列表
+    String MONITOR_LOGS_PAGES = "/monitor/accessLogs/pages";
 
 }

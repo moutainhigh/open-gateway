@@ -15,7 +15,7 @@ public class GatewayApp {
 
     private Byte status;
 
-    private String desc;
+    private String note;
 
     private Date createTime;
 
@@ -75,12 +75,12 @@ public class GatewayApp {
         this.status = status;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getNote() {
+        return note;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc == null ? null : desc.trim();
+    public void setNote(String note) {
+        this.note = note == null ? null : note.trim();
     }
 
     public Date getCreateTime() {

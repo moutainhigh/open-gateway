@@ -24,7 +24,11 @@ public class ResourceSaveRequest {
     @NotBlank
     private String resourceName;
 
-    @In(range = {BizConstants.RESOURCE_TYPE.DIRECTORY, BizConstants.RESOURCE_TYPE.MENU, BizConstants.RESOURCE_TYPE.BUTTON})
+    @In({
+            BizConstants.RESOURCE_TYPE.DIRECTORY,
+            BizConstants.RESOURCE_TYPE.MENU,
+            BizConstants.RESOURCE_TYPE.BUTTON
+    })
     private String resourceType;
 
     private String parentCode;

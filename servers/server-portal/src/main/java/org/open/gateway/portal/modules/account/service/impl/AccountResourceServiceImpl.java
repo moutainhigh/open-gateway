@@ -2,6 +2,7 @@ package org.open.gateway.portal.modules.account.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.open.gateway.common.utils.StringUtil;
 import org.open.gateway.portal.constants.BizConstants;
 import org.open.gateway.portal.exception.account.ResourceNotExistsException;
 import org.open.gateway.portal.modules.account.service.AccountResourceService;
@@ -71,9 +72,11 @@ public class AccountResourceServiceImpl implements AccountResourceService {
     }
 
     @Override
-    public void save(String resourceCode, String resourceName, String resourceType, String parentCode, String perms, String url, Integer sort, String note, String operator) {
-        // 校验
+    public void save(String resourceCode, String resourceName, String resourceType, String parentCode, String perms, String url, Integer sort, String note, String operator) throws ResourceNotExistsException {
+        // 校验资源类型
         checkResourceType(resourceType, url, perms);
+        // 校验上级代码
+        checkParentCode(parentCode);
         BaseResource resource = baseResourceMapper.selectByCode(resourceCode);
         if (resource == null) {
             log.info("resource code:{} not exists. starting insert.", resourceCode);
@@ -85,7 +88,7 @@ public class AccountResourceServiceImpl implements AccountResourceService {
             resource.setResourceType(resourceType);
             resource.setPerms(perms);
             resource.setNote(note);
-            resource.setSort(sort);
+            resource.setSort(Optional.ofNullable(sort).orElse(BizConstants.DEFAULT_SORT));
             resource.setStatus(BizConstants.STATUS.ENABLE);
             resource.setCreateTime(new Date());
             resource.setCreatePerson(operator);
@@ -104,7 +107,7 @@ public class AccountResourceServiceImpl implements AccountResourceService {
             resource.setSort(sort);
             resource.setUpdateTime(new Date());
             resource.setUpdatePerson(operator);
-            BizUtil.checkUpdate(baseResourceMapper.updateByPrimaryKey(resource));
+            BizUtil.checkUpdate(baseResourceMapper.updateByPrimaryKeySelective(resource));
             log.info("update resource finished. operator:{}", operator);
         }
     }
@@ -143,16 +146,26 @@ public class AccountResourceServiceImpl implements AccountResourceService {
                 break;
             case BizConstants.RESOURCE_TYPE.MENU:
                 if (url == null) {
-                    throw new IllegalArgumentException("invalid resource url");
+                    throw new IllegalArgumentException("resource url is required");
                 }
                 break;
             case BizConstants.RESOURCE_TYPE.BUTTON:
                 if (perms == null) {
-                    throw new IllegalArgumentException("invalid resource perms");
+                    throw new IllegalArgumentException("resource perms is required");
                 }
                 break;
             default:
                 throw new IllegalArgumentException("invalid resource type");
+        }
+    }
+
+    private void checkParentCode(String parentCode) throws ResourceNotExistsException {
+        if (StringUtil.isNotBlank(parentCode)) {
+            BaseResource baseResource = baseResourceMapper.selectByCode(parentCode);
+            if (baseResource == null) {
+                log.info("parent code:{} not exists.", parentCode);
+                throw new ResourceNotExistsException();
+            }
         }
     }
 

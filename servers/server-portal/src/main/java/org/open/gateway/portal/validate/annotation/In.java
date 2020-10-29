@@ -17,9 +17,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface In {
 
-    String[] range();
+    String[] value();
 
-    String message() default "{value must in the specified range}";
+    String message() default "must in the specified range";
 
     Class<?>[] groups() default {};
 

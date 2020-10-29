@@ -5,11 +5,14 @@ import org.open.gateway.portal.constants.ResultCode;
 import org.open.gateway.portal.exception.ResultException;
 import org.open.gateway.portal.exception.ServiceException;
 import org.open.gateway.portal.exception.account.*;
+import org.open.gateway.portal.exception.gateway.GatewayAppNotExistsException;
 import org.open.gateway.portal.vo.Result;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
@@ -17,6 +20,12 @@ import java.util.List;
 @Slf4j
 @RestControllerAdvice
 public class ErrorMappingConfig {
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String convertIllegalArgumentException(IllegalArgumentException e) {
+        return e.getMessage();
+    }
 
     @ExceptionHandler(ResultException.class)
     public Result convertResultException(ResultException e) {
@@ -53,6 +62,7 @@ public class ErrorMappingConfig {
     }
 
     private ResultCode mappingServiceExceptionToResultCode(ServiceException e) {
+        // 系统管理模块
         if (e instanceof AccountNotAvailableException) {
             return ResultCode.ACCOUNT_NOT_AVAILABLE;
         }
@@ -70,6 +80,10 @@ public class ErrorMappingConfig {
         }
         if (e instanceof ResourceNotExistsException) {
             return ResultCode.RESOURCE_NOT_EXISTS;
+        }
+        // 网关管理模块
+        if (e instanceof GatewayAppNotExistsException) {
+            return ResultCode.GATEWAY_APP_NOT_EXISTS;
         }
         throw new IllegalStateException("Unmapping exception:" + e.getClass().getName());
     }

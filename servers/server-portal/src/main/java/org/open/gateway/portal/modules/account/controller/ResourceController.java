@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -46,7 +47,7 @@ public class ResourceController {
     }
 
     @PreAuthorize("#account.hasPermission('account:role:resources:post')")
-    @PostMapping(Endpoints.ACCOUNT_ROLE_RESOURCES)
+    @PostMapping(Endpoints.ROLE_RESOURCES)
     public Result roleResources(@Valid @RequestBody RoleResourcesRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws RoleNotExistsException {
         List<BaseResourceBO> resources = accountResourceService.queryResourcesByRole(request.getRoleCode());
         List<ResourceTreeResponse> responses = toResourceTree(resources);
@@ -54,7 +55,7 @@ public class ResourceController {
     }
 
     @PreAuthorize("#account.hasPermission('account:resource:list:post')")
-    @PostMapping(Endpoints.ACCOUNT_RESOURCE_LIST)
+    @PostMapping(Endpoints.RESOURCE_LIST)
     public Result resourceList(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
         List<BaseResourceBO> resources = accountResourceService.queryResources();
         List<ResourceTreeResponse> responses = toResourceTree(resources);
@@ -62,14 +63,14 @@ public class ResourceController {
     }
 
     @PreAuthorize("#account.hasPermission('account:resource:save:post')")
-    @PostMapping(Endpoints.ACCOUNT_RESOURCE_SAVE)
-    public Result save(@Valid @RequestBody ResourceSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
+    @PostMapping(Endpoints.RESOURCE_SAVE)
+    public Result save(@Valid @RequestBody ResourceSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws ResourceNotExistsException {
         accountResourceService.save(request.getResourceCode(), request.getResourceName(), request.getResourceType(), request.getParentCode(), request.getPerms(), request.getUrl(), request.getSort(), request.getNote(), account.getAccount());
         return Result.ok();
     }
 
     @PreAuthorize("#account.hasPermission('account:resource:delete:post')")
-    @PostMapping(Endpoints.ACCOUNT_RESOURCE_DELETE)
+    @PostMapping(Endpoints.RESOURCE_DELETE)
     public Result delete(@Valid @RequestBody ResourceDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws ResourceNotExistsException {
         accountResourceService.delete(request.getResourceCode(), account.getAccount());
         return Result.ok();
@@ -80,6 +81,7 @@ public class ResourceController {
         Map<String, List<ResourceTreeResponse>> resourcesGroup = resources.stream()
                 .map(this::toResourceTreeResponse)
                 .collect(Collectors.groupingBy(ResourceTreeResponse::getParentCode));
+
         // 获取子节点
         List<ResourceTreeResponse> rootResources = getResourceChildren(BizConstants.RESOURCE_ROOT_CODE, resourcesGroup);
         log.info("root resources num:{}", rootResources.size());
@@ -88,10 +90,10 @@ public class ResourceController {
 
     private List<ResourceTreeResponse> getResourceChildren(String parentCode, Map<String, List<ResourceTreeResponse>> resourcesGroup) {
         List<ResourceTreeResponse> resources = resourcesGroup.getOrDefault(parentCode, new ArrayList<>());
-        if (resources != null) {
-            for (ResourceTreeResponse r : resources) {
-                r.setChildren(getResourceChildren(r.getResourceCode(), resourcesGroup));
-            }
+        Collections.sort(resources);
+        // 按照sort排序
+        for (ResourceTreeResponse r : resources) {
+            r.setChildren(getResourceChildren(r.getResourceCode(), resourcesGroup));
         }
         return resources;
     }
