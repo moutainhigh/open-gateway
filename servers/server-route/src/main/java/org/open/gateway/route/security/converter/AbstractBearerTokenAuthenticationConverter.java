@@ -80,6 +80,11 @@ public abstract class AbstractBearerTokenAuthenticationConverter implements Serv
         return this.allowUriQueryParameter && HttpMethod.GET.equals(request.getMethod());
     }
 
+    /**
+     * 设置是否允许从url获取token信息
+     *
+     * @param allowUriQueryParameter true允许, false不允许
+     */
     public void setAllowUriQueryParameter(boolean allowUriQueryParameter) {
         this.allowUriQueryParameter = allowUriQueryParameter;
     }

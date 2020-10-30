@@ -33,7 +33,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public abstract class AbstractRouteDefinitionRepository implements RefreshableRouteDefinitionRepository, ApplicationEventPublisherAware {
 
+    /**
+     * 路由信息
+     */
     private final Map<String, RouteDefinition> routes = new ConcurrentHashMap<>();
+    /**
+     * 事件发布器
+     */
     private ApplicationEventPublisher eventPublisher;
 
     @Override
@@ -163,8 +169,6 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
      * @param route      路由配置
      */
     private void setMetadata(RouteDefinition definition, GatewayRouteDefinition route) {
-        Map<String, Object> metadata = new HashMap<>(4);
-        definition.setMetadata(metadata);
         RouteDefinitionUtil.setApiCode(definition, route.getApiCode());
         RouteDefinitionUtil.setRouteCode(definition, route.getRouteCode());
         RouteDefinitionUtil.setIsAuth(definition, route.isAuth());

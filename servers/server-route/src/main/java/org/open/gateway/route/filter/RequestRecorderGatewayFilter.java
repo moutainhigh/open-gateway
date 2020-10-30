@@ -7,7 +7,6 @@ import org.open.gateway.route.utils.WebExchangeUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.core.Ordered;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -26,22 +25,21 @@ public class RequestRecorderGatewayFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpRequest originalRequest = exchange.getRequest();
-        URI originalRequestUrl = originalRequest.getURI();
+        ServerHttpRequest request = exchange.getRequest();
+        URI requestURI = request.getURI();
         //只记录http的请求
-        String scheme = originalRequestUrl.getScheme();
+        String scheme = requestURI.getScheme();
         if ((!"http".equals(scheme) && !"https".equals(scheme))) {
             return chain.filter(exchange);
         }
-        String upgrade = originalRequest.getHeaders().getUpgrade();
+        String upgrade = request.getHeaders().getUpgrade();
         if ("websocket".equalsIgnoreCase(upgrade)) {
             return chain.filter(exchange);
         }
         // 添加请求时间
         WebExchangeUtil.putRequestTime(exchange);
-        // 发送日志
-        return ServerWebExchangeUtils.cacheRequestBody(exchange, serverHttpRequest -> chain.filter(exchange.mutate().request(serverHttpRequest).build()))
-                .doOnSuccess(v -> this.accessLogsService.sendAccessLogs(exchange))
+        return WebExchangeUtil.cacheRequestBody(chain, exchange)
+                .doOnSuccess(v -> this.accessLogsService.sendAccessLogs(exchange)) // 发送日志
                 .doOnError(error -> this.accessLogsService.sendAccessLogs(exchange, error));
     }
 

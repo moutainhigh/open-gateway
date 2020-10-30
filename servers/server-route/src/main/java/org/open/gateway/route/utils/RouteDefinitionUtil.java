@@ -7,14 +7,27 @@ import java.util.Map;
 
 /**
  * Created by miko on 2020/7/17.
+ * RouteDefinition工具类. 注:线程不安全
  *
  * @author MIKO
  */
 public class RouteDefinitionUtil {
 
+    /**
+     * api编码
+     */
     private static final String METADATA_KEY_API_CODE = "api_code";
+    /**
+     * 路由编码
+     */
     private static final String METADATA_KEY_ROUTE_CODE = "route_code";
+    /**
+     * 是否需要认证
+     */
     private static final String METADATA_KEY_IS_AUTH = "is_auth";
+    /**
+     * 是否开放
+     */
     private static final String METADATA_KEY_IS_OPEN = "is_open";
 
     public static String getApiCode(RouteDefinition routeDefinition) {

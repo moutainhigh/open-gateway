@@ -1,5 +1,6 @@
 package org.open.gateway.route.service.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.base.constants.MqConstants;
 import org.open.gateway.base.entity.AccessLogs;
@@ -10,7 +11,6 @@ import org.open.gateway.route.utils.RouteDefinitionUtil;
 import org.open.gateway.route.utils.WebExchangeUtil;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.cloud.gateway.route.Route;
-import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
@@ -32,13 +32,10 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
+@AllArgsConstructor
 public class AccessLogsServiceImpl implements AccessLogsService {
 
     private final AmqpTemplate amqpTemplate;
-
-    public AccessLogsServiceImpl(AmqpTemplate amqpTemplate) {
-        this.amqpTemplate = amqpTemplate;
-    }
 
     /**
      * 发送操作日志
@@ -81,7 +78,6 @@ public class AccessLogsServiceImpl implements AccessLogsService {
      * @return 访问日志
      */
     private AccessLogs buildAccessLogs(ServerWebExchange exchange, @Nullable Throwable ex) {
-        String requestBody = readRequestBody(exchange);
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
         HttpHeaders headers = request.getHeaders();
@@ -93,7 +89,7 @@ public class AccessLogsServiceImpl implements AccessLogsService {
         accessLogs.setHttpMethod(request.getMethodValue());
         accessLogs.setHttpHeaders(toSerializableString(headers.toSingleValueMap()));
         accessLogs.setRequestQueryString(StringUtil.splitByLenLimit(toSerializableString(request.getQueryParams()), 512));
-        accessLogs.setRequestBody(requestBody);
+        accessLogs.setRequestBody(readRequestBody(exchange));
         accessLogs.setRequestTime(WebExchangeUtil.getRequestTime(exchange));
         accessLogs.setResponseTime(new Date());
         accessLogs.setUsedTime((int) (accessLogs.getResponseTime().getTime() - accessLogs.getRequestTime().getTime()));
@@ -101,7 +97,8 @@ public class AccessLogsServiceImpl implements AccessLogsService {
         if (ex != null) {
             accessLogs.setError(StringUtil.splitByLenLimit(ex.getMessage(), 512));
         }
-        Route route = exchange.getAttribute(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR); // 路由信息中获取api信息
+        // 路由信息中获取api信息
+        Route route = WebExchangeUtil.getGatewayRoute(exchange);
         if (route != null) {
             accessLogs.setApiCode(RouteDefinitionUtil.getApiCode(route.getMetadata()));
             accessLogs.setRouteCode(RouteDefinitionUtil.getRouteCode(route.getMetadata()));

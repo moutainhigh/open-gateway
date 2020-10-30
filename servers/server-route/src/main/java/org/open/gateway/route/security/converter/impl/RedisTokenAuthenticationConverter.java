@@ -26,11 +26,17 @@ public class RedisTokenAuthenticationConverter extends AbstractBearerTokenAuthen
         return this.redisTemplate.opsForValue()
                 .get(GatewayConstants.RedisKey.PREFIX_ACCESS_TOKENS + token)
                 .cast(String.class)
-                .map(this::parseJson)
+                .map(this::deserialize)
                 .map(AuthenticationToken::new);
     }
 
-    private TokenUser parseJson(String json) {
+    /**
+     * 反序列化json字符串
+     *
+     * @param json json字符串
+     * @return 对象
+     */
+    private TokenUser deserialize(String json) {
         return JSON.parse(json, TokenUser.class);
     }
 
