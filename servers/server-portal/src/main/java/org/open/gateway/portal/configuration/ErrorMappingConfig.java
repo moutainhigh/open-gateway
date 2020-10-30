@@ -5,6 +5,7 @@ import org.open.gateway.portal.constants.ResultCode;
 import org.open.gateway.portal.exception.ResultException;
 import org.open.gateway.portal.exception.ServiceException;
 import org.open.gateway.portal.exception.account.*;
+import org.open.gateway.portal.exception.gateway.AuthorizedGrantTypeInvalidException;
 import org.open.gateway.portal.exception.gateway.GatewayAppNotExistsException;
 import org.open.gateway.portal.vo.Result;
 import org.springframework.http.HttpStatus;
@@ -84,6 +85,9 @@ public class ErrorMappingConfig {
         // 网关管理模块
         if (e instanceof GatewayAppNotExistsException) {
             return ResultCode.GATEWAY_APP_NOT_EXISTS;
+        }
+        if (e instanceof AuthorizedGrantTypeInvalidException) {
+            return ResultCode.GATEWAY_AUTHORIZED_GRANT_TYPE_INVALID;
         }
         throw new IllegalStateException("Unmapping exception:" + e.getClass().getName());
     }

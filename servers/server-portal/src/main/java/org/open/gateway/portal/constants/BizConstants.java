@@ -58,4 +58,21 @@ public interface BizConstants {
 
     }
 
+    /**
+     * 注册来源
+     */
+    interface REGISTER_FROM {
+
+        /**
+         * 前端页面
+         */
+        String FRONT = "front";
+
+        /**
+         * 管理后台
+         */
+        String PORTAL = "portal";
+
+    }
+
 }

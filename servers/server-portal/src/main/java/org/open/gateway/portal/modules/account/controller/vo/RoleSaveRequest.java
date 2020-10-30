@@ -20,6 +20,7 @@ public class RoleSaveRequest {
     @NotBlank
     private String roleCode;
 
+    @NotBlank
     private String roleName;
 
     private String note;

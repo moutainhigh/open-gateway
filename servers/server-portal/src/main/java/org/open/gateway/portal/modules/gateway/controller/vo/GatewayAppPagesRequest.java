@@ -15,7 +15,7 @@ import org.open.gateway.portal.vo.PageRequest;
 @ToString
 public class GatewayAppPagesRequest extends PageRequest {
 
-    private String clientId;
+    private String appCode;
 
     private String appName;
 

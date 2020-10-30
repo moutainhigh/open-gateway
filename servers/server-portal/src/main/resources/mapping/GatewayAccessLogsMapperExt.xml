@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.open.gateway.portal.persistence.mapper.GatewayAccessLogsMapperExt">
 
-	<select id="selectList" resultMap="BaseResultMap">
+	<select id="selectByCondition" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List"/>
 		from gateway_access_logs
@@ -35,8 +35,8 @@
 		insert into gateway_access_logs (<include refid="Base_Column_List"/>)
 		VALUES
 		<foreach collection="list" item="data" separator=",">
-			(#{data.id,jdbcType=INTEGER}, #{data.path,jdbcType=VARCHAR}, #{data.apiCode,jdbcType=VARCHAR},
-			#{data.routeCode,jdbcType=VARCHAR},
+			(#{data.id,jdbcType=INTEGER}, #{data.path,jdbcType=VARCHAR}, #{data.clientId,jdbcType=VARCHAR},
+			#{data.apiCode,jdbcType=VARCHAR}, #{data.routeCode,jdbcType=VARCHAR},
 			#{data.ip,jdbcType=VARCHAR}, #{data.httpStatus,jdbcType=INTEGER}, #{data.httpMethod,jdbcType=VARCHAR},
 			#{data.httpHeaders,jdbcType=VARCHAR}, #{data.requestQueryString,jdbcType=VARCHAR},
 			#{data.requestBody,jdbcType=VARCHAR},

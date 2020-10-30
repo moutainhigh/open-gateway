@@ -69,7 +69,7 @@ public class Beans {
         private Converter converter = DEFAULT_CONVERTER;
 
         public BeanCopierHelper source(Object source) {
-            this.source = Objects.requireNonNull(source);
+            this.source = Objects.requireNonNull(source, "source is required.");
             return this;
         }
 
@@ -79,7 +79,7 @@ public class Beans {
         }
 
         public void copy(Object target) {
-            Objects.requireNonNull(target);
+            Objects.requireNonNull(target, "target is required.");
             getBeanCopier(source.getClass(), target.getClass(), converter).copy(source, target, converter);
         }
 

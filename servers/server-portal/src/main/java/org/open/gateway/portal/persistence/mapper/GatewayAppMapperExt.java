@@ -10,6 +10,8 @@ import java.util.List;
 @Mapper
 public interface GatewayAppMapperExt extends GatewayAppMapper {
 
+    GatewayApp selectByAppCode(@Param("appCode") String appCode);
+
     GatewayApp selectByClientId(@Param("clientId") String clientId);
 
     List<GatewayApp> selectByCondition(GatewayAppQuery query);

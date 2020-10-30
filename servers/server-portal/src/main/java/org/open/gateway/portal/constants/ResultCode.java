@@ -45,6 +45,10 @@ public enum ResultCode {
      */
     GATEWAY_APP_NOT_EXISTS("2000", "网关应用不存在"),
     /**
+     * 无效的授权类型
+     */
+    GATEWAY_AUTHORIZED_GRANT_TYPE_INVALID("2001", "无效的授权类型"),
+    /**
      * 成功
      */
     SUCCESS("0000", "OK");

@@ -16,6 +16,8 @@ public class GatewayAppQuery {
 
     private String clientId;
 
+    private String appCode;
+
     private String appName;
 
 }

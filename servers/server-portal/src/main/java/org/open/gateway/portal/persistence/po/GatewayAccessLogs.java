@@ -7,6 +7,8 @@ public class GatewayAccessLogs {
 
     private String path;
 
+    private String clientId;
+
     private String apiCode;
 
     private String routeCode;
@@ -53,6 +55,14 @@ public class GatewayAccessLogs {
 
     public void setPath(String path) {
         this.path = path == null ? null : path.trim();
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId == null ? null : clientId.trim();
     }
 
     public String getApiCode() {

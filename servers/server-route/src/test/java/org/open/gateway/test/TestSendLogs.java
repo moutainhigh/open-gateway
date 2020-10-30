@@ -30,6 +30,7 @@ public class TestSendLogs extends BaseSpringTest {
             sw.start();
             AccessLogs accessLogs = new AccessLogs();
             accessLogs.setPath("/test/junit");
+            accessLogs.setClientId("c1");
             accessLogs.setIp("127.0.0.1");
             accessLogs.setHttpStatus(HttpStatus.OK.value());
             accessLogs.setHttpMethod("POST");

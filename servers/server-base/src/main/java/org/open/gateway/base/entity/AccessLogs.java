@@ -20,6 +20,11 @@ public class AccessLogs implements Serializable {
     private String path;
 
     /**
+     * 客户端id
+     */
+    private String clientId;
+
+    /**
      * 请求ip
      */
     private String ip;

@@ -1,8 +1,10 @@
 package org.open.gateway.portal.utils;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.Digester;
+import org.open.gateway.common.utils.StringUtil;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -95,6 +97,14 @@ public class BizUtil {
     public static String generateToken(String account, String password, long seed) {
         // base64(base64(帐户+随机种子) + des(sha256(密码 + 随机种子))(帐户))
         return Base64.encode(Base64.encode(account + seed) + SecureUtil.des(SecureUtil.sha256().digest(password + seed)).encryptHex(account));
+    }
+
+    public static String generateClientId() {
+        return IdUtil.fastSimpleUUID();
+    }
+
+    public static String generateClientSecret() {
+        return StringUtil.randomString(64);
     }
 
     /**

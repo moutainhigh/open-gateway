@@ -21,7 +21,7 @@ public class RedisTokenAuthentication implements Authentication {
     private final Set<GrantedAuthority> authorities;
 
     public RedisTokenAuthentication(AccountDetails principal) {
-        this.principal = Objects.requireNonNull(principal);
+        this.principal = Objects.requireNonNull(principal, "principal is required.");
         this.authorities = principal.getAuthorities()
                 .stream()
                 .map(SimpleGrantedAuthority::new)

@@ -1,6 +1,7 @@
 package org.open.gateway.portal.security;
 
 import lombok.AllArgsConstructor;
+import org.open.gateway.base.constants.OAuth2Constants;
 import org.open.gateway.portal.modules.account.service.TokenService;
 import org.open.gateway.portal.security.exception.InvalidTokenException;
 import org.open.gateway.portal.security.exception.TokenExpiredException;
@@ -19,8 +20,7 @@ import java.util.regex.Pattern;
 @AllArgsConstructor
 public class RedisTokenAuthenticationConverter implements AuthenticationConverter {
 
-    private static final String TOKEN_PREFIX = "Bearer ";
-    private static final Pattern TOKEN_REGX = Pattern.compile(TOKEN_PREFIX + "[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}");
+    private static final Pattern TOKEN_REGX = Pattern.compile(OAuth2Constants.TOKEN_PREFIX + "[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}");
     private final TokenService tokenService;
 
     @Override
@@ -35,7 +35,7 @@ public class RedisTokenAuthenticationConverter implements AuthenticationConverte
         if (token == null || !TOKEN_REGX.matcher(token).matches()) {
             throw new InvalidTokenException();
         }
-        return token.substring(TOKEN_PREFIX.length());
+        return token.substring(OAuth2Constants.TOKEN_PREFIX.length());
     }
 
     private AccountDetails loadAccount(String token) {

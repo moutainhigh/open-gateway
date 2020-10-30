@@ -10,8 +10,8 @@ import java.util.Random;
  */
 public class StringUtil {
 
-    // 随机字母种子
-    private static final char[] RANDOM_SEEDS_LETTER = new char[]{
+    // 随机种子
+    private static final char[] RANDOM_SEEDS = new char[]{
             'a', 'b', 'c', 'd', 'e', 'f', 'g',
             'h', 'i', 'j', 'k', 'l', 'm', 'n',
             'o', 'p', 'q', 'r', 's', 't',
@@ -19,7 +19,8 @@ public class StringUtil {
             'A', 'B', 'C', 'D', 'E', 'F', 'G',
             'H', 'I', 'J', 'K', 'L', 'M', 'N',
             'O', 'P', 'Q', 'R', 'S', 'T',
-            'U', 'V', 'W', 'X', 'Y', 'Z'
+            'U', 'V', 'W', 'X', 'Y', 'Z',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
     };
 
     /**
@@ -93,8 +94,24 @@ public class StringUtil {
     public static String randomLetter(int len) {
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
+        int scope = RANDOM_SEEDS.length - 10;
         for (int i = 0; i < len; i++) {
-            sb.append(RANDOM_SEEDS_LETTER[random.nextInt(RANDOM_SEEDS_LETTER.length)]);
+            sb.append(RANDOM_SEEDS[random.nextInt(scope)]);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 生成随机英文字母数字字符串
+     *
+     * @param len 字符串长度
+     * @return 随机字符串
+     */
+    public static String randomString(int len) {
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < len; i++) {
+            sb.append(RANDOM_SEEDS[random.nextInt(RANDOM_SEEDS.length)]);
         }
         return sb.toString();
     }
@@ -126,6 +143,17 @@ public class StringUtil {
             return str.substring(0, maxLen);
         }
         return str;
+    }
+
+    public static String appendBlankByLength(String str, int len) {
+        if (str.length() >= len) {
+            return str;
+        }
+        StringBuilder sb = new StringBuilder(str);
+        for (int i = 0, c = len - str.length(); i < c; i++) {
+            sb.append(' ');
+        }
+        return sb.toString();
     }
 
 }

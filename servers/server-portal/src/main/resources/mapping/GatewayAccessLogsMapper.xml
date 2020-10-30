@@ -4,6 +4,7 @@
 	<resultMap id="BaseResultMap" type="org.open.gateway.portal.persistence.po.GatewayAccessLogs">
 		<id column="id" jdbcType="INTEGER" property="id"/>
 		<result column="path" jdbcType="VARCHAR" property="path"/>
+		<result column="client_id" jdbcType="VARCHAR" property="clientId"/>
 		<result column="api_code" jdbcType="VARCHAR" property="apiCode"/>
 		<result column="route_code" jdbcType="VARCHAR" property="routeCode"/>
 		<result column="ip" jdbcType="VARCHAR" property="ip"/>
@@ -22,9 +23,9 @@
 		<result column="create_person" jdbcType="VARCHAR" property="createPerson"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-    id, path, api_code, route_code, ip, http_status, http_method, http_headers, request_query_string, 
-    request_body, request_time, response_time, used_time, user_agent, region, error, 
-    create_time, create_person
+    id, path, client_id, api_code, route_code, ip, http_status, http_method, http_headers, 
+    request_query_string, request_body, request_time, response_time, used_time, user_agent, 
+    region, error, create_time, create_person
   </sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		select
@@ -34,18 +35,20 @@
 	</select>
 	<insert id="insert" keyColumn="id" keyProperty="id"
 			parameterType="org.open.gateway.portal.persistence.po.GatewayAccessLogs" useGeneratedKeys="true">
-    insert into gateway_access_logs (path, api_code, route_code, 
-      ip, http_status, http_method, 
-      http_headers, request_query_string, request_body, 
-      request_time, response_time, used_time, 
-      user_agent, region, error, 
-      create_time, create_person)
-    values (#{path,jdbcType=VARCHAR}, #{apiCode,jdbcType=VARCHAR}, #{routeCode,jdbcType=VARCHAR}, 
-      #{ip,jdbcType=VARCHAR}, #{httpStatus,jdbcType=INTEGER}, #{httpMethod,jdbcType=VARCHAR}, 
-      #{httpHeaders,jdbcType=VARCHAR}, #{requestQueryString,jdbcType=VARCHAR}, #{requestBody,jdbcType=VARCHAR}, 
-      #{requestTime,jdbcType=TIMESTAMP}, #{responseTime,jdbcType=TIMESTAMP}, #{usedTime,jdbcType=INTEGER}, 
-      #{userAgent,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, #{error,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR})
+    insert into gateway_access_logs (path, client_id, api_code, 
+      route_code, ip, http_status, 
+      http_method, http_headers, request_query_string, 
+      request_body, request_time, response_time, 
+      used_time, user_agent, region, 
+      error, create_time, create_person
+      )
+    values (#{path,jdbcType=VARCHAR}, #{clientId,jdbcType=VARCHAR}, #{apiCode,jdbcType=VARCHAR}, 
+      #{routeCode,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{httpStatus,jdbcType=INTEGER}, 
+      #{httpMethod,jdbcType=VARCHAR}, #{httpHeaders,jdbcType=VARCHAR}, #{requestQueryString,jdbcType=VARCHAR}, 
+      #{requestBody,jdbcType=VARCHAR}, #{requestTime,jdbcType=TIMESTAMP}, #{responseTime,jdbcType=TIMESTAMP}, 
+      #{usedTime,jdbcType=INTEGER}, #{userAgent,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, 
+      #{error,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}
+      )
   </insert>
 	<insert id="insertSelective" keyColumn="id" keyProperty="id"
 			parameterType="org.open.gateway.portal.persistence.po.GatewayAccessLogs" useGeneratedKeys="true">
@@ -53,6 +56,9 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="path != null">
 				path,
+			</if>
+			<if test="clientId != null">
+				client_id,
 			</if>
 			<if test="apiCode != null">
 				api_code,
@@ -106,6 +112,9 @@
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="path != null">
 				#{path,jdbcType=VARCHAR},
+			</if>
+			<if test="clientId != null">
+				#{clientId,jdbcType=VARCHAR},
 			</if>
 			<if test="apiCode != null">
 				#{apiCode,jdbcType=VARCHAR},
@@ -163,6 +172,9 @@
 			<if test="path != null">
 				path = #{path,jdbcType=VARCHAR},
 			</if>
+			<if test="clientId != null">
+				client_id = #{clientId,jdbcType=VARCHAR},
+			</if>
 			<if test="apiCode != null">
 				api_code = #{apiCode,jdbcType=VARCHAR},
 			</if>
@@ -217,6 +229,7 @@
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.GatewayAccessLogs">
     update gateway_access_logs
     set path = #{path,jdbcType=VARCHAR},
+      client_id = #{clientId,jdbcType=VARCHAR},
       api_code = #{apiCode,jdbcType=VARCHAR},
       route_code = #{routeCode,jdbcType=VARCHAR},
       ip = #{ip,jdbcType=VARCHAR},

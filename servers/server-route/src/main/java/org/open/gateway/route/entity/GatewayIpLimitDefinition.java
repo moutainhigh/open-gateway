@@ -30,7 +30,7 @@ public class GatewayIpLimitDefinition {
     private final IpMatcher whiteMatcher;
 
     public GatewayIpLimitDefinition(Collection<IpLimit> ipLimits) {
-        Objects.requireNonNull(ipLimits);
+        Objects.requireNonNull(ipLimits, "ip limits is required.");
         Set<String> blackIps = new HashSet<>();
         Set<String> whiteIps = new HashSet<>();
         for (IpLimit ipLimit : ipLimits) {

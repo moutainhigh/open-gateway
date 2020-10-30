@@ -1,10 +1,12 @@
 package com.baosight.portal.util;
 
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.crypto.SecureUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.open.gateway.common.utils.StringUtil;
 import org.open.gateway.portal.constants.DateTimeFormatters;
 import org.open.gateway.portal.utils.BizUtil;
 
@@ -60,6 +62,27 @@ public class BizUtilTest {
         // 295ea4895ff1fbaa777efc7b3df883c797eceda286894ab34b5e037cc93b5e7a
         String digestPassword = BizUtil.generateDigestPassword("admin123", "BqxqYtJulqcBHBzU");
         System.out.println("digestPassword is:" + digestPassword);
+    }
+
+    @Test
+    @Disabled
+    public void generateClientId() {
+        String appCode = StringUtil.appendBlankByLength("T10682", 16);
+        String clientId = Base64.encodeUrlSafe(appCode);
+        System.out.println("clientId:" + clientId + " length:" + clientId.length() + " decoded:" + Base64.decodeStr(clientId));
+        String clientId2 = Base64.encode(appCode);
+        System.out.println("clientId2:" + clientId2 + " length:" + clientId2.length() + " decoded:" + Base64.decodeStr(clientId));
+//        int length = -1;
+//        for (int i = 0; i < 10000; i++) {
+//            String appCode = StringUtil.appendBlankByLength(StringUtil.randomString(5), 8);
+//            String c = SecureUtil.des(key.getBytes()).encryptHex(appCode) + StringUtil.randomString(8);
+//            if (length == -1) {
+//                length = c.length();
+//                System.out.println("length:" + length);
+//            } else {
+//                Assert.isTrue(length == c.length(), "length must equals");
+//            }
+//        }
     }
 
 }

@@ -1,6 +1,6 @@
 package org.open.gateway.route.security.converter;
 
-import org.open.gateway.route.constants.OAuth2Constants;
+import org.open.gateway.base.constants.OAuth2Constants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;

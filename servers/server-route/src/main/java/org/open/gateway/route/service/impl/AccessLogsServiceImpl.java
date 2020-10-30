@@ -87,6 +87,7 @@ public class AccessLogsServiceImpl implements AccessLogsService {
         HttpHeaders headers = request.getHeaders();
         AccessLogs accessLogs = new AccessLogs();
         accessLogs.setPath(request.getURI().getPath());
+        accessLogs.setClientId(WebExchangeUtil.getClientId(exchange));
         accessLogs.setIp(WebExchangeUtil.getRemoteAddress(exchange));
         accessLogs.setHttpStatus(Objects.requireNonNull(response.getStatusCode()).value());
         accessLogs.setHttpMethod(request.getMethodValue());

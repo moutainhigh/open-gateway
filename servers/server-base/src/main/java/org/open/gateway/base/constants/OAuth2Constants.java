@@ -1,4 +1,4 @@
-package org.open.gateway.route.constants;
+package org.open.gateway.base.constants;
 
 /**
  * Created by miko on 2020/7/8.

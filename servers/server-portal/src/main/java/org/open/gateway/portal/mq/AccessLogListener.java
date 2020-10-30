@@ -33,9 +33,9 @@ public class AccessLogListener {
     )
     public void onAccess(List<AccessLogs> msg) {
         log.info("Received access log size: {}", msg.size());
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
         try {
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
             // 存入数据库
             this.accessLogsService.saveAccessLogs(msg);
             stopWatch.stop();

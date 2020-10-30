@@ -5,6 +5,8 @@ import java.util.Date;
 public class GatewayApp {
     private Integer id;
 
+    private String appCode;
+
     private String appName;
 
     private String clientId;
@@ -33,6 +35,14 @@ public class GatewayApp {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getAppCode() {
+        return appCode;
+    }
+
+    public void setAppCode(String appCode) {
+        this.appCode = appCode == null ? null : appCode.trim();
     }
 
     public String getAppName() {

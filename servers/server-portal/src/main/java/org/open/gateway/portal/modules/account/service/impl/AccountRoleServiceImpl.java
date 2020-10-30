@@ -57,7 +57,6 @@ public class AccountRoleServiceImpl implements AccountRoleService {
             log.info("insert role:{} finished. operator is:{} new id is:{}", roleCode, operator, role.getId());
         } else {
             log.info("role code:{} exists. starting update id:{}.", roleCode, role.getId());
-            role.setRoleCode(roleCode);
             role.setRoleName(roleName);
             role.setNote(note);
             role.setUpdateTime(new Date());

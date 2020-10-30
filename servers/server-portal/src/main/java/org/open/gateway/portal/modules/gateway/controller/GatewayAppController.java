@@ -5,8 +5,10 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.pagehelper.Page;
 import lombok.AllArgsConstructor;
 import org.open.gateway.portal.constants.Endpoints;
+import org.open.gateway.portal.exception.gateway.AuthorizedGrantTypeInvalidException;
 import org.open.gateway.portal.modules.gateway.controller.vo.GatewayAppPagesRequest;
 import org.open.gateway.portal.modules.gateway.controller.vo.GatewayAppPagesResponse;
+import org.open.gateway.portal.modules.gateway.controller.vo.GatewayAppSaveRequest;
 import org.open.gateway.portal.modules.gateway.service.GatewayAppService;
 import org.open.gateway.portal.modules.gateway.service.OauthClientDetailsService;
 import org.open.gateway.portal.modules.gateway.service.bo.GatewayAppBO;
@@ -39,12 +41,19 @@ public class GatewayAppController {
     @PostMapping(Endpoints.APP_PAGES)
     public Result pages(@Valid @RequestBody GatewayAppPagesRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
         Page<?> page = request.startPage();
-        List<GatewayAppBO> apps = gatewayAppService.queryGatewayApps(request.getClientId(), request.getAppName());
+        List<GatewayAppBO> apps = gatewayAppService.queryGatewayApps(request.getAppCode(), request.getAppName());
         LoadingCache<String, OauthClientDetailsBO> cache = Caffeine.newBuilder().build(oauthClientDetailsService::queryClientDetailsByClientId);
         List<GatewayAppPagesResponse> responses = apps.stream()
                 .map(bo -> toGatewayAppPagesResponse(bo, cache))
                 .collect(Collectors.toList());
         return Result.data(responses).pageInfo(page).ok();
+    }
+
+    @PreAuthorize("#account.hasPermission('gateway:app:save:post')")
+    @PostMapping(Endpoints.APP_SAVE)
+    public Result save(@Valid @RequestBody GatewayAppSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AuthorizedGrantTypeInvalidException {
+        gatewayAppService.save(request.getAppCode(), request.getAppName(), request.getNote(), request.getRegisterFrom(), request.getAccessTokenValidity(), request.getWebServerRedirectUri(), request.getAuthorizedGrantTypes(), account.getAccount());
+        return Result.ok();
     }
 
     private GatewayAppPagesResponse toGatewayAppPagesResponse(GatewayAppBO gatewayApp, LoadingCache<String, OauthClientDetailsBO> cache) {
