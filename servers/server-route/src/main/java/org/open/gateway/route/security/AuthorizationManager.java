@@ -91,8 +91,7 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         String requestPath = WebExchangeUtil.getRequestPath(exchange);
         String ipAddress = WebExchangeUtil.getRemoteAddress(exchange);
         String clientId = user.getClientId();
-        Collection<String> authorities = user.getAuthorities();
-        log.info("Request path:{} ip:{} client_id:{} authorities:{}", requestPath, ipAddress, clientId, authorities);
+        log.info("Request path:{} ip:{} client_id:{} authorities:{}", requestPath, ipAddress, clientId, user.getAuthorities());
         // 存放客户端id
         WebExchangeUtil.putClientId(exchange, clientId);
         // 是否直接放行
