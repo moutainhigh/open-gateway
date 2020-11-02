@@ -59,4 +59,9 @@ public class GatewayAppSaveRequest {
      */
     private Set<String> authorizedGrantTypes;
 
+    /**
+     * 接口id集合
+     */
+    private Set<Integer> apiIds;
+
 }

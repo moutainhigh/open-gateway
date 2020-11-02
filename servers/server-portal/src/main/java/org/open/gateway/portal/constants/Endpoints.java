@@ -57,8 +57,10 @@ public interface Endpoints {
     String APP_PAGES = "/app/pages";
     // 应用-新增/修改
     String APP_SAVE = "/app/save";
-    // 应用-更新所拥有的接口
-    String APP_SAVE_APIS = "/app/save/apis";
+    // 应用-启用
+    String APP_ENABLE = "/app/enable";
+    // 应用-禁用
+    String APP_DISABLE = "/app/disable";
     // 应用-删除
     String APP_DELETE = "/app/delete";
 

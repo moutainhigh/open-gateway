@@ -9,9 +9,11 @@ import org.open.gateway.portal.exception.gateway.GatewayAppNotExistsException;
 import org.open.gateway.portal.modules.gateway.service.GatewayAppService;
 import org.open.gateway.portal.modules.gateway.service.bo.GatewayAppBO;
 import org.open.gateway.portal.modules.gateway.service.bo.GatewayAppQuery;
+import org.open.gateway.portal.persistence.mapper.GatewayAppApiMapperExt;
 import org.open.gateway.portal.persistence.mapper.GatewayAppMapperExt;
 import org.open.gateway.portal.persistence.mapper.OauthClientDetailsMapperExt;
 import org.open.gateway.portal.persistence.po.GatewayApp;
+import org.open.gateway.portal.persistence.po.GatewayAppApi;
 import org.open.gateway.portal.persistence.po.OauthClientDetails;
 import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.stereotype.Service;
@@ -33,13 +35,11 @@ import java.util.stream.Collectors;
 public class GatewayAppServiceImpl implements GatewayAppService {
 
     private final GatewayAppMapperExt gatewayAppMapper;
+    private final GatewayAppApiMapperExt gatewayAppApiMapper;
     private final OauthClientDetailsMapperExt oauthClientDetailsMapper;
 
     @Override
-    public List<GatewayAppBO> queryGatewayApps(String appCode, String appName) {
-        GatewayAppQuery query = new GatewayAppQuery();
-        query.setAppCode(appCode);
-        query.setAppName(appName);
+    public List<GatewayAppBO> queryGatewayApps(GatewayAppQuery query) {
         List<GatewayApp> gatewayApps = gatewayAppMapper.selectByCondition(query);
         log.info("query gateway app num:{} param:{}", gatewayApps.size(), query);
         return gatewayApps.stream()
@@ -59,7 +59,7 @@ public class GatewayAppServiceImpl implements GatewayAppService {
 
     @Transactional
     @Override
-    public void save(String appCode, String appName, String note, String registerFrom, int accessTokenValidity, String webServerRedirectUri, Set<String> authorizedGrantTypes, String operator) throws AuthorizedGrantTypeInvalidException {
+    public void save(String appCode, String appName, String note, String registerFrom, int accessTokenValidity, String webServerRedirectUri, Set<String> authorizedGrantTypes, Set<Integer> apiIds, String operator) throws AuthorizedGrantTypeInvalidException {
         // 校验支持的认证类型
         checkSupportedGrantTypes(authorizedGrantTypes);
         GatewayApp gatewayApp = gatewayAppMapper.selectByAppCode(appCode);
@@ -103,6 +103,66 @@ public class GatewayAppServiceImpl implements GatewayAppService {
             BizUtil.checkUpdate(oauthClientDetailsMapper.updateByPrimaryKeySelective(oauthClientDetails));
             log.info("update oauth client details finished. client_id:{} operator:{}", gatewayApp.getClientId(), operator);
         }
+        if (apiIds != null) {
+            int appId = gatewayApp.getId();
+            int count = gatewayAppApiMapper.deleteByAppId(appId);
+            log.info("delete exists appApis by app id:{} delete count:{} operator:{}", appId, count, operator);
+            if (!apiIds.isEmpty()) {
+                BizUtil.checkUpdate(
+                        gatewayAppApiMapper.insertBatch(
+                                apiIds.stream()
+                                        .map(apiId -> this.toGatewayAppApi(apiId, appId, operator))
+                                        .collect(Collectors.toList())
+                        ), apiIds.size()
+                );
+                log.info("insert batch appApis finished. operator is:{}", operator);
+            }
+        }
+    }
+
+    @Override
+    public void enable(String appCode, String operator) throws GatewayAppNotExistsException {
+        GatewayApp gatewayApp = queryExistsGatewayApp(appCode);
+        GatewayApp param = new GatewayApp();
+        param.setId(gatewayApp.getId());
+        param.setStatus(BizConstants.STATUS.ENABLE);
+        param.setUpdateTime(new Date());
+        param.setUpdatePerson(operator);
+        BizUtil.checkUpdate(gatewayAppMapper.updateByPrimaryKeySelective(param));
+        log.info("enable gateway app by code:{} finished. operator is:{}", appCode, operator);
+    }
+
+    @Override
+    public void disable(String appCode, String operator) throws GatewayAppNotExistsException {
+        GatewayApp gatewayApp = queryExistsGatewayApp(appCode);
+        GatewayApp param = new GatewayApp();
+        param.setId(gatewayApp.getId());
+        param.setStatus(BizConstants.STATUS.DISABLE);
+        param.setUpdateTime(new Date());
+        param.setUpdatePerson(operator);
+        BizUtil.checkUpdate(gatewayAppMapper.updateByPrimaryKeySelective(param));
+        log.info("disable gateway app by code:{} finished. operator is:{}", appCode, operator);
+    }
+
+    @Override
+    public void delete(String appCode, String operator) throws GatewayAppNotExistsException {
+        GatewayApp gatewayApp = queryExistsGatewayApp(appCode);
+        GatewayApp param = new GatewayApp();
+        param.setId(gatewayApp.getId());
+        param.setIsDel(BizConstants.DEL_FLAG.YES);
+        param.setUpdateTime(new Date());
+        param.setUpdatePerson(operator);
+        BizUtil.checkUpdate(gatewayAppMapper.updateByPrimaryKeySelective(param));
+        log.info("delete gateway app by code:{} finished. operator is:{}", appCode, operator);
+    }
+
+    private GatewayApp queryExistsGatewayApp(String appCode) throws GatewayAppNotExistsException {
+        GatewayApp gatewayApp = gatewayAppMapper.selectByAppCode(appCode);
+        log.info("query gateway app by code:{} result:{}", appCode, gatewayApp);
+        if (gatewayApp == null) {
+            throw new GatewayAppNotExistsException();
+        }
+        return gatewayApp;
     }
 
     private void checkSupportedGrantTypes(Set<String> authorizedGrantTypes) throws AuthorizedGrantTypeInvalidException {
@@ -129,6 +189,15 @@ public class GatewayAppServiceImpl implements GatewayAppService {
         result.setUpdateTime(entity.getUpdateTime());
         result.setUpdatePerson(entity.getUpdatePerson());
         return result;
+    }
+
+    private GatewayAppApi toGatewayAppApi(int apiId, int appId, String operator) {
+        GatewayAppApi appApi = new GatewayAppApi();
+        appApi.setCreateTime(new Date());
+        appApi.setCreatePerson(operator);
+        appApi.setAppId(appId);
+        appApi.setApiId(apiId);
+        return appApi;
     }
 
 }

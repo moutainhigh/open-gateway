@@ -56,7 +56,7 @@ public class AccountController {
     }
 
     @PostMapping(Endpoints.ACCOUNT_REGISTER)
-    public Result register(@Valid @RequestBody AccountRegisterRequest request, HttpServletRequest servletRequest, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotAvailableException, AccountAlreadyExistsException {
+    public Result register(@Valid @RequestBody AccountRegisterRequest request, HttpServletRequest servletRequest, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountAlreadyExistsException {
         String ip = ServletRequestUtil.getIpFromRequest(servletRequest);
         log.info("request ip is:{}", ip);
         // 注册
@@ -81,7 +81,7 @@ public class AccountController {
 
     @PreAuthorize("#account.hasPermission('account:enable:post')")
     @PostMapping(Endpoints.ACCOUNT_ENABLE)
-    public Result enable(@Valid @RequestBody AccountEnableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException, AccountNotAvailableException {
+    public Result enable(@Valid @RequestBody AccountEnableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException {
         accountService.enable(request.getAccount(), account.getAccount());
         return Result.ok();
     }
