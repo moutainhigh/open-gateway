@@ -26,14 +26,7 @@ public interface TokenRepository {
      * @param clientId 客户端id
      * @return token信息
      */
-    Mono<OauthClientToken> loadClientTokenByClientId(String clientId);
-
-    /**
-     * 根据客户端id删除token
-     *
-     * @param clientId 客户端id
-     */
-    Mono<Integer> deleteClientTokenByClientId(String clientId);
+    Mono<OauthClientToken> loadNotExpiredClientTokenByClientId(String clientId);
 
     /**
      * 保存token

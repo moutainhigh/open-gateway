@@ -56,7 +56,7 @@ public class OauthEndpoints {
                 clientDetailsService.loadClientByClientId(tokenRequest.getClient_id()) // 根据client_id获取client信息
                         .filter(cd -> this.checkClientSecret(tokenRequest, cd)) // 校验secret
                         .flatMap(cd ->
-                                tokenRepository.loadClientTokenByClientId(cd.getClientId()) // 从数据库查询该客户端已经存在的token
+                                tokenRepository.loadNotExpiredClientTokenByClientId(cd.getClientId()) // 从数据库查询该客户端已经存在的token
                                         .filter(token -> !token.isExpired()) // 过滤没有过期的
                                         .map(token -> buildTokenResponse(token.getToken(), Dates.toTimestamp(token.getExpireTime()))) // 构建返回对象
                                         .doOnNext(response -> log.info("Client id:{} exists token:{} expire_at:{}", tokenRequest.getClient_id(), response.getAccess_token(), response.getExpire_at()))

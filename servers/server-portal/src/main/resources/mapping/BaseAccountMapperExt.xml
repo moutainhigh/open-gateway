@@ -7,7 +7,6 @@
 		<include refid="Base_Column_List"/>
 		from base_account
 		where account = #{account}
-		and is_del = 0
 	</select>
 
 	<select id="selectByCondition" parameterType="org.open.gateway.portal.modules.account.service.bo.BaseAccountQuery"
@@ -42,7 +41,6 @@
 			<if test="createPerson != null">
 				and create_person = #{createPerson},
 			</if>
-			and is_del = 0
 		</where>
 	</select>
 

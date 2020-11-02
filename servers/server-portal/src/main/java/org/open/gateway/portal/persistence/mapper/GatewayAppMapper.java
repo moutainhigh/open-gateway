@@ -3,6 +3,8 @@ package org.open.gateway.portal.persistence.mapper;
 import org.open.gateway.portal.persistence.po.GatewayApp;
 
 public interface GatewayAppMapper {
+    int deleteByPrimaryKey(Integer id);
+
     int insert(GatewayApp record);
 
     int insertSelective(GatewayApp record);

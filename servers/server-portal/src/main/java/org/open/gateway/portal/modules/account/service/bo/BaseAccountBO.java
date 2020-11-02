@@ -42,6 +42,4 @@ public class BaseAccountBO {
 
     private String updatePerson;
 
-    private Byte isDel;
-
 }

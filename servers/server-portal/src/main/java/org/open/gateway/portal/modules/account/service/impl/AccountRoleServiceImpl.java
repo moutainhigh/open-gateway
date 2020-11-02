@@ -52,7 +52,6 @@ public class AccountRoleServiceImpl implements AccountRoleService {
             role.setNote(note);
             role.setCreateTime(new Date());
             role.setCreatePerson(operator);
-            role.setIsDel(BizConstants.DEL_FLAG.NO);
             BizUtil.checkUpdate(baseRoleMapper.insertSelective(role));
             log.info("insert role:{} finished. operator is:{} new id is:{}", roleCode, operator, role.getId());
         } else {
@@ -115,13 +114,8 @@ public class AccountRoleServiceImpl implements AccountRoleService {
         if (baseRole == null) {
             throw new RoleNotExistsException();
         }
-        BaseRole param = new BaseRole();
-        param.setId(baseRole.getId());
-        param.setIsDel(BizConstants.DEL_FLAG.YES);
-        param.setUpdateTime(new Date());
-        param.setUpdatePerson(operator);
-        BizUtil.checkUpdate(baseRoleMapper.updateByPrimaryKeySelective(param));
-        log.info("logic delete role:{} finished. operator is:{}", roleCode, operator);
+        BizUtil.checkUpdate(baseRoleMapper.deleteByPrimaryKey(baseRole.getId()));
+        log.info("delete role:{} finished. id is:{} operator is:{}", roleCode, baseRole.getId(), operator);
     }
 
     private BaseRoleBO toBaseRoleBO(BaseRole baseRole) {

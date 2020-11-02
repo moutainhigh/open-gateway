@@ -4,6 +4,8 @@ import org.open.gateway.portal.persistence.po.BaseAccountRole;
 import org.open.gateway.portal.persistence.po.BaseAccountRoleKey;
 
 public interface BaseAccountRoleMapper {
+    int deleteByPrimaryKey(BaseAccountRoleKey key);
+
     int insert(BaseAccountRole record);
 
     int insertSelective(BaseAccountRole record);

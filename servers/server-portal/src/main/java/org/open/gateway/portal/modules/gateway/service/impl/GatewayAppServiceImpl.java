@@ -75,7 +75,6 @@ public class GatewayAppServiceImpl implements GatewayAppService {
             gatewayApp.setNote(note);
             gatewayApp.setCreateTime(new Date());
             gatewayApp.setCreatePerson(operator);
-            gatewayApp.setIsDel(BizConstants.DEL_FLAG.NO);
             BizUtil.checkUpdate(gatewayAppMapper.insertSelective(gatewayApp));
             log.info("insert app:{} finished. operator is:{} new id is:{}", appCode, operator, gatewayApp.getId());
             OauthClientDetails oauthClientDetails = new OauthClientDetails();
@@ -147,13 +146,8 @@ public class GatewayAppServiceImpl implements GatewayAppService {
     @Override
     public void delete(String appCode, String operator) throws GatewayAppNotExistsException {
         GatewayApp gatewayApp = queryExistsGatewayApp(appCode);
-        GatewayApp param = new GatewayApp();
-        param.setId(gatewayApp.getId());
-        param.setIsDel(BizConstants.DEL_FLAG.YES);
-        param.setUpdateTime(new Date());
-        param.setUpdatePerson(operator);
-        BizUtil.checkUpdate(gatewayAppMapper.updateByPrimaryKeySelective(param));
-        log.info("delete gateway app by code:{} finished. operator is:{}", appCode, operator);
+        BizUtil.checkUpdate(gatewayAppMapper.deleteByPrimaryKey(gatewayApp.getId()));
+        log.info("delete gateway app by code:{} finished. id is:{} operator is:{}", appCode, gatewayApp.getId(), operator);
     }
 
     private GatewayApp queryExistsGatewayApp(String appCode) throws GatewayAppNotExistsException {

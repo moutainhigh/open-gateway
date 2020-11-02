@@ -31,18 +31,6 @@ public interface BizConstants {
     }
 
     /**
-     * 删除标记
-     */
-    interface DEL_FLAG {
-
-        // 已删除
-        byte YES = 1;
-        // 未删除
-        byte NO = 0;
-
-    }
-
-    /**
      * 资源类型(D目录 M菜单 B按钮)
      */
     interface RESOURCE_TYPE {

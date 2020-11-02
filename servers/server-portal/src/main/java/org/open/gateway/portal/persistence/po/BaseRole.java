@@ -21,8 +21,6 @@ public class BaseRole {
 
     private String updatePerson;
 
-    private Byte isDel;
-
     public Integer getId() {
         return id;
     }
@@ -93,13 +91,5 @@ public class BaseRole {
 
     public void setUpdatePerson(String updatePerson) {
         this.updatePerson = updatePerson == null ? null : updatePerson.trim();
-    }
-
-    public Byte getIsDel() {
-        return isDel;
-    }
-
-    public void setIsDel(Byte isDel) {
-        this.isDel = isDel;
     }
 }

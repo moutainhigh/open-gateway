@@ -92,7 +92,6 @@ public class AccountResourceServiceImpl implements AccountResourceService {
             resource.setStatus(BizConstants.STATUS.ENABLE);
             resource.setCreateTime(new Date());
             resource.setCreatePerson(operator);
-            resource.setIsDel(BizConstants.DEL_FLAG.NO);
             BizUtil.checkUpdate(baseResourceMapper.insertSelective(resource));
             log.info("insert resource finished. operator:{} new resource is:{}", operator, resource.getId());
         } else {
@@ -118,11 +117,8 @@ public class AccountResourceServiceImpl implements AccountResourceService {
         if (resource == null) {
             throw new ResourceNotExistsException();
         }
-        BaseResource param = new BaseResource();
-        param.setId(resource.getId());
-        param.setIsDel(BizConstants.DEL_FLAG.YES);
-        BizUtil.checkUpdate(baseResourceMapper.updateByPrimaryKeySelective(param));
-        log.info("logic delete resource:{} finished. operator is:{}", resourceCode, operator);
+        BizUtil.checkUpdate(baseResourceMapper.deleteByPrimaryKey(resource.getId()));
+        log.info("delete resource:{} finished. id is:{} operator is:{}", resourceCode, resource.getId(), operator);
     }
 
     private BaseResourceBO toBaseResourceBO(BaseResource br) {

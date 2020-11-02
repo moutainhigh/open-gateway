@@ -6,16 +6,14 @@
 		SELECT
 		<include refid="Base_Column_List"/>
 		FROM gateway_app
-		where app_code = #{appCode,jdbcType=VARCHAR}
-		and is_del = 0
+		WHERE app_code = #{appCode,jdbcType=VARCHAR}
 	</select>
 
 	<select id="selectByClientId" resultMap="BaseResultMap">
 		SELECT
 		<include refid="Base_Column_List"/>
 		FROM gateway_app
-		where client_id = #{clientId,jdbcType=VARCHAR}
-		and is_del = 0
+		WHERE client_id = #{clientId,jdbcType=VARCHAR}
 	</select>
 
 	<select id="selectByCondition" resultMap="BaseResultMap">
@@ -23,7 +21,6 @@
 		<include refid="Base_Column_List"/>
 		FROM gateway_app
 		<where>
-			is_del = 0
 			<if test="clientId != null">
 				AND client_id = #{clientId,jdbcType=VARCHAR}
 			</if>

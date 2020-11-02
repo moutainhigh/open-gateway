@@ -4,6 +4,8 @@ import org.open.gateway.portal.persistence.po.BaseRoleResource;
 import org.open.gateway.portal.persistence.po.BaseRoleResourceKey;
 
 public interface BaseRoleResourceMapper {
+    int deleteByPrimaryKey(BaseRoleResourceKey key);
+
     int insert(BaseRoleResource record);
 
     int insertSelective(BaseRoleResource record);

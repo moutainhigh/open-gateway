@@ -101,7 +101,6 @@ public class AccountServiceImpl implements AccountService {
         param.setNote(note);
         param.setCreateTime(now);
         param.setCreatePerson(operator);
-        param.setIsDel(BizConstants.DEL_FLAG.NO);
         BizUtil.checkUpdate(baseAccountMapper.insertSelective(param));
         log.info("register finished. account:{} operator:{}", account, operator);
         return toBaseAccountBO(param);
@@ -190,13 +189,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void delete(String account, String operator) throws AccountNotExistsException {
         BaseAccountBO accountBO = queryExistsBaseAccount(account);
-        BaseAccount param = new BaseAccount();
-        param.setId(accountBO.getId());
-        param.setUpdatePerson(operator);
-        param.setUpdateTime(new Date());
-        param.setIsDel(BizConstants.DEL_FLAG.YES);
-        BizUtil.checkUpdate(baseAccountMapper.updateByPrimaryKeySelective(param), 1);
-        log.info("logic delete account:{} finished. operator is:{}", account, operator);
+        BizUtil.checkUpdate(baseAccountMapper.deleteByPrimaryKey(accountBO.getId()));
+        log.info("delete account:{} finished. id is:{} operator is:{}", account, accountBO.getId(), operator);
     }
 
     /**
@@ -230,7 +224,6 @@ public class AccountServiceImpl implements AccountService {
         baseAccountBO.setCreatePerson(baseAccount.getCreatePerson());
         baseAccountBO.setUpdateTime(baseAccount.getUpdateTime());
         baseAccountBO.setUpdatePerson(baseAccount.getUpdatePerson());
-        baseAccountBO.setIsDel(baseAccount.getIsDel());
         return baseAccountBO;
     }
 

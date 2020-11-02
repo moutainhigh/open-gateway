@@ -4,14 +4,14 @@
 
 	<sql id="base_resource_columns">
 		r.id, r.resource_code, r.resource_name, r.parent_code, r.url, r.resource_type, r.perms, r.sort, r.note,
-		r.status, r.create_time, r.create_person, r.update_time, r.update_person, r.is_del
+		r.status, r.create_time, r.create_person, r.update_time, r.update_person
 	</sql>
 
 	<select id="selectAll" resultMap="BaseResultMap">
 		SELECT
 		<include refid="base_resource_columns"/>
 		FROM base_resource r
-		WHERE r.is_del = 0 AND r.`status` = 1
+		WHERE r.`status` = 1
 	</select>
 
 	<select id="selectByAccountAndResourceType" resultMap="BaseResultMap">
@@ -22,8 +22,7 @@
 		INNER JOIN base_role br ON br.id = bar.role_id
 		INNER JOIN base_role_resource brr ON brr.role_id = br.id
 		INNER JOIN base_resource r ON r.id = brr.resource_id
-		WHERE ba.is_del = 0 AND br.is_del = 0 AND r.is_del = 0
-		AND ba.`status` = 1 AND br.`status` = 1 AND r.`status` = 1
+		WHERE ba.`status` = 1 AND br.`status` = 1 AND r.`status` = 1
 		AND ba.account = #{account}
 		<if test="resourceType != null">
 			AND r.resource_type = #{resourceType}
@@ -36,8 +35,7 @@
 		FROM base_role br
 		INNER JOIN base_role_resource brr ON brr.role_id = br.id
 		INNER JOIN base_resource r ON r.id = brr.resource_id
-		WHERE br.is_del = 0 AND r.is_del = 0
-		AND br.`status` = 1 AND r.`status` = 1
+		WHERE br.`status` = 1 AND r.`status` = 1
 		AND br.role_code = #{roleCode}
 	</select>
 
@@ -45,7 +43,7 @@
 		SELECT
 		<include refid="base_resource_columns"/>
 		FROM base_resource r
-		WHERE r.is_del = 0 AND r.`status` = 1
+		WHERE r.`status` = 1
 		AND r.resource_code = #{resourceCode}
 	</select>
 

@@ -14,8 +14,6 @@ import org.open.gateway.route.service.bo.ClientDetails;
 import org.open.gateway.route.service.bo.OauthClientToken;
 import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
-import org.springframework.data.relational.core.query.Criteria;
-import org.springframework.data.relational.core.query.Update;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.reactive.TransactionalOperator;
@@ -126,27 +124,10 @@ public class R2dbcTokenRepository implements TokenRepository {
      * @return token信息
      */
     @Override
-    public Mono<OauthClientToken> loadClientTokenByClientId(String clientId) {
+    public Mono<OauthClientToken> loadNotExpiredClientTokenByClientId(String clientId) {
         return databaseClient.execute(SQLS.QUERY_CLIENT_TOKEN_BY_ID.format(clientId))
-                .map(this::rowToClientToken)
+                .map(row -> this.rowToClientToken(row, clientId))
                 .one();
-    }
-
-    /**
-     * 根据客户端id删除token
-     *
-     * @param clientId 客户端id
-     */
-    @Override
-    public Mono<Integer> deleteClientTokenByClientId(String clientId) {
-        return databaseClient.update()
-                .table("oauth_client_token")
-                .using(Update.update("is_del", 1))
-                .matching(
-                        Criteria.where("client_id").is(clientId).and("is_del").is(0)
-                )
-                .fetch()
-                .rowsUpdated();
     }
 
     /**
@@ -161,29 +142,26 @@ public class R2dbcTokenRepository implements TokenRepository {
         Assert.notNull(clientId, "client_id is required");
         Assert.notNull(token, "token is required");
         Assert.notNull(expireTime, "expireTime is required");
-        return deleteClientTokenByClientId(clientId) // 先根据客户端id更新老的token为已删除状态
-                .then(
-                        databaseClient.insert()
-                                .into("oauth_client_token")
-                                .value("client_id", clientId)
-                                .value("token", token)
-                                .value("expire_time", Dates.toLocalDateTime(expireTime))
-                                .value("create_time", LocalDateTime.now())
-                                .value("create_person", "system")
-                                .value("update_time", LocalDateTime.now())
-                                .value("update_person", "system")
-                                .fetch()
-                                .rowsUpdated() // 添加一条新的token记录
-                                .then()
-                )
+        return databaseClient.insert()
+                .into("oauth_client_token")
+                .value("client_id", clientId)
+                .value("token", token)
+                .value("expire_time", Dates.toLocalDateTime(expireTime))
+                .value("create_time", LocalDateTime.now())
+                .value("create_person", "system")
+                .value("update_time", LocalDateTime.now())
+                .value("update_person", "system")
+                .fetch()
+                .rowsUpdated() // 添加一条新的token记录
+                .then()
                 .as(operator::transactional) // 开启事务管理
                 .doOnSuccess(v -> log.info("Save token finished"));
     }
 
-    private OauthClientToken rowToClientToken(Row row) {
+    private OauthClientToken rowToClientToken(Row row, String clientId) {
         OauthClientToken token = new OauthClientToken();
+        token.setClientId(clientId);
         token.setId(Objects.requireNonNull(row.get("id", Integer.class)));
-        token.setClientId(Objects.requireNonNull(row.get("client_id", String.class)));
         token.setToken(Objects.requireNonNull(row.get("token", String.class)));
         token.setExpireTime(Objects.requireNonNull(row.get("expire_time", LocalDateTime.class)));
         return token;

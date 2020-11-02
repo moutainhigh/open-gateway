@@ -2,19 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.open.gateway.portal.persistence.mapper.GatewayAppApiMapperExt">
 
-  <delete id="deleteByAppId">
+	<delete id="deleteByAppId">
         delete from gateway_app_api where app_id = #{appId,jdbcType=INTEGER}
     </delete>
 
-  <insert id="insertBatch">
-    insert into gateway_app_api (<include refid="Base_Column_List"/>)
-    VALUES
-    <foreach collection="list" item="data" separator=",">
-      (#{data.appId,jdbcType=INTEGER},
-      #{data.apiId,jdbcType=INTEGER},
-      #{data.createTime,jdbcType=TIMESTAMP},
-      #{data.createPerson,jdbcType=VARCHAR})
-    </foreach>
-  </insert>
+	<insert id="insertBatch">
+		insert into gateway_app_api (<include refid="Base_Column_List"/>)
+		VALUES
+		<foreach collection="list" item="data" separator=",">
+			(#{data.appId,jdbcType=INTEGER},
+			#{data.apiId,jdbcType=INTEGER},
+			#{data.createTime,jdbcType=TIMESTAMP},
+			#{data.createPerson,jdbcType=VARCHAR})
+		</foreach>
+	</insert>
 
 </mapper>

@@ -4,6 +4,8 @@ import org.open.gateway.portal.persistence.po.GatewayAppApi;
 import org.open.gateway.portal.persistence.po.GatewayAppApiKey;
 
 public interface GatewayAppApiMapper {
+    int deleteByPrimaryKey(GatewayAppApiKey key);
+
     int insert(GatewayAppApi record);
 
     int insertSelective(GatewayAppApi record);

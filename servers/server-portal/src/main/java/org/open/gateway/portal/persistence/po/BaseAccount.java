@@ -29,8 +29,6 @@ public class BaseAccount {
 
     private String updatePerson;
 
-    private Byte isDel;
-
     public Integer getId() {
         return id;
     }
@@ -133,13 +131,5 @@ public class BaseAccount {
 
     public void setUpdatePerson(String updatePerson) {
         this.updatePerson = updatePerson == null ? null : updatePerson.trim();
-    }
-
-    public Byte getIsDel() {
-        return isDel;
-    }
-
-    public void setIsDel(Byte isDel) {
-        this.isDel = isDel;
     }
 }
