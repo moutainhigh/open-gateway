@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.open.gateway.portal.persistence.mapper.BaseResourceMapperExt">
+	<resultMap id="BaseResultMap" type="org.open.gateway.portal.persistence.po.BaseResource">
+		<id column="id" jdbcType="INTEGER" property="id"/>
+		<result column="resource_code" jdbcType="VARCHAR" property="resourceCode"/>
+		<result column="resource_name" jdbcType="VARCHAR" property="resourceName"/>
+		<result column="parent_code" jdbcType="VARCHAR" property="parentCode"/>
+		<result column="url" jdbcType="VARCHAR" property="url"/>
+		<result column="resource_type" jdbcType="CHAR" property="resourceType"/>
+		<result column="perms" jdbcType="VARCHAR" property="perms"/>
+		<result column="note" jdbcType="VARCHAR" property="note"/>
+		<result column="sort" jdbcType="INTEGER" property="sort"/>
+		<result column="status" jdbcType="TINYINT" property="status"/>
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+		<result column="create_person" jdbcType="VARCHAR" property="createPerson"/>
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+		<result column="update_person" jdbcType="VARCHAR" property="updatePerson"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+    id, resource_code, resource_name, parent_code, url, resource_type, perms, note, sort, 
+    status, create_time, create_person, update_time, update_person
+  </sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from base_resource
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from base_resource
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+	<insert id="insert" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.BaseResource" useGeneratedKeys="true">
+    insert into base_resource (resource_code, resource_name, parent_code, 
+      url, resource_type, perms, 
+      note, sort, status, 
+      create_time, create_person, update_time, 
+      update_person)
+    values (#{resourceCode,jdbcType=VARCHAR}, #{resourceName,jdbcType=VARCHAR}, #{parentCode,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{resourceType,jdbcType=CHAR}, #{perms,jdbcType=VARCHAR}, 
+      #{note,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{status,jdbcType=TINYINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updatePerson,jdbcType=VARCHAR})
+  </insert>
+	<insert id="insertSelective" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.BaseResource" useGeneratedKeys="true">
+		insert into base_resource
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="resourceCode != null">
+				resource_code,
+			</if>
+			<if test="resourceName != null">
+				resource_name,
+			</if>
+			<if test="parentCode != null">
+				parent_code,
+			</if>
+			<if test="url != null">
+				url,
+			</if>
+			<if test="resourceType != null">
+				resource_type,
+			</if>
+			<if test="perms != null">
+				perms,
+			</if>
+			<if test="note != null">
+				note,
+			</if>
+			<if test="sort != null">
+				sort,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createPerson != null">
+				create_person,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updatePerson != null">
+				update_person,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="resourceCode != null">
+				#{resourceCode,jdbcType=VARCHAR},
+			</if>
+			<if test="resourceName != null">
+				#{resourceName,jdbcType=VARCHAR},
+			</if>
+			<if test="parentCode != null">
+				#{parentCode,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				#{url,jdbcType=VARCHAR},
+			</if>
+			<if test="resourceType != null">
+				#{resourceType,jdbcType=CHAR},
+			</if>
+			<if test="perms != null">
+				#{perms,jdbcType=VARCHAR},
+			</if>
+			<if test="note != null">
+				#{note,jdbcType=VARCHAR},
+			</if>
+			<if test="sort != null">
+				#{sort,jdbcType=INTEGER},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=TINYINT},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createPerson != null">
+				#{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updatePerson != null">
+				#{updatePerson,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="org.open.gateway.portal.persistence.po.BaseResource">
+		update base_resource
+		<set>
+			<if test="resourceCode != null">
+				resource_code = #{resourceCode,jdbcType=VARCHAR},
+			</if>
+			<if test="resourceName != null">
+				resource_name = #{resourceName,jdbcType=VARCHAR},
+			</if>
+			<if test="parentCode != null">
+				parent_code = #{parentCode,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				url = #{url,jdbcType=VARCHAR},
+			</if>
+			<if test="resourceType != null">
+				resource_type = #{resourceType,jdbcType=CHAR},
+			</if>
+			<if test="perms != null">
+				perms = #{perms,jdbcType=VARCHAR},
+			</if>
+			<if test="note != null">
+				note = #{note,jdbcType=VARCHAR},
+			</if>
+			<if test="sort != null">
+				sort = #{sort,jdbcType=INTEGER},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=TINYINT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createPerson != null">
+				create_person = #{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updatePerson != null">
+				update_person = #{updatePerson,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.BaseResource">
+    update base_resource
+    set resource_code = #{resourceCode,jdbcType=VARCHAR},
+      resource_name = #{resourceName,jdbcType=VARCHAR},
+      parent_code = #{parentCode,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      resource_type = #{resourceType,jdbcType=CHAR},
+      perms = #{perms,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      status = #{status,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_person = #{createPerson,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_person = #{updatePerson,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

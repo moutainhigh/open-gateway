@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.open.gateway.portal.persistence.mapper.GatewayAppMapperExt">
+	<resultMap id="BaseResultMap" type="org.open.gateway.portal.persistence.po.GatewayApp">
+		<id column="id" jdbcType="INTEGER" property="id"/>
+		<result column="app_code" jdbcType="VARCHAR" property="appCode"/>
+		<result column="app_name" jdbcType="VARCHAR" property="appName"/>
+		<result column="client_id" jdbcType="VARCHAR" property="clientId"/>
+		<result column="client_secret" jdbcType="VARCHAR" property="clientSecret"/>
+		<result column="register_from" jdbcType="VARCHAR" property="registerFrom"/>
+		<result column="status" jdbcType="TINYINT" property="status"/>
+		<result column="note" jdbcType="VARCHAR" property="note"/>
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+		<result column="create_person" jdbcType="VARCHAR" property="createPerson"/>
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+		<result column="update_person" jdbcType="VARCHAR" property="updatePerson"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+    id, app_code, app_name, client_id, client_secret, register_from, status, note, create_time, 
+    create_person, update_time, update_person
+  </sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from gateway_app
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from gateway_app
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+	<insert id="insert" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.GatewayApp" useGeneratedKeys="true">
+    insert into gateway_app (app_code, app_name, client_id, 
+      client_secret, register_from, status, 
+      note, create_time, create_person, 
+      update_time, update_person)
+    values (#{appCode,jdbcType=VARCHAR}, #{appName,jdbcType=VARCHAR}, #{clientId,jdbcType=VARCHAR}, 
+      #{clientSecret,jdbcType=VARCHAR}, #{registerFrom,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
+      #{note,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updatePerson,jdbcType=VARCHAR})
+  </insert>
+	<insert id="insertSelective" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.GatewayApp" useGeneratedKeys="true">
+		insert into gateway_app
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="appCode != null">
+				app_code,
+			</if>
+			<if test="appName != null">
+				app_name,
+			</if>
+			<if test="clientId != null">
+				client_id,
+			</if>
+			<if test="clientSecret != null">
+				client_secret,
+			</if>
+			<if test="registerFrom != null">
+				register_from,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="note != null">
+				note,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createPerson != null">
+				create_person,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updatePerson != null">
+				update_person,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="appCode != null">
+				#{appCode,jdbcType=VARCHAR},
+			</if>
+			<if test="appName != null">
+				#{appName,jdbcType=VARCHAR},
+			</if>
+			<if test="clientId != null">
+				#{clientId,jdbcType=VARCHAR},
+			</if>
+			<if test="clientSecret != null">
+				#{clientSecret,jdbcType=VARCHAR},
+			</if>
+			<if test="registerFrom != null">
+				#{registerFrom,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=TINYINT},
+			</if>
+			<if test="note != null">
+				#{note,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createPerson != null">
+				#{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updatePerson != null">
+				#{updatePerson,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="org.open.gateway.portal.persistence.po.GatewayApp">
+		update gateway_app
+		<set>
+			<if test="appCode != null">
+				app_code = #{appCode,jdbcType=VARCHAR},
+			</if>
+			<if test="appName != null">
+				app_name = #{appName,jdbcType=VARCHAR},
+			</if>
+			<if test="clientId != null">
+				client_id = #{clientId,jdbcType=VARCHAR},
+			</if>
+			<if test="clientSecret != null">
+				client_secret = #{clientSecret,jdbcType=VARCHAR},
+			</if>
+			<if test="registerFrom != null">
+				register_from = #{registerFrom,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=TINYINT},
+			</if>
+			<if test="note != null">
+				note = #{note,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createPerson != null">
+				create_person = #{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updatePerson != null">
+				update_person = #{updatePerson,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.GatewayApp">
+    update gateway_app
+    set app_code = #{appCode,jdbcType=VARCHAR},
+      app_name = #{appName,jdbcType=VARCHAR},
+      client_id = #{clientId,jdbcType=VARCHAR},
+      client_secret = #{clientSecret,jdbcType=VARCHAR},
+      register_from = #{registerFrom,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      note = #{note,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_person = #{createPerson,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_person = #{updatePerson,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
