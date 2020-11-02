@@ -87,8 +87,8 @@ public class AccessLogsServiceImpl implements AccessLogsService {
         accessLogs.setIp(WebExchangeUtil.getRemoteAddress(exchange));
         accessLogs.setHttpStatus(Objects.requireNonNull(response.getStatusCode()).value());
         accessLogs.setHttpMethod(request.getMethodValue());
-        accessLogs.setHttpHeaders(toSerializableString(headers.toSingleValueMap()));
-        accessLogs.setRequestQueryString(StringUtil.splitByLenLimit(toSerializableString(request.getQueryParams()), 512));
+        accessLogs.setHttpHeaders(serializeToString(headers.toSingleValueMap()));
+        accessLogs.setRequestQueryString(StringUtil.splitByLenLimit(serializeToString(request.getQueryParams()), 512));
         accessLogs.setRequestBody(readRequestBody(exchange));
         accessLogs.setRequestTime(WebExchangeUtil.getRequestTime(exchange));
         accessLogs.setResponseTime(new Date());
@@ -113,7 +113,7 @@ public class AccessLogsServiceImpl implements AccessLogsService {
      * @param param 参数
      * @return 字符串
      */
-    private String toSerializableString(Object param) {
+    private String serializeToString(Object param) {
         return JSON.toJSONString(param);
     }
 

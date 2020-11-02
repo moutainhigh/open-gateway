@@ -1,6 +1,7 @@
 package org.open.gateway.route.service;
 
 import org.open.gateway.base.entity.AccessLogs;
+import org.springframework.lang.Nullable;
 import org.springframework.web.server.ServerWebExchange;
 
 /**
@@ -23,7 +24,7 @@ public interface AccessLogsService {
      * @param exchange web信息
      * @param ex       异常信息
      */
-    void sendAccessLogs(ServerWebExchange exchange, Throwable ex);
+    void sendAccessLogs(ServerWebExchange exchange, @Nullable Throwable ex);
 
     /**
      * 发送操作日志
