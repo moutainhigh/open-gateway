@@ -16,7 +16,6 @@ import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.reactive.TransactionalOperator;
 import org.springframework.util.Assert;
 import reactor.core.publisher.Mono;
 
@@ -35,7 +34,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class R2dbcTokenRepository implements TokenRepository {
 
-    private final TransactionalOperator operator;
     private final DatabaseClient databaseClient;
     private final ReactiveStringRedisTemplate redisTemplate;
 
@@ -154,7 +152,6 @@ public class R2dbcTokenRepository implements TokenRepository {
                 .fetch()
                 .rowsUpdated() // 添加一条新的token记录
                 .then()
-                .as(operator::transactional) // 开启事务管理
                 .doOnSuccess(v -> log.info("Save token finished"));
     }
 
