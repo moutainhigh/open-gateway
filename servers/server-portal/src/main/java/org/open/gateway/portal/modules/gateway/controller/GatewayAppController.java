@@ -14,7 +14,8 @@ import org.open.gateway.portal.modules.gateway.service.bo.GatewayAppBO;
 import org.open.gateway.portal.modules.gateway.service.bo.GatewayAppQuery;
 import org.open.gateway.portal.modules.gateway.service.bo.OauthClientDetailsBO;
 import org.open.gateway.portal.security.AccountDetails;
-import org.open.gateway.portal.vo.Result;
+import org.open.gateway.portal.vo.PageResponse;
+import org.open.gateway.portal.vo.Response;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,7 +40,7 @@ public class GatewayAppController {
 
     @PreAuthorize("#account.hasPermission('gateway:app:pages:post')")
     @PostMapping(Endpoints.APP_PAGES)
-    public Result pages(@Valid @RequestBody GatewayAppPagesRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
+    public PageResponse<List<GatewayAppPagesResponse>> pages(@Valid @RequestBody GatewayAppPagesRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
         GatewayAppQuery query = new GatewayAppQuery();
         query.setAppCode(request.getAppCode());
         query.setAppName(request.getAppName());
@@ -49,37 +50,37 @@ public class GatewayAppController {
         List<GatewayAppPagesResponse> responses = apps.stream()
                 .map(bo -> toGatewayAppPagesResponse(bo, cache))
                 .collect(Collectors.toList());
-        return Result.data(responses).pageInfo(page).ok();
+        return PageResponse.data(responses).pageInfo(page).ok();
     }
 
     @PreAuthorize("#account.hasPermission('gateway:app:save:post')")
     @PostMapping(Endpoints.APP_SAVE)
-    public Result save(@Valid @RequestBody GatewayAppSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AuthorizedGrantTypeInvalidException {
+    public Response<Void> save(@Valid @RequestBody GatewayAppSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AuthorizedGrantTypeInvalidException {
         gatewayAppService.save(request.getAppCode(), request.getAppName(), request.getNote(),
                 request.getRegisterFrom(), request.getAccessTokenValidity(), request.getWebServerRedirectUri(),
                 request.getAuthorizedGrantTypes(), request.getApiIds(), account.getAccount());
-        return Result.ok();
+        return Response.ok();
     }
 
     @PreAuthorize("#account.hasPermission('gateway:app:enable:post')")
     @PostMapping(Endpoints.APP_ENABLE)
-    public Result enable(@Valid @RequestBody GatewayAppEnableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws GatewayAppNotExistsException {
+    public Response<Void> enable(@Valid @RequestBody GatewayAppEnableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws GatewayAppNotExistsException {
         gatewayAppService.enable(request.getAppCode(), account.getAccount());
-        return Result.ok();
+        return Response.ok();
     }
 
     @PreAuthorize("#account.hasPermission('gateway:app:disable:post')")
     @PostMapping(Endpoints.APP_DISABLE)
-    public Result disable(@Valid @RequestBody GatewayAppDisableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws GatewayAppNotExistsException {
+    public Response<Void> disable(@Valid @RequestBody GatewayAppDisableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws GatewayAppNotExistsException {
         gatewayAppService.enable(request.getAppCode(), account.getAccount());
-        return Result.ok();
+        return Response.ok();
     }
 
     @PreAuthorize("#account.hasPermission('gateway:app:delete:post')")
     @PostMapping(Endpoints.APP_DELETE)
-    public Result delete(@Valid @RequestBody GatewayAppDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws GatewayAppNotExistsException {
+    public Response<Void> delete(@Valid @RequestBody GatewayAppDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws GatewayAppNotExistsException {
         gatewayAppService.delete(request.getAppCode(), account.getAccount());
-        return Result.ok();
+        return Response.ok();
     }
 
     private GatewayAppPagesResponse toGatewayAppPagesResponse(GatewayAppBO gatewayApp, LoadingCache<String, OauthClientDetailsBO> cache) {

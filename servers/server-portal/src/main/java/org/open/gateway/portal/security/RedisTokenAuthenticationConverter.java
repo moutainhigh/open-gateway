@@ -1,6 +1,7 @@
 package org.open.gateway.portal.security;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.base.constants.OAuth2Constants;
 import org.open.gateway.portal.modules.account.service.TokenService;
 import org.open.gateway.portal.security.exception.InvalidTokenException;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
  *
  * @author MIKO
  */
+@Slf4j
 @AllArgsConstructor
 public class RedisTokenAuthenticationConverter implements AuthenticationConverter {
 
@@ -32,7 +34,9 @@ public class RedisTokenAuthenticationConverter implements AuthenticationConverte
 
     private String getTokenFromHeader(HttpServletRequest request) {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        log.debug("get token value:{} from request header:{}", token, HttpHeaders.AUTHORIZATION);
         if (token == null || !TOKEN_REGX.matcher(token).matches()) {
+            log.debug("token:{} is invalid", token);
             throw new InvalidTokenException();
         }
         return token.substring(OAuth2Constants.TOKEN_PREFIX.length());
@@ -40,6 +44,7 @@ public class RedisTokenAuthenticationConverter implements AuthenticationConverte
 
     private AccountDetails loadAccount(String token) {
         AccountDetails account = tokenService.loadTokenUser(token);
+        log.debug("load token user:{} by token:{}", account, token);
         if (account == null) {
             throw new TokenExpiredException();
         }

@@ -2,6 +2,8 @@ package org.open.gateway.portal.modules.account.controller;
 
 import cn.hutool.crypto.SecureUtil;
 import com.github.pagehelper.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.portal.constants.DateTimeFormatters;
@@ -19,7 +21,8 @@ import org.open.gateway.portal.modules.account.service.bo.BaseAccountQuery;
 import org.open.gateway.portal.security.AccountDetails;
 import org.open.gateway.portal.utils.BizUtil;
 import org.open.gateway.portal.utils.ServletRequestUtil;
-import org.open.gateway.portal.vo.Result;
+import org.open.gateway.portal.vo.PageResponse;
+import org.open.gateway.portal.vo.Response;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,70 +42,79 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @AllArgsConstructor
+@Api(tags = "用户管理")
 @RestController
 public class AccountController {
 
     private final AccountService accountService;
 
+    @ApiOperation("用户登录")
     @PostMapping(Endpoints.ACCOUNT_LOGIN)
-    public Result login(@Valid @RequestBody AccountLoginRequest request) throws AccountPasswordInvalidException, AccountNotExistsException, AccountNotAvailableException {
+    public Response<AccountLoginResponse> login(@Valid @RequestBody AccountLoginRequest request) throws AccountPasswordInvalidException, AccountNotExistsException, AccountNotAvailableException {
         // 校验请求
         checkAccountLoginRequest(request);
         //  登录
         String token = accountService.login(request.getAccount(), request.getPassword());
         // 生成返回对象
         AccountLoginResponse response = buildLoginResponse(token);
-        return Result.data(response).ok();
+        return Response.data(response).ok();
     }
 
+    @ApiOperation("用户注册")
     @PostMapping(Endpoints.ACCOUNT_REGISTER)
-    public Result register(@Valid @RequestBody AccountRegisterRequest request, HttpServletRequest servletRequest, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountAlreadyExistsException {
+    public Response<AccountRegisterResponse> register(@Valid @RequestBody AccountRegisterRequest request, HttpServletRequest servletRequest, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountAlreadyExistsException {
         String ip = ServletRequestUtil.getIpFromRequest(servletRequest);
         log.info("request ip is:{}", ip);
         // 注册
         BaseAccountBO accountBO = accountService.register(request.getAccount(), request.getPassword(), request.getPhone(), request.getEmail(), request.getNote(), ip, account.getAccount());
         // 生成返回对象
         AccountRegisterResponse response = toAccountRegisterResponse(accountBO);
-        return Result.data(response).ok();
+        return Response.data(response).ok();
     }
 
+    @ApiOperation("用户退出")
     @PostMapping(Endpoints.ACCOUNT_LOGOUT)
-    public Result logout(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
+    public Response<Void> logout(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
         accountService.logout(account.getAccount());
-        return Result.ok();
+        return Response.ok();
     }
 
+    @ApiOperation("用户更新")
     @PreAuthorize("#account.hasPermission('account:update:post')")
     @PostMapping(Endpoints.ACCOUNT_UPDATE)
-    public Result update(@Valid @RequestBody AccountUpdateRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException, AccountNotAvailableException {
+    public Response<Void> update(@Valid @RequestBody AccountUpdateRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException, AccountNotAvailableException {
         accountService.update(request.getAccount(), request.getPassword(), request.getPhone(), request.getEmail(), request.getNote(), account.getAccount(), request.getRoleIds());
-        return Result.ok();
+        return Response.ok();
     }
 
+    @ApiOperation("用户启用")
     @PreAuthorize("#account.hasPermission('account:enable:post')")
     @PostMapping(Endpoints.ACCOUNT_ENABLE)
-    public Result enable(@Valid @RequestBody AccountEnableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException {
+    public Response<Void> enable(@Valid @RequestBody AccountEnableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException {
         accountService.enable(request.getAccount(), account.getAccount());
-        return Result.ok();
+        return Response.ok();
     }
 
+    @ApiOperation("用户禁用")
     @PreAuthorize("#account.hasPermission('account:disable:post')")
     @PostMapping(Endpoints.ACCOUNT_DISABLE)
-    public Result disable(@Valid @RequestBody AccountDisableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException, AccountNotAvailableException {
+    public Response<Void> disable(@Valid @RequestBody AccountDisableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException, AccountNotAvailableException {
         accountService.disable(request.getAccount(), account.getAccount());
-        return Result.ok();
+        return Response.ok();
     }
 
+    @ApiOperation("用户删除")
     @PreAuthorize("#account.hasPermission('account:delete:post')")
     @PostMapping(Endpoints.ACCOUNT_DELETE)
-    public Result delete(@Valid @RequestBody AccountDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException {
+    public Response<Void> delete(@Valid @RequestBody AccountDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException {
         accountService.delete(request.getAccount(), account.getAccount());
-        return Result.ok();
+        return Response.ok();
     }
 
+    @ApiOperation("用户分页列表")
     @PreAuthorize("#account.hasPermission('account:pages:post')")
     @PostMapping(Endpoints.ACCOUNT_PAGES)
-    public Result pages(@Valid @RequestBody AccountPagesRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
+    public PageResponse<List<AccountPagesResponse>> pages(@Valid @RequestBody AccountPagesRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
         BaseAccountQuery query = toBaseAccountQuery(request);
         Page<?> page = request.startPage();
         List<BaseAccountBO> accounts = accountService.queryBaseAccounts(query);
@@ -110,7 +122,7 @@ public class AccountController {
                 .map(this::toAccountPageListResponse)
                 .collect(Collectors.toList());
         log.info("response num:{}", responses.size());
-        return Result.data(responses).pageInfo(page).ok();
+        return PageResponse.data(responses).pageInfo(page).ok();
     }
 
     private BaseAccountQuery toBaseAccountQuery(AccountPagesRequest request) {

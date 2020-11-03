@@ -27,7 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String[] AUTH_WHITELIST = {
+    public static final String[] AUTH_WHITELIST = {
             // -- swagger ui
             "/swagger-ui.html",
             "/swagger-ui/*",

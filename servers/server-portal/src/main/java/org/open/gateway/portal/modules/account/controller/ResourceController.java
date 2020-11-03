@@ -13,7 +13,7 @@ import org.open.gateway.portal.modules.account.controller.vo.RoleResourcesReques
 import org.open.gateway.portal.modules.account.service.AccountResourceService;
 import org.open.gateway.portal.modules.account.service.bo.BaseResourceBO;
 import org.open.gateway.portal.security.AccountDetails;
-import org.open.gateway.portal.vo.Result;
+import org.open.gateway.portal.vo.Response;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,40 +40,40 @@ public class ResourceController {
     private final AccountResourceService accountResourceService;
 
     @PostMapping(Endpoints.ACCOUNT_RESOURCES)
-    public Result accountResources(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
+    public Response<List<ResourceTreeResponse>> accountResources(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
         List<BaseResourceBO> resources = accountResourceService.queryResourcesByAccount(account.getAccount());
         List<ResourceTreeResponse> responses = toResourceTree(resources);
-        return Result.data(responses).ok();
+        return Response.data(responses).ok();
     }
 
     @PreAuthorize("#account.hasPermission('account:role:resources:post')")
     @PostMapping(Endpoints.ROLE_RESOURCES)
-    public Result roleResources(@Valid @RequestBody RoleResourcesRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws RoleNotExistsException {
+    public Response<List<ResourceTreeResponse>> roleResources(@Valid @RequestBody RoleResourcesRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws RoleNotExistsException {
         List<BaseResourceBO> resources = accountResourceService.queryResourcesByRole(request.getRoleCode());
         List<ResourceTreeResponse> responses = toResourceTree(resources);
-        return Result.data(responses).ok();
+        return Response.data(responses).ok();
     }
 
     @PreAuthorize("#account.hasPermission('account:resource:list:post')")
     @PostMapping(Endpoints.RESOURCE_LIST)
-    public Result resourceList(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
+    public Response<List<ResourceTreeResponse>> resourceList(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
         List<BaseResourceBO> resources = accountResourceService.queryResources();
         List<ResourceTreeResponse> responses = toResourceTree(resources);
-        return Result.data(responses).ok();
+        return Response.data(responses).ok();
     }
 
     @PreAuthorize("#account.hasPermission('account:resource:save:post')")
     @PostMapping(Endpoints.RESOURCE_SAVE)
-    public Result save(@Valid @RequestBody ResourceSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws ResourceNotExistsException {
+    public Response<Void> save(@Valid @RequestBody ResourceSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws ResourceNotExistsException {
         accountResourceService.save(request.getResourceCode(), request.getResourceName(), request.getResourceType(), request.getParentCode(), request.getPerms(), request.getUrl(), request.getSort(), request.getNote(), account.getAccount());
-        return Result.ok();
+        return Response.ok();
     }
 
     @PreAuthorize("#account.hasPermission('account:resource:delete:post')")
     @PostMapping(Endpoints.RESOURCE_DELETE)
-    public Result delete(@Valid @RequestBody ResourceDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws ResourceNotExistsException {
+    public Response<Void> delete(@Valid @RequestBody ResourceDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws ResourceNotExistsException {
         accountResourceService.delete(request.getResourceCode(), account.getAccount());
-        return Result.ok();
+        return Response.ok();
     }
 
     private List<ResourceTreeResponse> toResourceTree(List<BaseResourceBO> resources) {

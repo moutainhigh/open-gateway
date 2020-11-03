@@ -7,7 +7,7 @@ import org.open.gateway.portal.exception.ServiceException;
 import org.open.gateway.portal.exception.account.*;
 import org.open.gateway.portal.exception.gateway.AuthorizedGrantTypeInvalidException;
 import org.open.gateway.portal.exception.gateway.GatewayAppNotExistsException;
-import org.open.gateway.portal.vo.Result;
+import org.open.gateway.portal.vo.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -29,18 +29,18 @@ public class ErrorMappingConfig {
     }
 
     @ExceptionHandler(ResultException.class)
-    public Result convertResultException(ResultException e) {
+    public Response<Void> convertResultException(ResultException e) {
         ResultCode resultCode = e.getResultCode();
         log.error("Result code: {} msg: {}", resultCode.getCode(), resultCode.getMessage());
-        return Result.fail(resultCode);
+        return Response.fail(resultCode);
     }
 
     @ExceptionHandler(ServiceException.class)
-    public Result convertServiceException(ServiceException e) {
+    public Response<Void> convertServiceException(ServiceException e) {
         log.error("Service exception msg:{}", e.getMessage());
         ResultCode resultCode = mappingServiceExceptionToResultCode(e);
         log.error("Result code:{} msg:{}", resultCode.getCode(), resultCode.getMessage());
-        return Result.fail(resultCode);
+        return Response.fail(resultCode);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
