@@ -24,7 +24,7 @@ public class BaseRoleBO {
 
     private String note;
 
-    private Byte status;
+    private Integer status;
 
     private Date createTime;
 

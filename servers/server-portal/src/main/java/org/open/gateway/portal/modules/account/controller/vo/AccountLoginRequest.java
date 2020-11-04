@@ -32,7 +32,7 @@ public class AccountLoginRequest {
      * 加密后的密码
      */
     @NotBlank
-    @ApiModelProperty(notes = "密码", example = "86a17a4fe3d381cfb821ce7c240f967b", required = true)
+    @ApiModelProperty(notes = "密码 加密规则:", example = "86a17a4fe3d381cfb821ce7c240f967b", required = true)
     private String password;
 
     /**

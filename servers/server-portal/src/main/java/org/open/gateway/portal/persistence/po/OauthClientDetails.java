@@ -1,6 +1,8 @@
 package org.open.gateway.portal.persistence.po;
 
 public class OauthClientDetails {
+    private Integer id;
+
     private String clientId;
 
     private String clientSecret;
@@ -22,6 +24,14 @@ public class OauthClientDetails {
     private String additionalInformation;
 
     private String autoapprove;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getClientId() {
         return clientId;

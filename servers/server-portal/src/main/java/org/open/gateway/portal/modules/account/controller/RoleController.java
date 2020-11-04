@@ -1,6 +1,8 @@
 package org.open.gateway.portal.modules.account.controller;
 
 import com.github.pagehelper.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.portal.constants.Endpoints;
@@ -28,11 +30,13 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @AllArgsConstructor
+@Api(tags = "角色管理")
 @RestController
 public class RoleController {
 
     private final AccountRoleService accountRoleService;
 
+    @ApiOperation("角色分页列表")
     @PreAuthorize("#account.hasPermission('account:role:pages:post')")
     @PostMapping(Endpoints.ROLE_PAGES)
     public PageResponse<List<RolePagesResponse>> roles(@Valid @RequestBody RolePagesRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
@@ -44,6 +48,7 @@ public class RoleController {
         return PageResponse.data(responses).pageInfo(page).ok();
     }
 
+    @ApiOperation("新增/修改角色")
     @PreAuthorize("#account.hasPermission('account:role:save:post')")
     @PostMapping(Endpoints.ROLE_SAVE)
     public Response<Void> save(@Valid @RequestBody RoleSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
@@ -51,6 +56,7 @@ public class RoleController {
         return Response.ok();
     }
 
+    @ApiOperation("启用角色")
     @PreAuthorize("#account.hasPermission('account:role:enable:post')")
     @PostMapping(Endpoints.ROLE_ENABLE)
     public Response<Void> enable(@Valid @RequestBody RoleEnableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws RoleNotExistsException {
@@ -58,6 +64,7 @@ public class RoleController {
         return Response.ok();
     }
 
+    @ApiOperation("禁用角色")
     @PreAuthorize("#account.hasPermission('account:role:disable:post')")
     @PostMapping(Endpoints.ROLE_DISABLE)
     public Response<Void> disable(@Valid @RequestBody RoleDisableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws RoleNotExistsException {

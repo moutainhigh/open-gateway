@@ -3,6 +3,8 @@ package org.open.gateway.portal.modules.gateway.controller;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.pagehelper.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.open.gateway.portal.constants.Endpoints;
 import org.open.gateway.portal.exception.gateway.AuthorizedGrantTypeInvalidException;
@@ -31,13 +33,15 @@ import java.util.stream.Collectors;
  *
  * @author MIKO
  */
-@RestController
 @AllArgsConstructor
+@Api(tags = "网关应用管理")
+@RestController
 public class GatewayAppController {
 
     private final GatewayAppService gatewayAppService;
     private final OauthClientDetailsService oauthClientDetailsService;
 
+    @ApiOperation("网关应用分页列表")
     @PreAuthorize("#account.hasPermission('gateway:app:pages:post')")
     @PostMapping(Endpoints.APP_PAGES)
     public PageResponse<List<GatewayAppPagesResponse>> pages(@Valid @RequestBody GatewayAppPagesRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
@@ -53,6 +57,7 @@ public class GatewayAppController {
         return PageResponse.data(responses).pageInfo(page).ok();
     }
 
+    @ApiOperation("新增/修改网关应用")
     @PreAuthorize("#account.hasPermission('gateway:app:save:post')")
     @PostMapping(Endpoints.APP_SAVE)
     public Response<Void> save(@Valid @RequestBody GatewayAppSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AuthorizedGrantTypeInvalidException {
@@ -91,6 +96,7 @@ public class GatewayAppController {
             response.setAuthorizedGrantTypes(oauthClientDetails.getAuthorizedGrantTypes());
             response.setScopes(oauthClientDetails.getScope());
         }
+        response.setAppCode(gatewayApp.getAppCode());
         response.setAppName(gatewayApp.getAppName());
         response.setId(gatewayApp.getId());
         response.setClientSecret(gatewayApp.getClientSecret());

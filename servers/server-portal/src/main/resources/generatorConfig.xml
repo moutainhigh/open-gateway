@@ -59,11 +59,11 @@
 			<property name="enableSubPackages" value="true"/>
 		</javaClientGenerator>
 
-		<table tableName="base_account" domainObjectName="" enableCountByExample="false"
-			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
-			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="JDBC"/>
-		</table>
+		<!--		<table tableName="base_account" domainObjectName="" enableCountByExample="false"-->
+		<!--			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
+		<!--			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">-->
+		<!--			<generatedKey column="id" sqlStatement="JDBC"/>-->
+		<!--		</table>-->
 		<table tableName="base_account_role" domainObjectName="" enableCountByExample="false"
 			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
 			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">
@@ -73,16 +73,16 @@
 		<!--					   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">-->
 		<!--					<generatedKey column="id" sqlStatement="JDBC"/>-->
 		<!--				</table>-->
-		<table tableName="base_resource" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"
-			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="true"
-			   selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="JDBC"/>
-		</table>
-		<table tableName="base_role" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"
-			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="true"
-			   selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="JDBC"/>
-		</table>
+		<!--		<table tableName="base_resource" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"-->
+		<!--			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="true"-->
+		<!--			   selectByExampleQueryId="false">-->
+		<!--			<generatedKey column="id" sqlStatement="JDBC"/>-->
+		<!--		</table>-->
+		<!--		<table tableName="base_role" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"-->
+		<!--			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="true"-->
+		<!--			   selectByExampleQueryId="false">-->
+		<!--			<generatedKey column="id" sqlStatement="JDBC"/>-->
+		<!--		</table>-->
 		<table tableName="base_role_resource" domainObjectName="" enableCountByExample="false"
 			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
 			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false"/>
@@ -91,11 +91,11 @@
 		<!--							   selectByExampleQueryId="false">-->
 		<!--							<generatedKey column="id" sqlStatement="JDBC"/>-->
 		<!--						</table>-->
-		<table tableName="gateway_app" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"
-			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="true"
-			   selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="JDBC"/>
-		</table>
+		<!--		<table tableName="gateway_app" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"-->
+		<!--			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="true"-->
+		<!--			   selectByExampleQueryId="false">-->
+		<!--			<generatedKey column="id" sqlStatement="JDBC"/>-->
+		<!--		</table>-->
 		<table tableName="gateway_app_api" domainObjectName="" enableCountByExample="false"
 			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
 			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false"/>
@@ -120,23 +120,23 @@
 		<!--					   selectByExampleQueryId="false">-->
 		<!--					<generatedKey column="id" sqlStatement="JDBC"/>-->
 		<!--				</table>-->
-		<table tableName="gateway_access_logs" domainObjectName="" enableCountByExample="false"
-			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
-			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="JDBC"/>
-			<columnOverride column="http_headers" javaType="java.lang.String" jdbcType="VARCHAR"/>
-			<columnOverride column="request_body" javaType="java.lang.String" jdbcType="VARCHAR"/>
-		</table>
+		<!--		<table tableName="gateway_access_logs" domainObjectName="" enableCountByExample="false"-->
+		<!--			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
+		<!--			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">-->
+		<!--			<generatedKey column="id" sqlStatement="JDBC"/>-->
+		<!--			<columnOverride column="http_headers" javaType="java.lang.String" jdbcType="VARCHAR"/>-->
+		<!--			<columnOverride column="request_body" javaType="java.lang.String" jdbcType="VARCHAR"/>-->
+		<!--		</table>-->
 		<!--				<table tableName="oauth_client_token" domainObjectName="" enableCountByExample="false"-->
 		<!--					   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
 		<!--					   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">-->
 		<!--					<generatedKey column="id" sqlStatement="JDBC"/>-->
 		<!--					<columnOverride column="token" javaType="java.lang.String" jdbcType="VARCHAR"/>-->
 		<!--				</table>-->
-		<table tableName="oauth_client_details" domainObjectName="" enableCountByExample="false"
-			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
-			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="JDBC"/>
-		</table>
+		<!--		<table tableName="oauth_client_details" domainObjectName="" enableCountByExample="false"-->
+		<!--			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
+		<!--			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">-->
+		<!--			<generatedKey column="id" sqlStatement="JDBC"/>-->
+		<!--		</table>-->
 	</context>
 </generatorConfiguration>

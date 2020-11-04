@@ -60,7 +60,7 @@ public class AccountController {
         return Response.data(response).ok();
     }
 
-    @ApiOperation("用户注册")
+    @ApiOperation("注册用户")
     @PostMapping(Endpoints.ACCOUNT_REGISTER)
     public Response<AccountRegisterResponse> register(@Valid @RequestBody AccountRegisterRequest request, HttpServletRequest servletRequest, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountAlreadyExistsException {
         String ip = ServletRequestUtil.getIpFromRequest(servletRequest);
@@ -72,14 +72,14 @@ public class AccountController {
         return Response.data(response).ok();
     }
 
-    @ApiOperation("用户退出")
+    @ApiOperation("退出登录")
     @PostMapping(Endpoints.ACCOUNT_LOGOUT)
     public Response<Void> logout(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
         accountService.logout(account.getAccount());
         return Response.ok();
     }
 
-    @ApiOperation("用户更新")
+    @ApiOperation("更新用户")
     @PreAuthorize("#account.hasPermission('account:update:post')")
     @PostMapping(Endpoints.ACCOUNT_UPDATE)
     public Response<Void> update(@Valid @RequestBody AccountUpdateRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException, AccountNotAvailableException {
@@ -87,7 +87,7 @@ public class AccountController {
         return Response.ok();
     }
 
-    @ApiOperation("用户启用")
+    @ApiOperation("启用用户")
     @PreAuthorize("#account.hasPermission('account:enable:post')")
     @PostMapping(Endpoints.ACCOUNT_ENABLE)
     public Response<Void> enable(@Valid @RequestBody AccountEnableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException {
@@ -95,7 +95,7 @@ public class AccountController {
         return Response.ok();
     }
 
-    @ApiOperation("用户禁用")
+    @ApiOperation("禁用用户")
     @PreAuthorize("#account.hasPermission('account:disable:post')")
     @PostMapping(Endpoints.ACCOUNT_DISABLE)
     public Response<Void> disable(@Valid @RequestBody AccountDisableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AccountNotExistsException, AccountNotAvailableException {
@@ -128,7 +128,9 @@ public class AccountController {
     private BaseAccountQuery toBaseAccountQuery(AccountPagesRequest request) {
         BaseAccountQuery query = new BaseAccountQuery();
         query.setAccount(request.getAccount());
-        query.setStatus(request.getStatus());
+        if (request.getStatus() != null) {
+            query.setStatus(Byte.valueOf(request.getStatus().toString()));
+        }
         query.setPhone(request.getPhone());
         query.setEmail(request.getEmail());
         query.setCreateTimeBegin(request.getCreateDateBegin());
@@ -156,7 +158,6 @@ public class AccountController {
         AccountRegisterResponse response = new AccountRegisterResponse();
         response.setId(accountBO.getId());
         response.setAccount(accountBO.getAccount());
-        response.setPassword(accountBO.getPassword());
         response.setRegisterIp(accountBO.getRegisterIp());
         response.setStatus(accountBO.getStatus());
         response.setPhone(accountBO.getPhone());

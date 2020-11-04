@@ -21,7 +21,7 @@ public class AccountDeleteRequest {
      * 账户
      */
     @NotBlank
-    @ApiModelProperty(notes = "账户", required = true)
+    @ApiModelProperty(notes = "账户", example = "admin", required = true)
     private String account;
 
 }

@@ -8,35 +8,29 @@ import lombok.ToString;
 import java.util.Date;
 
 /**
- * Created by miko on 10/27/20.
+ * Created by miko on 10/26/20.
  *
  * @author MIKO
  */
 @Getter
 @Setter
 @ToString
-public class AccountPagesResponse {
+public class RolePagesResponse {
 
     @ApiModelProperty(notes = "id", example = "1")
     private Integer id;
 
-    @ApiModelProperty(notes = "账户", example = "admin")
-    private String account;
+    @ApiModelProperty(notes = "角色代码", example = "R001")
+    private String roleCode;
 
-    @ApiModelProperty(notes = "注册ip", example = "114.86.161.87")
-    private String registerIp;
-
-    @ApiModelProperty(notes = "状态", example = "1", allowableValues = "0, 1")
-    private Integer status;
-
-    @ApiModelProperty(notes = "手机", example = "13323511717")
-    private String phone;
-
-    @ApiModelProperty(notes = "邮箱", example = "12345678@qq.com")
-    private String email;
+    @ApiModelProperty(notes = "角色名称", example = "系统管理员")
+    private String roleName;
 
     @ApiModelProperty(notes = "备注", example = "这个是备注")
     private String note;
+
+    @ApiModelProperty(notes = "状态", example = "1", allowableValues = "0, 1")
+    private Integer status;
 
     @ApiModelProperty(notes = "创建时间", example = "2020-11-03 09:11:30")
     private Date createTime;

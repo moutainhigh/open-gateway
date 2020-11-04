@@ -1,16 +1,15 @@
 package org.open.gateway.portal.persistence.mapper;
 
 import org.open.gateway.portal.persistence.po.BaseRoleResource;
-import org.open.gateway.portal.persistence.po.BaseRoleResourceKey;
 
 public interface BaseRoleResourceMapper {
-    int deleteByPrimaryKey(BaseRoleResourceKey key);
+    int deleteByPrimaryKey(Integer id);
 
     int insert(BaseRoleResource record);
 
     int insertSelective(BaseRoleResource record);
 
-    BaseRoleResource selectByPrimaryKey(BaseRoleResourceKey key);
+    BaseRoleResource selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(BaseRoleResource record);
 

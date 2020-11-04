@@ -124,11 +124,13 @@ public class AccountRoleServiceImpl implements AccountRoleService {
         entity.setRoleCode(baseRole.getRoleCode());
         entity.setRoleName(baseRole.getRoleName());
         entity.setNote(baseRole.getNote());
-        entity.setStatus(baseRole.getStatus());
         entity.setCreateTime(baseRole.getCreateTime());
         entity.setCreatePerson(baseRole.getCreatePerson());
         entity.setUpdateTime(baseRole.getUpdateTime());
         entity.setUpdatePerson(baseRole.getUpdatePerson());
+        if (baseRole.getStatus() != null) {
+            entity.setStatus(Integer.valueOf(baseRole.getStatus()));
+        }
         return entity;
     }
 

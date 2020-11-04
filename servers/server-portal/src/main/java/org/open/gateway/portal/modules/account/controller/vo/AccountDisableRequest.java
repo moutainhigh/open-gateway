@@ -18,7 +18,7 @@ import javax.validation.constraints.NotBlank;
 public class AccountDisableRequest {
 
     @NotBlank
-    @ApiModelProperty(notes = "账户", required = true)
+    @ApiModelProperty(notes = "账户", example = "admin", required = true)
     private String account;
 
 }

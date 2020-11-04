@@ -172,11 +172,14 @@ public class GatewayAppServiceImpl implements GatewayAppService {
     private GatewayAppBO toGatewayAppBO(GatewayApp entity) {
         GatewayAppBO result = new GatewayAppBO();
         result.setId(entity.getId());
+        result.setAppCode(entity.getAppCode());
         result.setAppName(entity.getAppName());
         result.setClientId(entity.getClientId());
         result.setClientSecret(entity.getClientSecret());
         result.setRegisterFrom(entity.getRegisterFrom());
-        result.setStatus(entity.getStatus());
+        if (entity.getStatus() != null) {
+            result.setStatus(Integer.valueOf(entity.getStatus()));
+        }
         result.setNote(entity.getNote());
         result.setCreateTime(entity.getCreateTime());
         result.setCreatePerson(entity.getCreatePerson());

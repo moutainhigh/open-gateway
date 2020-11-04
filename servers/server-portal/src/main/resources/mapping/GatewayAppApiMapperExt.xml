@@ -10,7 +10,7 @@
 		insert into gateway_app_api (<include refid="Base_Column_List"/>)
 		VALUES
 		<foreach collection="list" item="data" separator=",">
-			(#{data.appId,jdbcType=INTEGER},
+			(#{data.id,jdbcType=INTEGER} ,#{data.appId,jdbcType=INTEGER},
 			#{data.apiId,jdbcType=INTEGER},
 			#{data.createTime,jdbcType=TIMESTAMP},
 			#{data.createPerson,jdbcType=VARCHAR})

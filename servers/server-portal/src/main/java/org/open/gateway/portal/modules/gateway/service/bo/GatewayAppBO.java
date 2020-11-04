@@ -18,6 +18,8 @@ public class GatewayAppBO {
 
     private Integer id;
 
+    private String appCode;
+
     private String appName;
 
     private String clientId;
@@ -26,7 +28,7 @@ public class GatewayAppBO {
 
     private String registerFrom;
 
-    private Byte status;
+    private Integer status;
 
     private String note;
 

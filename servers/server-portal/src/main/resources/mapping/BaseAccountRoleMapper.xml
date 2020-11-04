@@ -2,36 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.open.gateway.portal.persistence.mapper.BaseAccountRoleMapperExt">
 	<resultMap id="BaseResultMap" type="org.open.gateway.portal.persistence.po.BaseAccountRole">
-		<id column="account_id" jdbcType="INTEGER" property="accountId"/>
-		<id column="role_id" jdbcType="INTEGER" property="roleId"/>
+		<id column="id" jdbcType="INTEGER" property="id"/>
+		<result column="account_id" jdbcType="INTEGER" property="accountId"/>
+		<result column="role_id" jdbcType="INTEGER" property="roleId"/>
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
 		<result column="create_person" jdbcType="VARCHAR" property="createPerson"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-    account_id, role_id, create_time, create_person
+    id, account_id, role_id, create_time, create_person
   </sql>
-	<select id="selectByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.BaseAccountRoleKey"
-			resultMap="BaseResultMap">
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List"/>
 		from base_account_role
-		where account_id = #{accountId,jdbcType=INTEGER}
-		and role_id = #{roleId,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
 	</select>
-	<delete id="deleteByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.BaseAccountRoleKey">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from base_account_role
-    where account_id = #{accountId,jdbcType=INTEGER}
-      and role_id = #{roleId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </delete>
 	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.BaseAccountRole">
-    insert into base_account_role (account_id, role_id, create_time, 
-      create_person)
-    values (#{accountId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{createPerson,jdbcType=VARCHAR})
+    insert into base_account_role (id, account_id, role_id, 
+      create_time, create_person)
+    values (#{id,jdbcType=INTEGER}, #{accountId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createPerson,jdbcType=VARCHAR})
   </insert>
 	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.BaseAccountRole">
 		insert into base_account_role
 		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
 			<if test="accountId != null">
 				account_id,
 			</if>
@@ -46,6 +47,9 @@
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
 			<if test="accountId != null">
 				#{accountId,jdbcType=INTEGER},
 			</if>
@@ -63,6 +67,12 @@
 	<update id="updateByPrimaryKeySelective" parameterType="org.open.gateway.portal.persistence.po.BaseAccountRole">
 		update base_account_role
 		<set>
+			<if test="accountId != null">
+				account_id = #{accountId,jdbcType=INTEGER},
+			</if>
+			<if test="roleId != null">
+				role_id = #{roleId,jdbcType=INTEGER},
+			</if>
 			<if test="createTime != null">
 				create_time = #{createTime,jdbcType=TIMESTAMP},
 			</if>
@@ -70,14 +80,14 @@
 				create_person = #{createPerson,jdbcType=VARCHAR},
 			</if>
 		</set>
-		where account_id = #{accountId,jdbcType=INTEGER}
-		and role_id = #{roleId,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.BaseAccountRole">
     update base_account_role
-    set create_time = #{createTime,jdbcType=TIMESTAMP},
+    set account_id = #{accountId,jdbcType=INTEGER},
+      role_id = #{roleId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
       create_person = #{createPerson,jdbcType=VARCHAR}
-    where account_id = #{accountId,jdbcType=INTEGER}
-      and role_id = #{roleId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

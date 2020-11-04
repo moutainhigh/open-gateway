@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.open.gateway.portal.persistence.mapper.OauthClientDetailsMapperExt">
 	<resultMap id="BaseResultMap" type="org.open.gateway.portal.persistence.po.OauthClientDetails">
-		<id column="client_id" jdbcType="VARCHAR" property="clientId"/>
+		<id column="id" jdbcType="INTEGER" property="id"/>
+		<result column="client_id" jdbcType="VARCHAR" property="clientId"/>
 		<result column="client_secret" jdbcType="VARCHAR" property="clientSecret"/>
 		<result column="resource_ids" jdbcType="VARCHAR" property="resourceIds"/>
 		<result column="scope" jdbcType="VARCHAR" property="scope"/>
@@ -15,21 +16,22 @@
 		<result column="autoapprove" jdbcType="VARCHAR" property="autoapprove"/>
 	</resultMap>
 	<sql id="Base_Column_List">
-    client_id, client_secret, resource_ids, scope, authorized_grant_types, web_server_redirect_uri, 
+    id, client_id, client_secret, resource_ids, scope, authorized_grant_types, web_server_redirect_uri, 
     authorities, access_token_validity, refresh_token_validity, additional_information, 
     autoapprove
   </sql>
-	<select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List"/>
 		from oauth_client_details
-		where client_id = #{clientId,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
 	</select>
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from oauth_client_details
-    where client_id = #{clientId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </delete>
-	<insert id="insert" parameterType="org.open.gateway.portal.persistence.po.OauthClientDetails">
+	<insert id="insert" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.OauthClientDetails" useGeneratedKeys="true">
     insert into oauth_client_details (client_id, client_secret, resource_ids, 
       scope, authorized_grant_types, web_server_redirect_uri, 
       authorities, access_token_validity, refresh_token_validity, 
@@ -39,7 +41,8 @@
       #{authorities,jdbcType=VARCHAR}, #{accessTokenValidity,jdbcType=INTEGER}, #{refreshTokenValidity,jdbcType=INTEGER}, 
       #{additionalInformation,jdbcType=VARCHAR}, #{autoapprove,jdbcType=VARCHAR})
   </insert>
-	<insert id="insertSelective" parameterType="org.open.gateway.portal.persistence.po.OauthClientDetails">
+	<insert id="insertSelective" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.OauthClientDetails" useGeneratedKeys="true">
 		insert into oauth_client_details
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="clientId != null">
@@ -115,6 +118,9 @@
 	<update id="updateByPrimaryKeySelective" parameterType="org.open.gateway.portal.persistence.po.OauthClientDetails">
 		update oauth_client_details
 		<set>
+			<if test="clientId != null">
+				client_id = #{clientId,jdbcType=VARCHAR},
+			</if>
 			<if test="clientSecret != null">
 				client_secret = #{clientSecret,jdbcType=VARCHAR},
 			</if>
@@ -146,11 +152,12 @@
 				autoapprove = #{autoapprove,jdbcType=VARCHAR},
 			</if>
 		</set>
-		where client_id = #{clientId,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.OauthClientDetails">
     update oauth_client_details
-    set client_secret = #{clientSecret,jdbcType=VARCHAR},
+    set client_id = #{clientId,jdbcType=VARCHAR},
+      client_secret = #{clientSecret,jdbcType=VARCHAR},
       resource_ids = #{resourceIds,jdbcType=VARCHAR},
       scope = #{scope,jdbcType=VARCHAR},
       authorized_grant_types = #{authorizedGrantTypes,jdbcType=VARCHAR},
@@ -160,6 +167,6 @@
       refresh_token_validity = #{refreshTokenValidity,jdbcType=INTEGER},
       additional_information = #{additionalInformation,jdbcType=VARCHAR},
       autoapprove = #{autoapprove,jdbcType=VARCHAR}
-    where client_id = #{clientId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -23,7 +23,7 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
 
     @Override
     public OauthClientDetailsBO queryClientDetailsByClientId(String clientId) {
-        OauthClientDetails clientDetails = oauthClientDetailsMapper.selectByPrimaryKey(clientId);
+        OauthClientDetails clientDetails = oauthClientDetailsMapper.selectByClientId(clientId);
         log.info("query oauth client details client_id:{} result:{}", clientId, clientDetails);
         if (clientDetails == null) {
             return null;

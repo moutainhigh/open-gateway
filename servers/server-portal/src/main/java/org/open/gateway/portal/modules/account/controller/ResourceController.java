@@ -1,5 +1,7 @@
 package org.open.gateway.portal.modules.account.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.portal.constants.BizConstants;
@@ -34,11 +36,13 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @AllArgsConstructor
+@Api(tags = "资源管理")
 @RestController
 public class ResourceController {
 
     private final AccountResourceService accountResourceService;
 
+    @ApiOperation("根据用户查找资源")
     @PostMapping(Endpoints.ACCOUNT_RESOURCES)
     public Response<List<ResourceTreeResponse>> accountResources(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
         List<BaseResourceBO> resources = accountResourceService.queryResourcesByAccount(account.getAccount());
@@ -46,6 +50,7 @@ public class ResourceController {
         return Response.data(responses).ok();
     }
 
+    @ApiOperation("根据角色查找资源")
     @PreAuthorize("#account.hasPermission('account:role:resources:post')")
     @PostMapping(Endpoints.ROLE_RESOURCES)
     public Response<List<ResourceTreeResponse>> roleResources(@Valid @RequestBody RoleResourcesRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws RoleNotExistsException {
@@ -54,6 +59,7 @@ public class ResourceController {
         return Response.data(responses).ok();
     }
 
+    @ApiOperation("资源列表")
     @PreAuthorize("#account.hasPermission('account:resource:list:post')")
     @PostMapping(Endpoints.RESOURCE_LIST)
     public Response<List<ResourceTreeResponse>> resourceList(@AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) {
@@ -62,6 +68,7 @@ public class ResourceController {
         return Response.data(responses).ok();
     }
 
+    @ApiOperation("新增/修改资源")
     @PreAuthorize("#account.hasPermission('account:resource:save:post')")
     @PostMapping(Endpoints.RESOURCE_SAVE)
     public Response<Void> save(@Valid @RequestBody ResourceSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws ResourceNotExistsException {
@@ -69,6 +76,7 @@ public class ResourceController {
         return Response.ok();
     }
 
+    @ApiOperation("删除资源")
     @PreAuthorize("#account.hasPermission('account:resource:delete:post')")
     @PostMapping(Endpoints.RESOURCE_DELETE)
     public Response<Void> delete(@Valid @RequestBody ResourceDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws ResourceNotExistsException {

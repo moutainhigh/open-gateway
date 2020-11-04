@@ -17,7 +17,6 @@ import java.util.List;
  */
 public class BizUtil {
 
-
     /**
      * 校验更新/插入
      *
@@ -99,12 +98,22 @@ public class BizUtil {
         return Base64.encode(Base64.encode(account + seed) + SecureUtil.des(SecureUtil.sha256().digest(password + seed)).encryptHex(account));
     }
 
+    /**
+     * 生成客户端id
+     *
+     * @return 客户端id
+     */
     public static String generateClientId() {
         return IdUtil.fastSimpleUUID();
     }
 
+    /**
+     * 生成客户端密钥
+     *
+     * @return 客户端密钥
+     */
     public static String generateClientSecret() {
-        return StringUtil.randomString(64);
+        return StringUtil.randomString(48);
     }
 
     /**

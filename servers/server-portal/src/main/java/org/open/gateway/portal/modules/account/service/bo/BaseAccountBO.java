@@ -26,7 +26,7 @@ public class BaseAccountBO {
 
     private String registerIp;
 
-    private Byte status;
+    private Integer status;
 
     private String phone;
 

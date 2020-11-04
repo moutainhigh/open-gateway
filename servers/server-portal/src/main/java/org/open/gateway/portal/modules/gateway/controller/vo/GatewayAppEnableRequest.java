@@ -1,5 +1,6 @@
 package org.open.gateway.portal.modules.gateway.controller.vo;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -20,6 +21,7 @@ public class GatewayAppEnableRequest {
      * 应用编码
      */
     @NotBlank
+    @ApiModelProperty(notes = "应用代码", example = "T00951", required = true)
     private String appCode;
 
 }

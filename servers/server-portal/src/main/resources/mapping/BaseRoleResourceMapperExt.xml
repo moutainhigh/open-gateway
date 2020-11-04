@@ -10,7 +10,7 @@
 		insert into base_role_resource (<include refid="Base_Column_List"/>)
 		VALUES
 		<foreach collection="list" item="data" separator=",">
-			(#{data.roleId,jdbcType=INTEGER},
+			(#{data.id,jdbcType=INTEGER} ,#{data.roleId,jdbcType=INTEGER},
 			#{data.resourceId,jdbcType=INTEGER},
 			#{data.createTime,jdbcType=TIMESTAMP},
 			#{data.createPerson,jdbcType=VARCHAR})

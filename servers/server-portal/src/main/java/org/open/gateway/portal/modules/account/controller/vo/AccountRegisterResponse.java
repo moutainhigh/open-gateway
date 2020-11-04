@@ -15,28 +15,25 @@ import lombok.ToString;
 @ToString
 public class AccountRegisterResponse {
 
-    @ApiModelProperty(notes = "主键")
+    @ApiModelProperty(notes = "id", example = "1")
     private Integer id;
 
-    @ApiModelProperty(notes = "账户")
+    @ApiModelProperty(notes = "账户", example = "admin")
     private String account;
 
-    @ApiModelProperty(notes = "密码")
-    private String password;
-
-    @ApiModelProperty(notes = "注册ip")
+    @ApiModelProperty(notes = "注册ip", example = "114.86.161.87")
     private String registerIp;
 
-    @ApiModelProperty(notes = "状态")
-    private Byte status;
+    @ApiModelProperty(notes = "状态", example = "1", allowableValues = "0, 1")
+    private Integer status;
 
-    @ApiModelProperty(notes = "手机")
+    @ApiModelProperty(notes = "手机", example = "13323511717")
     private String phone;
 
-    @ApiModelProperty(notes = "邮箱")
+    @ApiModelProperty(notes = "邮箱", example = "12345678@qq.com")
     private String email;
 
-    @ApiModelProperty(notes = "备注")
+    @ApiModelProperty(notes = "备注", example = "这个是备注")
     private String note;
 
 }

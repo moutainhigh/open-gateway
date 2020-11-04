@@ -72,6 +72,7 @@ public class BizUtilTest {
         System.out.println("clientId:" + clientId + " length:" + clientId.length() + " decoded:" + Base64.decodeStr(clientId));
         String clientId2 = Base64.encode(appCode);
         System.out.println("clientId2:" + clientId2 + " length:" + clientId2.length() + " decoded:" + Base64.decodeStr(clientId));
+        System.out.println(BizUtil.generateClientSecret());
 //        int length = -1;
 //        for (int i = 0; i < 10000; i++) {
 //            String appCode = StringUtil.appendBlankByLength(StringUtil.randomString(5), 8);

@@ -216,14 +216,16 @@ public class AccountServiceImpl implements AccountService {
         baseAccountBO.setPassword(baseAccount.getPassword());
         baseAccountBO.setSalt(baseAccount.getSalt());
         baseAccountBO.setRegisterIp(baseAccount.getRegisterIp());
-        baseAccountBO.setStatus(baseAccount.getStatus());
-        baseAccountBO.setPhone(baseAccount.getPhone());
-        baseAccountBO.setEmail(baseAccount.getEmail());
-        baseAccountBO.setNote(baseAccount.getNote());
+        if (baseAccount.getStatus() != null) {
+            baseAccountBO.setStatus(Integer.valueOf(baseAccount.getStatus()));
+        }
         baseAccountBO.setCreateTime(baseAccount.getCreateTime());
         baseAccountBO.setCreatePerson(baseAccount.getCreatePerson());
         baseAccountBO.setUpdateTime(baseAccount.getUpdateTime());
         baseAccountBO.setUpdatePerson(baseAccount.getUpdatePerson());
+        baseAccountBO.setPhone(baseAccount.getPhone());
+        baseAccountBO.setEmail(baseAccount.getEmail());
+        baseAccountBO.setNote(baseAccount.getNote());
         return baseAccountBO;
     }
 
