@@ -26,7 +26,7 @@ public class ResourceTreeResponse implements Comparable<ResourceTreeResponse> {
     @ApiModelProperty(notes = "资源名称", example = "10")
     private String resourceName;
 
-    @ApiModelProperty(notes = "资源类型", example = "D", allowableValues = "D, M, B")
+    @ApiModelProperty(notes = "资源类型(D目录，M菜单，B按钮)", example = "D", allowableValues = "D, M, B")
     private String resourceType;
 
     @ApiModelProperty(notes = "父资源代码", example = "1")

@@ -32,7 +32,7 @@ public class ResourceSaveRequest {
             BizConstants.RESOURCE_TYPE.MENU,
             BizConstants.RESOURCE_TYPE.BUTTON
     })
-    @ApiModelProperty(notes = "资源类型", example = "D", required = true, allowableValues = "D, M, B")
+    @ApiModelProperty(notes = "资源类型(D目录，M菜单，B按钮)", example = "D", required = true, allowableValues = "D, M, B")
     private String resourceType;
 
     @ApiModelProperty(notes = "父资源代码", example = "10")

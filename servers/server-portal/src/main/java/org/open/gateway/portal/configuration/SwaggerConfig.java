@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 public class SwaggerConfig {
 
     private final ServerProperties serverProperties;
+    private final PortalSecurityProperties securityProperties;
 
     @Bean
     public Docket docket() {
@@ -67,13 +68,14 @@ public class SwaggerConfig {
     }
 
     private List<SecurityContext> getSecurityContexts() {
-        Set<String> whiteList = Stream.of(SecurityConfig.AUTH_WHITELIST)
+        Set<String> whitePaths = Stream.of(securityProperties.getPermitAll())
                 .map(url -> serverProperties.getServlet().getContextPath() + url)
                 .collect(Collectors.toSet());
+
         return Arrays.asList(
                 new SecurityContextBuilder()
                         .securityReferences(defaultAuth())
-                        .operationSelector(oc -> !whiteList.contains(oc.requestMappingPattern()))
+                        .operationSelector(oc -> !whitePaths.contains(oc.requestMappingPattern()))
                         .build()
         );
     }
