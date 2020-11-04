@@ -67,6 +67,7 @@ public class GatewayAppController {
         return Response.ok();
     }
 
+    @ApiOperation("启用网关应用")
     @PreAuthorize("#account.hasPermission('gateway:app:enable:post')")
     @PostMapping(Endpoints.APP_ENABLE)
     public Response<Void> enable(@Valid @RequestBody GatewayAppEnableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws GatewayAppNotExistsException {
@@ -74,6 +75,7 @@ public class GatewayAppController {
         return Response.ok();
     }
 
+    @ApiOperation("禁用网关应用")
     @PreAuthorize("#account.hasPermission('gateway:app:disable:post')")
     @PostMapping(Endpoints.APP_DISABLE)
     public Response<Void> disable(@Valid @RequestBody GatewayAppDisableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws GatewayAppNotExistsException {
@@ -81,6 +83,7 @@ public class GatewayAppController {
         return Response.ok();
     }
 
+    @ApiOperation("删除网关应用")
     @PreAuthorize("#account.hasPermission('gateway:app:delete:post')")
     @PostMapping(Endpoints.APP_DELETE)
     public Response<Void> delete(@Valid @RequestBody GatewayAppDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws GatewayAppNotExistsException {
