@@ -12,7 +12,6 @@ import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -65,26 +64,7 @@ public class GatewayExceptionHandler extends DefaultErrorWebExceptionHandler {
         }
         return ServerResponse.status(status)
                 .contentType(MediaType.TEXT_PLAIN)
-                .body(BodyInserters.fromValue(Optional.ofNullable(message)));
-    }
-
-    private HttpStatus determineHttpStatus(Throwable throwable) {
-        if (throwable instanceof ResponseStatusException) {
-            return ((ResponseStatusException) throwable).getStatus();
-        }
-        if (throwable instanceof ConnectTimeoutException) {
-            return HttpStatus.SERVICE_UNAVAILABLE;
-        }
-        MergedAnnotation<ResponseStatus> responseStatusAnnotation = MergedAnnotations.from(throwable.getClass(), MergedAnnotations.SearchStrategy.TYPE_HIERARCHY).get(ResponseStatus.class);
-        return responseStatusAnnotation.getValue("code", HttpStatus.class)
-                .orElse(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    private String determineMessage(Throwable error) {
-        if (error instanceof BindingResult) {
-            return error.getMessage();
-        }
-        return null;
+                .body(BodyInserters.fromValue(Optional.ofNullable(message).orElse(status.getReasonPhrase())));
     }
 
     @Override
