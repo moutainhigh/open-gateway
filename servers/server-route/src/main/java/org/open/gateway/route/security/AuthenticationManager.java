@@ -15,7 +15,7 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
         // 直接认证通过
-        authentication.setAuthenticated(authentication.getPrincipal() != null);
+        authentication.setAuthenticated(authentication.getPrincipal() != null && authentication instanceof AuthenticationToken);
         return Mono.just(authentication);
     }
 

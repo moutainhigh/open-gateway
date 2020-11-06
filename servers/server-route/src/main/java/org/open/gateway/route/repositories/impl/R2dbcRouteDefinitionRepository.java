@@ -23,7 +23,7 @@ public class R2dbcRouteDefinitionRepository extends AbstractRouteDefinitionRepos
 
     @Override
     protected Flux<GatewayRouteDefinition> getRefreshableRouteDefinitions(Set<String> apiCodes) {
-        return this.databaseClient.execute(SQLS.QUERY_API_ROUTE_DEFINITIONS.andIn("ga.api_code", apiCodes).format())
+        return this.databaseClient.execute(SQLS.QUERY_API_ROUTE_DEFINITIONS.whereIn("ga.api_code", apiCodes).format())
                 .map(this::rowToGatewayRouteDefinition)
                 .all()
                 .flatMap(routeDefinition ->
@@ -46,7 +46,7 @@ public class R2dbcRouteDefinitionRepository extends AbstractRouteDefinitionRepos
         routeDefinition.setRouteType(row.get("route_type", Integer.class));
         routeDefinition.setUrl(row.get("url", String.class));
         routeDefinition.setStripPrefix(row.get("strip_prefix", Integer.class));
-        routeDefinition.setRetryable(row.get("retryable", Integer.class));
+        routeDefinition.setRetryTimes(row.get("retry_times", Integer.class));
         routeDefinition.setAuth(Objects.requireNonNull(row.get("is_auth", Integer.class)) == 1);
         routeDefinition.setOpen(Objects.requireNonNull(row.get("is_open", Integer.class)) == 1);
         return routeDefinition;

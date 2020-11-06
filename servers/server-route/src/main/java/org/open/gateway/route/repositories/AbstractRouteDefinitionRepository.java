@@ -15,6 +15,7 @@ import org.springframework.cloud.gateway.support.NameUtils;
 import org.springframework.cloud.gateway.support.NotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.http.HttpMethod;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -140,23 +141,29 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
     protected RouteDefinition toRouteDefinition(GatewayRouteDefinition route) {
         // 校验路由信息
         checkRouteInfo(route);
-        // 服务地址
-        URI uri = UriComponentsBuilder.fromUriString(route.getUrl()).build().toUri();
-        // 路由转发配置
-        PredicateDefinition predicatePath = getPathPredicateDefinition(route);
         // 过滤器
         List<FilterDefinition> filters = new ArrayList<>();
-        // 转发时忽略前缀过滤器
-        filters.add(getStripPrefixFilterDefinition(route));
+        // 前缀过滤器
+        if (route.getStripPrefix() != null && route.getStripPrefix() > 0) {
+            filters.add(getStripPrefixFilterDefinition(route));
+        }
+        // 重试过滤器
+        if (route.getRetryTimes() != null && route.getRetryTimes() > 0) {
+            filters.add(getRetryFilterDefinition(route));
+        }
         // 限流过滤器
         if (route.getRateLimit() != null) {
             filters.add(getRateLimitFilterDefinition(route.getRateLimit()));
         }
+        // 路由转发配置
+        PredicateDefinition pathPredicate = getPathPredicateDefinition(route);
+        // 服务地址
+        URI uri = UriComponentsBuilder.fromUriString(route.getUrl()).build().toUri();
         // 路由配置
         RouteDefinition definition = new RouteDefinition();
         definition.setId(UrlUtil.appendUrlPath(route.getRoutePath(), route.getApiPath()));
         definition.setUri(uri);
-        definition.setPredicates(Arrays.asList(predicatePath));
+        definition.setPredicates(Arrays.asList(pathPredicate));
         definition.setFilters(filters);
         setMetadata(definition, route);
         return definition;
@@ -183,14 +190,14 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
      */
     private PredicateDefinition getPathPredicateDefinition(GatewayRouteDefinition route) {
         String path = UrlUtil.appendUrlPath(route.getRoutePath(), route.getApiPath());
-        PredicateDefinition predicatePath = new PredicateDefinition();
-        Map<String, String> predicatePathParams = new HashMap<>(3);
-        predicatePathParams.put("name", route.getApiCode());
-        predicatePathParams.put("pattern", path);
-        predicatePathParams.put("pathPattern", path);
-        predicatePath.setArgs(predicatePathParams);
-        predicatePath.setName("Path");
-        return predicatePath;
+        PredicateDefinition definition = new PredicateDefinition();
+        Map<String, String> params = new HashMap<>(4);
+        params.put("name", route.getApiCode());
+        params.put("pattern", path);
+        params.put("pathPattern", path);
+        definition.setArgs(params);
+        definition.setName("Path");
+        return definition;
     }
 
     /**
@@ -200,12 +207,28 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
      * @return 前缀过滤器
      */
     private FilterDefinition getStripPrefixFilterDefinition(GatewayRouteDefinition route) {
-        FilterDefinition stripPrefixDefinition = new FilterDefinition();
-        Map<String, String> stripPrefixParams = new HashMap<>(1);
-        stripPrefixParams.put(NameUtils.generateName(0), getStripPrefix(route));
-        stripPrefixDefinition.setArgs(stripPrefixParams);
-        stripPrefixDefinition.setName("StripPrefix");
-        return stripPrefixDefinition;
+        FilterDefinition definition = new FilterDefinition("StripPrefix");
+        Map<String, String> params = new HashMap<>(2);
+        params.put(NameUtils.generateName(0), getStripPrefix(route));
+        definition.setArgs(params);
+        return definition;
+    }
+
+    /**
+     * 获取重试过滤器
+     *
+     * @param route 路由配置
+     * @return 重试过滤器
+     */
+    private FilterDefinition getRetryFilterDefinition(GatewayRouteDefinition route) {
+        FilterDefinition definition = new FilterDefinition("Retry");
+        Map<String, String> params = new HashMap<>(4);
+        // 重试次数
+        params.put("retries", String.valueOf(route.getRetryTimes()));
+        // 重试的http请求方式
+        params.put("methods", HttpMethod.GET.name() + "," + HttpMethod.POST.name());
+        definition.setArgs(params);
+        return definition;
     }
 
     /**
@@ -222,19 +245,18 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
         // 令牌桶的容量
         long burstCapacity = requestedTokens * rateLimit.getMaxLimitQuota();
         // 限流
-        FilterDefinition rateLimiterDefinition = new FilterDefinition();
-        Map<String, String> rateLimiterParams = new HashMap<>(8);
-        rateLimiterDefinition.setName("RequestRateLimiter");
+        FilterDefinition definition = new FilterDefinition("RequestRateLimiter");
+        Map<String, String> params = new HashMap<>(8);
         // 令牌桶流速
-        rateLimiterParams.put("redis-rate-limiter.replenishRate", String.valueOf(replenishRate));
+        params.put("redis-rate-limiter.replenishRate", String.valueOf(replenishRate));
         // 令牌桶容量
-        rateLimiterParams.put("redis-rate-limiter.burstCapacity", String.valueOf(burstCapacity));
+        params.put("redis-rate-limiter.burstCapacity", String.valueOf(burstCapacity));
         // 请求耗费的令牌数量
-        rateLimiterParams.put("redis-rate-limiter.requestedTokens", String.valueOf(requestedTokens));
+        params.put("redis-rate-limiter.requestedTokens", String.valueOf(requestedTokens));
         // 限流策略(#{@BeanName})
-        rateLimiterParams.put("key-resolver", getKeyResolver(rateLimit.getPolicyType()));
-        rateLimiterDefinition.setArgs(rateLimiterParams);
-        return rateLimiterDefinition;
+        params.put("key-resolver", getKeyResolver(rateLimit.getPolicyType()));
+        definition.setArgs(params);
+        return definition;
     }
 
     /**
@@ -280,11 +302,7 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
      * @return 忽略前缀的个数
      */
     private String getStripPrefix(GatewayRouteDefinition route) {
-        if (route.getStripPrefix() != null) {
-            return route.getStripPrefix().toString();
-        } else {
-            return "1";
-        }
+        return String.valueOf(route.getStripPrefix());
     }
 
     /**

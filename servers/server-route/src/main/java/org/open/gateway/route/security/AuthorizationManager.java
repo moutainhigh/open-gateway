@@ -4,13 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.common.utils.CollectionUtil;
 import org.open.gateway.common.utils.UrlUtil;
 import org.open.gateway.route.entity.token.TokenUser;
+import org.open.gateway.route.exception.InvalidClientIdException;
+import org.open.gateway.route.exception.RouteNotFoundException;
 import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
 import org.open.gateway.route.utils.RouteDefinitionUtil;
 import org.open.gateway.route.utils.WebExchangeUtil;
 import org.springframework.cloud.gateway.route.RouteDefinition;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.core.Authentication;
@@ -60,10 +61,7 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
     public Mono<AuthorizationDecision> check(Mono<Authentication> authentication, AuthorizationContext authorizationContext) {
         return authentication
                 .filter(Authentication::isAuthenticated)
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new AccessDeniedException("Access Denied invalid token"))))
                 .map(Authentication::getPrincipal)
-                .filter(principal -> principal instanceof TokenUser)
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new AccessDeniedException("Access Denied invalid principal"))))
                 .cast(TokenUser.class)
                 .flatMap(user -> checkClientResourceAuthorities(authorizationContext.getExchange(), user))
                 .map(AuthorizationDecision::new);
@@ -103,7 +101,7 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         // 获取接口资源
         Mono<RouteDefinition> routeDefinition = resourceRepository.loadRouteDefinition(path);
         return routeDefinition
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new AccessDeniedException("Access Denied invalid path:" + path))))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new RouteNotFoundException("Request path not found: " + path))))
                 .flatMap(r -> Flux.merge(
                         // 匹配黑白名单
                         matchIpLimit(r, ipAddress),
@@ -142,7 +140,7 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         }
         return this.clientResourcesRepository
                 .loadResourcesByClientId(clientId)
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new AccessDeniedException("Access Denied invalid client_id:" + clientId))))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new InvalidClientIdException())))
                 .map(resources -> resources.contains(routeDefinition.getId()));
     }
 

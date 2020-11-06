@@ -16,26 +16,28 @@ public interface SQLS {
             "select t.client_id, t.client_secret, o.scope, o.web_server_redirect_uri, o.access_token_validity, o.refresh_token_validity, o.authorized_grant_types, o.autoapprove, o.authorities " +
                     "from gateway_app t " +
                     "inner join oauth_client_details o on t.client_id = o.client_id " +
-                    "where t.status = 1 and t.client_id = '%s'"
+                    "where t.status = 1 and t.client_id = '%s' "
     );
 
     /**
-     * 根据客户端id加载客户端信息
+     * 根据客户端id加载客户端token
      */
     Sql QUERY_CLIENT_TOKEN_BY_ID = new Sql(
             "select o.id, o.token, o.expire_time " +
                     "from gateway_app t " +
                     "inner join oauth_client_token o on t.client_id = o.client_id " +
-                    "where t.status = 1 and t.client_id = '%s' and o.expire_time > NOW()"
+                    "where t.status = 1 and t.client_id = '%s' and o.expire_time > now() " +
+                    "order by o.expire_time desc limit 1 "
     );
 
     /**
      * 查询所有路由信息
      */
     Sql QUERY_API_ROUTE_DEFINITIONS = new Sql(
-            "select ga.id as api_id, ga.api_code, ga.api_path, gr.route_code, gr.route_path, gr.route_type, gr.url, gr.strip_prefix, gr.retryable, ga.is_auth, ga.is_open " +
+            "select ga.id as api_id, ga.api_code, ga.api_path, gr.route_code, gr.route_path, gr.route_type, gr.url, gr.strip_prefix, gr.retry_times, ga.is_auth, ga.is_open " +
                     "from gateway_route gr " +
-                    "inner join gateway_api ga on gr.route_code = ga.route_code "
+                    "inner join gateway_api ga on gr.route_code = ga.route_code " +
+                    "where gr.status = 1 and ga.status = 1 "
     );
 
     /**
@@ -45,7 +47,7 @@ public interface SQLS {
             "select grl.id, grl.limit_quota, grl.max_limit_quota, grl.interval_unit, grl.policy_type " +
                     "from gateway_rate_limit grl " +
                     "inner join gateway_rate_limit_api grla on grl.id = grla.policy_id " +
-                    "where grla.api_id = %s"
+                    "where grl.status = 1 and grla.api_id = %s "
     );
 
     /**
@@ -56,7 +58,8 @@ public interface SQLS {
                     "from gateway_route gr " +
                     "inner join gateway_api ga on gr.route_code = ga.route_code " +
                     "inner join gateway_app_api gaa on gaa.api_id  = ga.id " +
-                    "inner join gateway_app gp on gp.id = gaa.app_id "
+                    "inner join gateway_app gp on gp.id = gaa.app_id " +
+                    "where gr.status = 1 and ga.status = 1 and gp.status = 1 "
     );
 
     /**
@@ -67,7 +70,7 @@ public interface SQLS {
                     "from gateway_ip_limit gil " +
                     "inner join gateway_ip_limit_api gila on gil.id = gila.policy_id " +
                     "inner join gateway_api ga on ga.id = gila.api_id " +
-                    "where gil.status = 1"
+                    "where gil.status = 1 and ga.status = 1 "
     );
 
 }

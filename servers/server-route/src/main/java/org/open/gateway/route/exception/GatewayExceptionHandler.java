@@ -12,7 +12,6 @@ import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -20,6 +19,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 /**
  * Created by miko on 2020/7/9.
@@ -33,7 +34,7 @@ import reactor.core.publisher.Mono;
 public class GatewayExceptionHandler extends DefaultErrorWebExceptionHandler {
 
     /**
-     * Create a new {@code DefaultErrorWebExceptionHandler} instance.
+     * Create a new {@code GatewayExceptionHandler} instance.
      *
      * @param errorAttributes    the error attributes
      * @param resourceProperties the resources configuration properties
@@ -47,38 +48,43 @@ public class GatewayExceptionHandler extends DefaultErrorWebExceptionHandler {
     @Override
     protected Mono<ServerResponse> renderErrorResponse(ServerRequest request) {
         Throwable throwable = getError(request);
-        MergedAnnotation<ResponseStatus> responseStatusAnnotation = MergedAnnotations.from(throwable.getClass(), MergedAnnotations.SearchStrategy.TYPE_HIERARCHY).get(ResponseStatus.class);
-        return ServerResponse.status(determineHttpStatus(throwable, responseStatusAnnotation))
+        HttpStatus status;
+        String message;
+        if (throwable instanceof ResponseStatusException) {
+            status = ((ResponseStatusException) throwable).getStatus();
+            message = ((ResponseStatusException) throwable).getReason();
+        } else if (throwable instanceof ConnectTimeoutException) {
+            status = HttpStatus.SERVICE_UNAVAILABLE;
+            message = HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase();
+        } else {
+            MergedAnnotation<ResponseStatus> responseStatusAnnotation = MergedAnnotations.from(throwable.getClass(), MergedAnnotations.SearchStrategy.TYPE_HIERARCHY).get(ResponseStatus.class);
+            status = responseStatusAnnotation.getValue("code", HttpStatus.class)
+                    .orElse(HttpStatus.INTERNAL_SERVER_ERROR);
+            message = responseStatusAnnotation.getValue("reason", String.class)
+                    .orElse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+        }
+        return ServerResponse.status(status)
                 .contentType(MediaType.TEXT_PLAIN)
-                .body(BodyInserters.fromValue(determineMessage(throwable, responseStatusAnnotation)));
+                .body(BodyInserters.fromValue(Optional.ofNullable(message)));
     }
 
-    private HttpStatus determineHttpStatus(Throwable error, MergedAnnotation<ResponseStatus> responseStatusAnnotation) {
-        if (error instanceof ResponseStatusException) {
-            return ((ResponseStatusException) error).getStatus();
+    private HttpStatus determineHttpStatus(Throwable throwable) {
+        if (throwable instanceof ResponseStatusException) {
+            return ((ResponseStatusException) throwable).getStatus();
         }
-        if (error instanceof ConnectTimeoutException) {
-            return HttpStatus.GATEWAY_TIMEOUT;
+        if (throwable instanceof ConnectTimeoutException) {
+            return HttpStatus.SERVICE_UNAVAILABLE;
         }
+        MergedAnnotation<ResponseStatus> responseStatusAnnotation = MergedAnnotations.from(throwable.getClass(), MergedAnnotations.SearchStrategy.TYPE_HIERARCHY).get(ResponseStatus.class);
         return responseStatusAnnotation.getValue("code", HttpStatus.class)
-                .orElse(HttpStatus.SERVICE_UNAVAILABLE);
+                .orElse(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private String determineMessage(Throwable error, MergedAnnotation<ResponseStatus> responseStatusAnnotation) {
+    private String determineMessage(Throwable error) {
         if (error instanceof BindingResult) {
             return error.getMessage();
         }
-        if (error instanceof ResponseStatusException) {
-            return ((ResponseStatusException) error).getReason();
-        }
-        String reason = responseStatusAnnotation.getValue("reason", String.class).orElse("");
-        if (StringUtils.hasText(reason)) {
-            return reason;
-        }
-        if (error instanceof ConnectTimeoutException) {
-            return HttpStatus.GATEWAY_TIMEOUT.getReasonPhrase();
-        }
-        return HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase();
+        return null;
     }
 
     @Override

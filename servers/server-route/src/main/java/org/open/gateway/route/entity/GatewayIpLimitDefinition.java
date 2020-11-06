@@ -46,7 +46,7 @@ public class GatewayIpLimitDefinition {
             if (GatewayConstants.IpLimitPolicy.POLICY_TYPE_WHITE.equals(ipLimit.policyType)) {
                 for (String ipAddress : ipLimit.ipAddresses) {
                     try {
-                        blackIps.add(InetAddress.getByName(ipAddress).getHostAddress());
+                        whiteIps.add(InetAddress.getByName(ipAddress).getHostAddress());
                     } catch (UnknownHostException e) {
                         log.error("Invalid ip limit address:" + ipAddress, e);
                     }
@@ -63,14 +63,15 @@ public class GatewayIpLimitDefinition {
      * @param ip ip地址
      * @return true允许，false不允许
      */
-    @SuppressWarnings("RedundantIfStatement")
     public boolean isAccessAllowed(String ip) {
         // 黑名单校验
         if (!CollectionUtils.isEmpty(this.blackMatcher.getRequiredIps()) && this.blackMatcher.matches(ip)) {
+            log.info("Ip:{} in black list", ip);
             return false;
         }
         // 白名单校验
-        if (!CollectionUtils.isEmpty(this.whiteMatcher.getRequiredIps()) && this.whiteMatcher.matches(ip)) {
+        if (!CollectionUtils.isEmpty(this.whiteMatcher.getRequiredIps()) && !this.whiteMatcher.matches(ip)) {
+            log.info("Ip:{} not in white list", ip);
             return false;
         }
         return true;

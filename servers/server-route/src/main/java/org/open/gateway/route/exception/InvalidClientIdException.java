@@ -5,14 +5,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Created by miko on 2020/7/9.
- * 未找到客户端id
+ * 无效的客户端id
  *
  * @author MIKO
  */
-public class ClientNotFoundException extends ResponseStatusException {
+public class InvalidClientIdException extends ResponseStatusException {
 
-    public ClientNotFoundException() {
-        super(HttpStatus.UNAUTHORIZED, "Client not found");
+    public InvalidClientIdException() {
+        super(HttpStatus.BAD_REQUEST, "Invalid client id");
     }
 
 }

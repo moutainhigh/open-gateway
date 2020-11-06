@@ -62,7 +62,7 @@ public class GatewayRouteDefinition implements Serializable {
     /**
      * 失败重试 1重试，0不重试
      */
-    private Integer retryable;
+    private Integer retryTimes;
 
     /**
      * 限流信息

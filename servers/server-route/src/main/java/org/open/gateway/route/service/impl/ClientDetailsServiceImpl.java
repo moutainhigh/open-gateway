@@ -4,7 +4,7 @@ import io.r2dbc.spi.Row;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.common.utils.CollectionUtil;
-import org.open.gateway.route.exception.ClientNotFoundException;
+import org.open.gateway.route.exception.InvalidClientIdException;
 import org.open.gateway.route.repositories.impl.SQLS;
 import org.open.gateway.route.service.ClientDetailsService;
 import org.open.gateway.route.service.bo.BaseClientDetails;
@@ -35,7 +35,7 @@ public class ClientDetailsServiceImpl implements ClientDetailsService {
         return databaseClient.execute(SQLS.QUERY_CLIENT_BY_ID.format(clientId))
                 .map(this::rowToBaseClientDetails)
                 .one()
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new ClientNotFoundException())));
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new InvalidClientIdException())));
     }
 
     private ClientDetails rowToBaseClientDetails(Row row) {

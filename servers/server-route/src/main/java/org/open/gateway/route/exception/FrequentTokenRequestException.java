@@ -12,6 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 public class FrequentTokenRequestException extends ResponseStatusException {
 
     public FrequentTokenRequestException() {
-        super(HttpStatus.FORBIDDEN, "It is not allowed to apply for token at the same time.");
+        super(HttpStatus.TOO_MANY_REQUESTS, "It is not allowed to apply for token at the same time.");
     }
 }

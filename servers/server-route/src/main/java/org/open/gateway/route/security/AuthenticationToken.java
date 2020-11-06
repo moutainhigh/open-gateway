@@ -26,7 +26,7 @@ public class AuthenticationToken implements Authentication {
     private final TokenUser principal;
 
     public AuthenticationToken(TokenUser tokenUser) {
-        this.principal = Objects.requireNonNull(tokenUser, "token user is required.");
+        this.principal = Objects.requireNonNull(tokenUser, "Token user is required.");
     }
 
     @Override
