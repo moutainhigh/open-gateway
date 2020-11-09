@@ -64,10 +64,10 @@
 		<!--			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">-->
 		<!--			<generatedKey column="id" sqlStatement="JDBC"/>-->
 		<!--		</table>-->
-		<table tableName="base_account_role" domainObjectName="" enableCountByExample="false"
-			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
-			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">
-		</table>
+		<!--		<table tableName="base_account_role" domainObjectName="" enableCountByExample="false"-->
+		<!--			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
+		<!--			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">-->
+		<!--		</table>-->
 		<!--				<table tableName="base_operation_logs" domainObjectName="" enableCountByExample="false"-->
 		<!--					   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
 		<!--					   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">-->
@@ -83,22 +83,27 @@
 		<!--			   selectByExampleQueryId="false">-->
 		<!--			<generatedKey column="id" sqlStatement="JDBC"/>-->
 		<!--		</table>-->
-		<table tableName="base_role_resource" domainObjectName="" enableCountByExample="false"
-			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
-			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false"/>
-		<!--						<table tableName="gateway_api" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"-->
-		<!--							   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="true"-->
-		<!--							   selectByExampleQueryId="false">-->
-		<!--							<generatedKey column="id" sqlStatement="JDBC"/>-->
-		<!--						</table>-->
+		<!--		<table tableName="base_role_resource" domainObjectName="" enableCountByExample="false"-->
+		<!--			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
+		<!--			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false"/>-->
+		<!--		<table tableName="gateway_api" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"-->
+		<!--			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="true"-->
+		<!--			   selectByExampleQueryId="false">-->
+		<!--			<generatedKey column="id" sqlStatement="JDBC"/>-->
+		<!--		</table>-->
+		<table tableName="gateway_group" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"
+			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="true"
+			   selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="JDBC"/>
+		</table>
 		<!--		<table tableName="gateway_app" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"-->
 		<!--			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="true"-->
 		<!--			   selectByExampleQueryId="false">-->
 		<!--			<generatedKey column="id" sqlStatement="JDBC"/>-->
 		<!--		</table>-->
-		<table tableName="gateway_app_api" domainObjectName="" enableCountByExample="false"
-			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
-			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false"/>
+		<!--		<table tableName="gateway_app_api" domainObjectName="" enableCountByExample="false"-->
+		<!--			   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
+		<!--			   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false"/>-->
 		<!--				<table tableName="gateway_ip_limit" domainObjectName="" enableCountByExample="false"-->
 		<!--					   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
 		<!--					   enableDeleteByPrimaryKey="true" selectByExampleQueryId="false">-->

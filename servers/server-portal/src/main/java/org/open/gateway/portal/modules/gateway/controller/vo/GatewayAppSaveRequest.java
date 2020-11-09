@@ -66,8 +66,14 @@ public class GatewayAppSaveRequest {
     /**
      * 认证授权方式
      */
-    @ApiModelProperty(notes = "认证方式", example = "[client_credentials]", allowableValues = "[client_credentials]")
+    @ApiModelProperty(notes = "认证方式", example = "[client_credentials]", allowableValues = "client_credentials")
     private Set<String> authorizedGrantTypes;
+
+    /**
+     * 接口分组id集合
+     */
+    @ApiModelProperty(notes = "接口分组id集合", example = "[1,2]")
+    private Set<Integer> groupIds;
 
     /**
      * 接口id集合

@@ -45,13 +45,15 @@ public interface GatewayAppService {
      * @param accessTokenValidity  token持续时间
      * @param webServerRedirectUri 回调地址
      * @param authorizedGrantTypes 授权类型
+     * @param groupIds             分组id集合
      * @param apiIds               接口id集合
      * @param operator             操作人
      * @throws AuthorizedGrantTypeInvalidException 无效的授权类型
      */
     void save(String appCode, String appName, String note,
               String registerFrom, int accessTokenValidity, String webServerRedirectUri,
-              Set<String> authorizedGrantTypes, Set<Integer> apiIds, String operator) throws AuthorizedGrantTypeInvalidException;
+              Set<String> authorizedGrantTypes, Set<Integer> groupIds, Set<Integer> apiIds,
+              String operator) throws AuthorizedGrantTypeInvalidException;
 
     /**
      * 启用应用

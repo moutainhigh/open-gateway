@@ -21,7 +21,7 @@ public interface GatewayService {
      *
      * @param clientIds 客户端id
      */
-    void refreshResources(Set<String> clientIds);
+    void refreshClientToken(Set<String> clientIds);
 
     /**
      * 刷新黑白名单

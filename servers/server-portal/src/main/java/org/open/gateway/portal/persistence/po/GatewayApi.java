@@ -13,15 +13,13 @@ public class GatewayApi {
 
     private String routeCode;
 
-    private Integer classificationId;
-
     private Byte isAuth;
 
-    private Byte isOpen;
+    private Byte retryTimes;
 
     private Byte status;
 
-    private String desc;
+    private String note;
 
     private Date createTime;
 
@@ -30,8 +28,6 @@ public class GatewayApi {
     private Date updateTime;
 
     private String updatePerson;
-
-    private Byte isDel;
 
     public Integer getId() {
         return id;
@@ -73,14 +69,6 @@ public class GatewayApi {
         this.routeCode = routeCode == null ? null : routeCode.trim();
     }
 
-    public Integer getClassificationId() {
-        return classificationId;
-    }
-
-    public void setClassificationId(Integer classificationId) {
-        this.classificationId = classificationId;
-    }
-
     public Byte getIsAuth() {
         return isAuth;
     }
@@ -89,12 +77,12 @@ public class GatewayApi {
         this.isAuth = isAuth;
     }
 
-    public Byte getIsOpen() {
-        return isOpen;
+    public Byte getRetryTimes() {
+        return retryTimes;
     }
 
-    public void setIsOpen(Byte isOpen) {
-        this.isOpen = isOpen;
+    public void setRetryTimes(Byte retryTimes) {
+        this.retryTimes = retryTimes;
     }
 
     public Byte getStatus() {
@@ -105,12 +93,12 @@ public class GatewayApi {
         this.status = status;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getNote() {
+        return note;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc == null ? null : desc.trim();
+    public void setNote(String note) {
+        this.note = note == null ? null : note.trim();
     }
 
     public Date getCreateTime() {
@@ -143,13 +131,5 @@ public class GatewayApi {
 
     public void setUpdatePerson(String updatePerson) {
         this.updatePerson = updatePerson == null ? null : updatePerson.trim();
-    }
-
-    public Byte getIsDel() {
-        return isDel;
-    }
-
-    public void setIsDel(Byte isDel) {
-        this.isDel = isDel;
     }
 }

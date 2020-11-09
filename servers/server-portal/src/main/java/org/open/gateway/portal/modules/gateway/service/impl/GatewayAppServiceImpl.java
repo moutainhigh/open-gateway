@@ -3,24 +3,26 @@ package org.open.gateway.portal.modules.gateway.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.base.constants.OAuth2Constants;
+import org.open.gateway.common.utils.CollectionUtil;
 import org.open.gateway.portal.constants.BizConstants;
 import org.open.gateway.portal.exception.gateway.AuthorizedGrantTypeInvalidException;
 import org.open.gateway.portal.exception.gateway.GatewayAppNotExistsException;
 import org.open.gateway.portal.modules.gateway.service.GatewayAppService;
+import org.open.gateway.portal.modules.gateway.service.GatewayService;
 import org.open.gateway.portal.modules.gateway.service.bo.GatewayAppBO;
 import org.open.gateway.portal.modules.gateway.service.bo.GatewayAppQuery;
-import org.open.gateway.portal.persistence.mapper.GatewayAppApiMapperExt;
+import org.open.gateway.portal.persistence.mapper.GatewayApiMapperExt;
 import org.open.gateway.portal.persistence.mapper.GatewayAppMapperExt;
+import org.open.gateway.portal.persistence.mapper.GatewayGroupMapperExt;
 import org.open.gateway.portal.persistence.mapper.OauthClientDetailsMapperExt;
-import org.open.gateway.portal.persistence.po.GatewayApp;
-import org.open.gateway.portal.persistence.po.GatewayAppApi;
-import org.open.gateway.portal.persistence.po.OauthClientDetails;
+import org.open.gateway.portal.persistence.po.*;
 import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,8 +37,10 @@ import java.util.stream.Collectors;
 public class GatewayAppServiceImpl implements GatewayAppService {
 
     private final GatewayAppMapperExt gatewayAppMapper;
-    private final GatewayAppApiMapperExt gatewayAppApiMapper;
+    private final GatewayApiMapperExt gatewayApiMapper;
+    private final GatewayGroupMapperExt gatewayGroupMapper;
     private final OauthClientDetailsMapperExt oauthClientDetailsMapper;
+    private final GatewayService gatewayService;
 
     @Override
     public List<GatewayAppBO> queryGatewayApps(GatewayAppQuery query) {
@@ -59,7 +63,10 @@ public class GatewayAppServiceImpl implements GatewayAppService {
 
     @Transactional
     @Override
-    public void save(String appCode, String appName, String note, String registerFrom, int accessTokenValidity, String webServerRedirectUri, Set<String> authorizedGrantTypes, Set<Integer> apiIds, String operator) throws AuthorizedGrantTypeInvalidException {
+    public void save(String appCode, String appName, String note,
+                     String registerFrom, int accessTokenValidity, String webServerRedirectUri,
+                     Set<String> authorizedGrantTypes, Set<Integer> groupIds, Set<Integer> apiIds,
+                     String operator) throws AuthorizedGrantTypeInvalidException {
         // 校验支持的认证类型
         checkSupportedGrantTypes(authorizedGrantTypes);
         GatewayApp gatewayApp = gatewayAppMapper.selectByAppCode(appCode);
@@ -77,12 +84,7 @@ public class GatewayAppServiceImpl implements GatewayAppService {
             gatewayApp.setCreatePerson(operator);
             BizUtil.checkUpdate(gatewayAppMapper.insertSelective(gatewayApp));
             log.info("insert app:{} finished. operator is:{} new id is:{}", appCode, operator, gatewayApp.getId());
-            OauthClientDetails oauthClientDetails = new OauthClientDetails();
-            oauthClientDetails.setClientId(gatewayApp.getClientId());
-            oauthClientDetails.setClientSecret(gatewayApp.getClientSecret());
-            oauthClientDetails.setAccessTokenValidity(accessTokenValidity);
-            oauthClientDetails.setWebServerRedirectUri(webServerRedirectUri);
-            oauthClientDetails.setAuthorizedGrantTypes(BizUtil.joinStringArray(authorizedGrantTypes));
+            OauthClientDetails oauthClientDetails = getOauthClientDetails(accessTokenValidity, webServerRedirectUri, authorizedGrantTypes, groupIds, apiIds, gatewayApp);
             BizUtil.checkUpdate(oauthClientDetailsMapper.insertSelective(oauthClientDetails));
             log.info("insert oauth client details finished. client_id:{} operator:{}", gatewayApp.getClientId(), operator);
         } else {
@@ -93,30 +95,53 @@ public class GatewayAppServiceImpl implements GatewayAppService {
             gatewayApp.setUpdatePerson(operator);
             BizUtil.checkUpdate(gatewayAppMapper.updateByPrimaryKeySelective(gatewayApp));
             log.info("update app:{} finished. operator is:{}", appCode, operator);
-            OauthClientDetails oauthClientDetails = new OauthClientDetails();
-            oauthClientDetails.setClientId(gatewayApp.getClientId());
-            oauthClientDetails.setClientSecret(gatewayApp.getClientSecret());
-            oauthClientDetails.setAccessTokenValidity(accessTokenValidity);
-            oauthClientDetails.setWebServerRedirectUri(webServerRedirectUri);
-            oauthClientDetails.setAuthorizedGrantTypes(BizUtil.joinStringArray(authorizedGrantTypes));
+            OauthClientDetails oauthClientDetails = getOauthClientDetails(accessTokenValidity, webServerRedirectUri, authorizedGrantTypes, groupIds, apiIds, gatewayApp);
             BizUtil.checkUpdate(oauthClientDetailsMapper.updateByPrimaryKeySelective(oauthClientDetails));
             log.info("update oauth client details finished. client_id:{} operator:{}", gatewayApp.getClientId(), operator);
+            // 刷新app token
+            gatewayService.refreshClientToken(CollectionUtil.newHashSet(gatewayApp.getClientId()));
+        }
+    }
+
+    /**
+     * 获取客户端明细
+     *
+     * @param accessTokenValidity  token有效时间
+     * @param webServerRedirectUri 重定向地址
+     * @param authorizedGrantTypes 授权类型
+     * @param groupIds             分组id集合
+     * @param apiIds               接口id集合
+     * @param gatewayApp           网关应用
+     * @return 客户端明细
+     */
+    private OauthClientDetails getOauthClientDetails(int accessTokenValidity, String webServerRedirectUri, Set<String> authorizedGrantTypes,
+                                                     Set<Integer> groupIds, Set<Integer> apiIds,
+                                                     GatewayApp gatewayApp) {
+        OauthClientDetails oauthClientDetails = new OauthClientDetails();
+        oauthClientDetails.setClientId(gatewayApp.getClientId());
+        oauthClientDetails.setClientSecret(gatewayApp.getClientSecret());
+        oauthClientDetails.setAccessTokenValidity(accessTokenValidity);
+        oauthClientDetails.setWebServerRedirectUri(webServerRedirectUri);
+        oauthClientDetails.setAuthorizedGrantTypes(BizUtil.joinStringArray(authorizedGrantTypes));
+        if (groupIds != null) {
+            List<String> groupCodes = groupIds.stream()
+                    .map(gatewayGroupMapper::selectByPrimaryKey)
+                    .filter(Objects::nonNull)
+                    .map(GatewayGroup::getGroupCode)
+                    .collect(Collectors.toList());
+            log.info("group codes:{} num:{} param num:{}", groupCodes, groupCodes.size(), groupIds.size());
+            oauthClientDetails.setScope(BizUtil.joinStringArray(groupCodes));
         }
         if (apiIds != null) {
-            int appId = gatewayApp.getId();
-            int count = gatewayAppApiMapper.deleteByAppId(appId);
-            log.info("delete exists appApis by app id:{} delete count:{} operator:{}", appId, count, operator);
-            if (!apiIds.isEmpty()) {
-                BizUtil.checkUpdate(
-                        gatewayAppApiMapper.insertBatch(
-                                apiIds.stream()
-                                        .map(apiId -> this.toGatewayAppApi(apiId, appId, operator))
-                                        .collect(Collectors.toList())
-                        ), apiIds.size()
-                );
-                log.info("insert batch appApis finished. operator is:{}", operator);
-            }
+            List<String> apiCodes = apiIds.stream()
+                    .map(gatewayApiMapper::selectByPrimaryKey)
+                    .filter(Objects::nonNull)
+                    .map(GatewayApi::getApiCode)
+                    .collect(Collectors.toList());
+            log.info("api codes:{} num:{} param num:{}", apiCodes, apiCodes.size(), apiIds.size());
+            oauthClientDetails.setAuthorities(BizUtil.joinStringArray(apiCodes));
         }
+        return oauthClientDetails;
     }
 
     @Override

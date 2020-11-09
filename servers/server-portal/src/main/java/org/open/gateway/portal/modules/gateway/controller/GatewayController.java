@@ -28,7 +28,7 @@ public class GatewayController {
 
     @PostMapping(Endpoints.GATEWAY_REFRESH_CLIENT_TOKEN)
     public String refreshResources(@RequestParam(name = "clientIds", required = false) Set<String> clientIds) {
-        this.gatewayService.refreshResources(clientIds);
+        this.gatewayService.refreshClientToken(clientIds);
         return "ok";
     }
 
