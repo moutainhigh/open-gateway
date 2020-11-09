@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * 网关路由配置信息
@@ -30,6 +31,11 @@ public class GatewayRouteDefinition implements Serializable {
      * api的路径
      */
     private String apiPath;
+
+    /**
+     * 分组代码
+     */
+    private Set<String> groupCodes;
 
     /**
      * 路由编号
@@ -73,10 +79,5 @@ public class GatewayRouteDefinition implements Serializable {
      * 是否身份认证
      */
     private boolean auth;
-
-    /**
-     * 是否公开访问
-     */
-    private boolean open;
 
 }

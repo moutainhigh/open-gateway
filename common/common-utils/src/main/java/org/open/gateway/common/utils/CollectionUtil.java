@@ -79,4 +79,24 @@ public class CollectionUtil {
         return newMap(new ConcurrentHashMap<>(), kv);
     }
 
+    /**
+     * 集合2是否有任意一个元素在集合1中
+     *
+     * @param c1  集合1
+     * @param c2  集合2
+     * @param <T> 集合类型
+     * @return 是否包含
+     */
+    public static <T> boolean containsAny(Collection<T> c1, Collection<T> c2) {
+        if (c1 == null || c2 == null) {
+            return false;
+        }
+        for (T t : c2) {
+            if (c1.contains(t)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

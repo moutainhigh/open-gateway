@@ -1,8 +1,9 @@
 package org.open.gateway.route.repositories;
 
-import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.base.entity.RefreshGateway;
 import org.open.gateway.route.entity.GatewayIpLimitDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -16,9 +17,9 @@ import java.util.stream.Collectors;
  *
  * @author MIKO
  */
-@Slf4j
 public abstract class AbstractIpLimitRepository implements RefreshableIpLimitRepository {
 
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
     private final Map<String, GatewayIpLimitDefinition> ipLimits = new ConcurrentHashMap<>();
 
     @Override
@@ -51,6 +52,9 @@ public abstract class AbstractIpLimitRepository implements RefreshableIpLimitRep
      * @param param api编码
      */
     private void clearIpLimits(RefreshGateway param) {
+        if (this.ipLimits.isEmpty()) {
+            return;
+        }
         if (param.isRefreshAll()) {
             this.ipLimits.clear();
             log.info("[Refresh ip limits] clear ip limits finished");

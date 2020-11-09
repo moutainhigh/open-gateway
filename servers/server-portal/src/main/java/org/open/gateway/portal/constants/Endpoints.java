@@ -47,11 +47,11 @@ public interface Endpoints {
     String RESOURCE_DELETE = "/resource/delete";
 
     // 网关-路由刷新
-    String GATEWAY_ROUTES_REFRESH = "/gateway/route/refresh";
+    String GATEWAY_REFRESH_ROUTE = "/gateway/refresh/route";
     // 网关-资源刷新
-    String GATEWAY_RESOURCES_REFRESH = "/gateway/resource/refresh";
+    String GATEWAY_REFRESH_CLIENT_TOKEN = "/gateway/refresh/clientToken";
     // 网关-限流刷新
-    String GATEWAY_IP_LIMITS_REFRESH = "/gateway/ipLimit/refresh";
+    String GATEWAY_REFRESH_IP_LIMIT = "/gateway/refresh/ipLimit";
 
     // 应用-分页列表
     String APP_PAGES = "/app/pages";

@@ -10,7 +10,7 @@ import org.open.gateway.route.entity.oauth2.OAuth2TokenRequest;
 import org.open.gateway.route.entity.oauth2.OAuth2TokenResponse;
 import org.open.gateway.route.exception.FrequentTokenRequestException;
 import org.open.gateway.route.exception.InvalidClientSecretException;
-import org.open.gateway.route.repositories.TokenRepository;
+import org.open.gateway.route.repositories.RefreshableTokenRepository;
 import org.open.gateway.route.service.ClientDetailsService;
 import org.open.gateway.route.service.LockService;
 import org.open.gateway.route.service.bo.ClientDetails;
@@ -32,7 +32,7 @@ public class OauthEndpoints {
 
     private final ClientDetailsService clientDetailsService;
     private final LockService lockService;
-    private final TokenRepository tokenRepository;
+    private final RefreshableTokenRepository tokenRepository;
 
     /**
      * 获取授权码

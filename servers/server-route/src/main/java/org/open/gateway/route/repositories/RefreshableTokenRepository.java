@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
  *
  * @author MIKO
  */
-public interface TokenRepository {
+public interface RefreshableTokenRepository extends RefreshableRepository {
 
     /**
      * 生成token

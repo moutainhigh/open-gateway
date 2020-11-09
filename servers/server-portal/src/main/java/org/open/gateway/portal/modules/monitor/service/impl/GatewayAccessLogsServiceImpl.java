@@ -1,6 +1,7 @@
 package org.open.gateway.portal.modules.monitor.service.impl;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.base.entity.AccessLogs;
 import org.open.gateway.portal.modules.monitor.service.GatewayAccessLogsService;
 import org.open.gateway.portal.persistence.mapper.GatewayAccessLogsMapperExt;
@@ -8,7 +9,7 @@ import org.open.gateway.portal.persistence.po.GatewayAccessLogs;
 import org.open.gateway.portal.utils.Beans;
 import org.open.gateway.portal.utils.BizUtil;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import org.springframework.util.StopWatch;
 
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  *
  * @author MIKO
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class GatewayAccessLogsServiceImpl implements GatewayAccessLogsService {
@@ -32,11 +34,15 @@ public class GatewayAccessLogsServiceImpl implements GatewayAccessLogsService {
      */
     @Override
     public void saveAccessLogs(List<AccessLogs> logs) {
-        Assert.notNull(logs, "access logs is null");
+        log.info("Starting save access log. data num: {}", logs.size());
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         List<GatewayAccessLogs> bean = logs.stream()
                 .map(this::toGatewayAccessLogs)
                 .collect(Collectors.toList());
         BizUtil.checkUpdate(gatewayAccessLogsMapperExt.insertBatch(bean), bean.size());
+        stopWatch.stop();
+        log.info("Save access log finished end: {} ms", stopWatch.getTotalTimeMillis());
     }
 
     private GatewayAccessLogs toGatewayAccessLogs(AccessLogs accessLogs) {

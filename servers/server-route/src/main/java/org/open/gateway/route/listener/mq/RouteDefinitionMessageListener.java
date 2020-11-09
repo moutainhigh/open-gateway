@@ -6,6 +6,7 @@ import org.open.gateway.base.entity.RefreshGateway;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by miko on 2020/7/14.
@@ -13,11 +14,12 @@ import org.springframework.amqp.rabbit.annotation.*;
  * @author MIKO
  */
 @Slf4j
-public class MqRouteDefinitionMessageListener {
+@Component
+public class RouteDefinitionMessageListener {
 
     private final RefreshableRouteDefinitionRepository routeDefinitionRepository;
 
-    public MqRouteDefinitionMessageListener(RefreshableRouteDefinitionRepository routeDefinitionRepository) {
+    public RouteDefinitionMessageListener(RefreshableRouteDefinitionRepository routeDefinitionRepository) {
         this.routeDefinitionRepository = routeDefinitionRepository;
     }
 

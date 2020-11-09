@@ -3,7 +3,6 @@ package org.open.gateway.route.configuration;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.route.constants.Endpoints;
-import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
 import org.open.gateway.route.security.AuthenticationEntryPoint;
@@ -42,7 +41,6 @@ public class SecurityConfig {
 
     private final ServerAuthenticationConverter serverAuthenticationConverter;
     private final RefreshableRouteDefinitionRepository resourceService;
-    private final RefreshableClientResourcesRepository clientResourceService;
     private final RefreshableIpLimitRepository ipLimitRepository;
 
     @Bean
@@ -78,7 +76,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthorizationManager authorizationManager() {
-        return new AuthorizationManager(resourceService, clientResourceService, ipLimitRepository);
+        return new AuthorizationManager(resourceService, ipLimitRepository);
     }
 
     @Bean

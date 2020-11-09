@@ -29,6 +29,13 @@ public class ReactorUtil {
                 });
     }
 
+    /**
+     * 记录耗时时间
+     *
+     * @param prefix 前缀
+     * @param flux   执行逻辑
+     * @return 包装后的执行逻辑
+     */
     public static <T> Flux<T> recordUsedTime(String prefix, Flux<T> flux) {
         StopWatch sw = new StopWatch();
         return flux.doOnSubscribe(sub -> sw.start())

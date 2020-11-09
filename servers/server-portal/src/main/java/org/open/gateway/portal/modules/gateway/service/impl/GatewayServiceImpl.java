@@ -42,10 +42,10 @@ public class GatewayServiceImpl implements GatewayService {
      */
     @Override
     public void refreshResources(Set<String> clientIds) {
-        log.info("starting send refresh resources msg. client ids:{}", clientIds);
+        log.info("starting send refresh client token msg. client ids:{}", clientIds);
         // 发送刷新网关消息
-        this.rabbitTemplate.convertAndSend(MqConstants.EXCHANGE_REFRESH_CLIENT_RESOURCES, "", new RefreshGateway(clientIds));
-        log.info("finished send refresh resources msg.");
+        this.rabbitTemplate.convertAndSend(MqConstants.EXCHANGE_OPEN_GATEWAY_DIRECT, MqConstants.ROUTING_KEY_REFRESH_CLIENT_TOKEN, new RefreshGateway(clientIds));
+        log.info("finished send refresh client token msg.");
     }
 
     /**

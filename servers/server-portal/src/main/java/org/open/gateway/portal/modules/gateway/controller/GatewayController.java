@@ -20,19 +20,19 @@ public class GatewayController {
 
     private final GatewayService gatewayService;
 
-    @PostMapping(Endpoints.GATEWAY_ROUTES_REFRESH)
+    @PostMapping(Endpoints.GATEWAY_REFRESH_ROUTE)
     public String refreshRoutes(@RequestParam(name = "apiCodes", required = false) Set<String> apiCodes) {
         this.gatewayService.refreshRoutes(apiCodes);
         return "ok";
     }
 
-    @PostMapping(Endpoints.GATEWAY_RESOURCES_REFRESH)
+    @PostMapping(Endpoints.GATEWAY_REFRESH_CLIENT_TOKEN)
     public String refreshResources(@RequestParam(name = "clientIds", required = false) Set<String> clientIds) {
         this.gatewayService.refreshResources(clientIds);
         return "ok";
     }
 
-    @PostMapping(Endpoints.GATEWAY_IP_LIMITS_REFRESH)
+    @PostMapping(Endpoints.GATEWAY_REFRESH_IP_LIMIT)
     public String refreshIpLimits(@RequestParam(name = "ipLimits", required = false) Set<String> ipLimits) {
         this.gatewayService.refreshIpLimits(ipLimits);
         return "ok";

@@ -66,7 +66,7 @@ public class AccessLogsServiceImpl implements AccessLogsService {
      */
     @Override
     public void sendAccessLogs(AccessLogs accessLogs) {
-        amqpTemplate.convertAndSend(MqConstants.EXCHANGE_GATEWAY_ACCESS_LOGS, MqConstants.ROUTING_KEY_GATEWAY_ACCESS_LOGS, accessLogs);
+        amqpTemplate.convertAndSend(MqConstants.EXCHANGE_OPEN_GATEWAY_DIRECT, MqConstants.ROUTING_KEY_GATEWAY_ACCESS_LOGS, accessLogs);
         log.info("Send access log finished");
     }
 

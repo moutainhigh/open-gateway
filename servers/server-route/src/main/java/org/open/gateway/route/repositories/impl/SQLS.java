@@ -34,32 +34,24 @@ public interface SQLS {
      * 查询所有路由信息
      */
     Sql QUERY_API_ROUTE_DEFINITIONS = new Sql(
-            "select ga.id as api_id, ga.api_code, ga.api_path, gr.route_code, gr.route_path, gr.route_type, gr.url, gr.strip_prefix, gr.retry_times, ga.is_auth, ga.is_open " +
+            "select ga.id as api_id, ga.api_code, ga.api_path, gr.route_code, gr.route_path, gr.route_type, gr.url, gr.strip_prefix, ga.retry_times, ga.is_auth, " +
+                    "t.id as rate_limit_id, t.limit_quota, t.max_limit_quota, t.interval_unit, t.policy_type " +
                     "from gateway_route gr " +
                     "inner join gateway_api ga on gr.route_code = ga.route_code " +
+                    "left join ( " +
+                    "select grla.api_id, grl.* from gateway_rate_limit_api grla inner join gateway_rate_limit grl on grla.policy_id = grl.id where grl.status = 1 " +
+                    ") as t on t.api_id = ga.id " +
                     "where gr.status = 1 and ga.status = 1 "
     );
 
     /**
-     * 根据api_id查询限流信息
+     * 根据api_id查询分组信息
      */
-    Sql QUERY_RATE_LIMIT_BY_API_ID = new Sql(
-            "select grl.id, grl.limit_quota, grl.max_limit_quota, grl.interval_unit, grl.policy_type " +
-                    "from gateway_rate_limit grl " +
-                    "inner join gateway_rate_limit_api grla on grl.id = grla.policy_id " +
-                    "where grl.status = 1 and grla.api_id = %s "
-    );
-
-    /**
-     * 根据客户端查询api
-     */
-    Sql QUERY_API_ROUTE = new Sql(
-            "select distinct gp.client_id, gr.route_path, ga.api_path " +
-                    "from gateway_route gr " +
-                    "inner join gateway_api ga on gr.route_code = ga.route_code " +
-                    "inner join gateway_app_api gaa on gaa.api_id  = ga.id " +
-                    "inner join gateway_app gp on gp.id = gaa.app_id " +
-                    "where gr.status = 1 and ga.status = 1 and gp.status = 1 "
+    Sql QUERY_GROUP_CODES_BY_API_ID = new Sql(
+            "select gg.group_code from gateway_api ga " +
+                    "inner join gateway_group_api gga on ga.id = gga.api_id " +
+                    "inner join gateway_group gg on gga.group_id = gg.id " +
+                    "where ga.status = 1 and gga.api_id = %s "
     );
 
     /**

@@ -2,6 +2,7 @@ package org.open.gateway.test;
 
 import org.junit.jupiter.api.Test;
 import org.open.gateway.BaseTest;
+import org.open.gateway.common.utils.CollectionUtil;
 import org.open.gateway.common.utils.JSON;
 import org.open.gateway.common.utils.StringUtil;
 import org.open.gateway.route.entity.token.TokenUser;
@@ -11,7 +12,6 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.util.StopWatch;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 /**
@@ -76,8 +76,8 @@ public class RedisSerializerTest extends BaseTest {
     private TokenUser newTokenUser() {
         TokenUser tokenUser = new TokenUser();
         tokenUser.setClientId(StringUtil.randomLetter(6));
-        tokenUser.setAuthorities(Arrays.asList("admin"));
-        tokenUser.setScopes(Arrays.asList("all"));
+        tokenUser.setAuthorities(CollectionUtil.newHashSet("admin"));
+        tokenUser.setScopes(CollectionUtil.newHashSet("all"));
         return tokenUser;
     }
 

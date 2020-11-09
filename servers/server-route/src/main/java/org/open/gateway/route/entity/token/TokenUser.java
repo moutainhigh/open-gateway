@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by miko on 2020/7/9.
@@ -26,10 +26,10 @@ public class TokenUser implements Serializable {
     /**
      * 权限
      */
-    private Collection<String> authorities;
+    private Set<String> authorities;
     /**
      * 范围
      */
-    private Collection<String> scopes;
+    private Set<String> scopes;
 
 }

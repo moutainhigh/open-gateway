@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.common.utils.CollectionUtil;
 import org.open.gateway.common.utils.UrlUtil;
 import org.open.gateway.route.entity.token.TokenUser;
-import org.open.gateway.route.exception.InvalidClientIdException;
 import org.open.gateway.route.exception.RouteNotFoundException;
-import org.open.gateway.route.repositories.RefreshableClientResourcesRepository;
 import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.open.gateway.route.repositories.RefreshableRouteDefinitionRepository;
 import org.open.gateway.route.utils.RouteDefinitionUtil;
@@ -20,7 +18,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -33,27 +30,17 @@ import java.util.Set;
 public class AuthorizationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
 
     /**
-     * 直接放行的权限
-     */
-    private static final Set<String> PERMIT_ROLES = CollectionUtil.newHashSet("admin");
-    /**
      * 资源服务
      */
     private final RefreshableRouteDefinitionRepository resourceRepository;
-    /**
-     * 客户端资源服务
-     */
-    private final RefreshableClientResourcesRepository clientResourcesRepository;
     /**
      * ip限制资源服务
      */
     private final RefreshableIpLimitRepository ipLimitRepository;
 
     public AuthorizationManager(RefreshableRouteDefinitionRepository resourceRepository,
-                                RefreshableClientResourcesRepository clientResourcesRepository,
                                 RefreshableIpLimitRepository ipLimitRepository) {
         this.resourceRepository = resourceRepository;
-        this.clientResourcesRepository = clientResourcesRepository;
         this.ipLimitRepository = ipLimitRepository;
     }
 
@@ -65,17 +52,6 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
                 .cast(TokenUser.class)
                 .flatMap(user -> checkClientResourceAuthorities(authorizationContext.getExchange(), user))
                 .map(AuthorizationDecision::new);
-    }
-
-    /**
-     * 是否直接通过
-     *
-     * @param user 用户信息
-     * @return 是否通过
-     */
-    private boolean isPermit(TokenUser user) {
-        Collection<String> authorities = user.getAuthorities();
-        return authorities != null && authorities.stream().anyMatch(PERMIT_ROLES::contains);
     }
 
     /**
@@ -92,10 +68,6 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         log.info("Request path:{} ip:{} client_id:{} authorities:{}", requestPath, ipAddress, clientId, user.getAuthorities());
         // 存放客户端id
         WebExchangeUtil.putClientId(exchange, clientId);
-        // 是否直接放行
-        if (this.isPermit(user)) {
-            return Mono.just(true);
-        }
         // 清理请求路径
         String path = UrlUtil.trimUrlParameter(requestPath);
         // 获取接口资源
@@ -106,9 +78,8 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
                         // 匹配黑白名单
                         matchIpLimit(r, ipAddress),
                         // 验证是否拥有资源权限
-                        matchResource(r, clientId)
-                        ).all(b -> b)
-                );
+                        matchResource(r, user)
+                ).all(b -> b));
     }
 
     /**
@@ -130,18 +101,19 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
      * 匹配是否拥有资源
      *
      * @param routeDefinition 路由配置
-     * @param clientId        客户端id
+     * @param user            客户端信息
      * @return 匹配结果
      */
-    private Mono<Boolean> matchResource(RouteDefinition routeDefinition, String clientId) {
+    private Mono<Boolean> matchResource(RouteDefinition routeDefinition, TokenUser user) {
         if (!RouteDefinitionUtil.getIsAuth(routeDefinition)) {
             log.info("No need authorization api:{}", routeDefinition.getId());
             return Mono.just(true);
         }
-        return this.clientResourcesRepository
-                .loadResourcesByClientId(clientId)
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new InvalidClientIdException())))
-                .map(resources -> resources.contains(routeDefinition.getId()));
+        // 获取api编码
+        String apiCode = RouteDefinitionUtil.getApiCode(routeDefinition);
+        // 分组代码
+        Set<String> groupCode = RouteDefinitionUtil.getGroupCodes(routeDefinition);
+        return Mono.just(user.getAuthorities().contains(apiCode) || CollectionUtil.containsAny(groupCode, user.getScopes()));
     }
 
 }

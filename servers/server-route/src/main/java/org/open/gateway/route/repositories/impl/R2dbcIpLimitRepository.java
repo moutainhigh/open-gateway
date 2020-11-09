@@ -6,6 +6,7 @@ import org.open.gateway.route.entity.GatewayIpLimitDefinition;
 import org.open.gateway.route.repositories.AbstractIpLimitRepository;
 import org.open.gateway.route.utils.sql.Sql;
 import org.springframework.data.r2dbc.core.DatabaseClient;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
 import java.util.HashSet;
@@ -17,6 +18,7 @@ import java.util.Set;
  *
  * @author MIKO
  */
+@Component
 @AllArgsConstructor
 public class R2dbcIpLimitRepository extends AbstractIpLimitRepository {
 

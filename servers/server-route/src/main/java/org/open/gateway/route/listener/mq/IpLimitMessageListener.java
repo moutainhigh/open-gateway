@@ -6,6 +6,7 @@ import org.open.gateway.base.entity.RefreshGateway;
 import org.open.gateway.route.repositories.RefreshableIpLimitRepository;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by miko on 2020/7/14.
@@ -13,11 +14,12 @@ import org.springframework.amqp.rabbit.annotation.*;
  * @author MIKO
  */
 @Slf4j
-public class MqIpLimitMessageListener {
+@Component
+public class IpLimitMessageListener {
 
     private final RefreshableIpLimitRepository ipLimitRepository;
 
-    public MqIpLimitMessageListener(RefreshableIpLimitRepository ipLimitRepository) {
+    public IpLimitMessageListener(RefreshableIpLimitRepository ipLimitRepository) {
         this.ipLimitRepository = ipLimitRepository;
     }
 

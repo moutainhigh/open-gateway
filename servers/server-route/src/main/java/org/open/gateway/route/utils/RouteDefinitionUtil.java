@@ -4,6 +4,7 @@ import org.springframework.cloud.gateway.route.RouteDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by miko on 2020/7/17.
@@ -18,6 +19,10 @@ public class RouteDefinitionUtil {
      */
     private static final String METADATA_KEY_API_CODE = "api_code";
     /**
+     * 分组代码
+     */
+    private static final String METADATA_KEY_GROUP_CODES = "group_codes";
+    /**
      * 路由编码
      */
     private static final String METADATA_KEY_ROUTE_CODE = "route_code";
@@ -25,10 +30,6 @@ public class RouteDefinitionUtil {
      * 是否需要认证
      */
     private static final String METADATA_KEY_IS_AUTH = "is_auth";
-    /**
-     * 是否开放
-     */
-    private static final String METADATA_KEY_IS_OPEN = "is_open";
 
     public static String getApiCode(RouteDefinition routeDefinition) {
         return getApiCode(routeDefinition.getMetadata());
@@ -40,6 +41,20 @@ public class RouteDefinitionUtil {
 
     public static void setApiCode(RouteDefinition routeDefinition, String apiCode) {
         putMetadata(routeDefinition, METADATA_KEY_API_CODE, apiCode);
+    }
+
+    public static Set<String> getGroupCodes(RouteDefinition routeDefinition) {
+        return getGroupCodes(routeDefinition.getMetadata());
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public static Set<String> getGroupCodes(Map<String, Object> metadata) {
+        return (Set<String>) metadata.get(METADATA_KEY_GROUP_CODES);
+    }
+
+    public static void setGroupCodes(RouteDefinition routeDefinition, Set<String> groupCodes) {
+        putMetadata(routeDefinition, METADATA_KEY_GROUP_CODES, groupCodes);
     }
 
     public static String getRouteCode(RouteDefinition routeDefinition) {
@@ -64,18 +79,6 @@ public class RouteDefinitionUtil {
 
     public static void setIsAuth(RouteDefinition routeDefinition, boolean isOpen) {
         putMetadata(routeDefinition, METADATA_KEY_IS_AUTH, isOpen);
-    }
-
-    public static boolean getIsOpen(RouteDefinition routeDefinition) {
-        return getIsOpen(routeDefinition.getMetadata());
-    }
-
-    public static boolean getIsOpen(Map<String, Object> metadata) {
-        return (boolean) metadata.get(METADATA_KEY_IS_OPEN);
-    }
-
-    public static void setIsOpen(RouteDefinition routeDefinition, boolean isOpen) {
-        putMetadata(routeDefinition, METADATA_KEY_IS_OPEN, isOpen);
     }
 
     private static void putMetadata(RouteDefinition routeDefinition, String key, Object arg) {

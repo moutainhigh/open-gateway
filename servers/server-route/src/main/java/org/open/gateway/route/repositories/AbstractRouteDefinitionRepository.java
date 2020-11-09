@@ -1,12 +1,13 @@
 package org.open.gateway.route.repositories;
 
-import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.base.constants.GatewayConstants;
 import org.open.gateway.base.entity.RefreshGateway;
 import org.open.gateway.common.utils.UrlUtil;
 import org.open.gateway.route.entity.GatewayRateLimitDefinition;
 import org.open.gateway.route.entity.GatewayRouteDefinition;
 import org.open.gateway.route.utils.RouteDefinitionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
@@ -31,9 +32,9 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author MIKO
  */
-@Slf4j
 public abstract class AbstractRouteDefinitionRepository implements RefreshableRouteDefinitionRepository, ApplicationEventPublisherAware {
 
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
     /**
      * 路由信息
      */
@@ -121,6 +122,9 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
      * 清理路由配置
      */
     private void clearRoutes(RefreshGateway param) {
+        if (this.routes.isEmpty()) {
+            return;
+        }
         if (param.isRefreshAll()) {
             // 清理所有路由配置
             this.routes.clear();
@@ -177,9 +181,9 @@ public abstract class AbstractRouteDefinitionRepository implements RefreshableRo
      */
     private void setMetadata(RouteDefinition definition, GatewayRouteDefinition route) {
         RouteDefinitionUtil.setApiCode(definition, route.getApiCode());
+        RouteDefinitionUtil.setGroupCodes(definition, route.getGroupCodes());
         RouteDefinitionUtil.setRouteCode(definition, route.getRouteCode());
         RouteDefinitionUtil.setIsAuth(definition, route.isAuth());
-        RouteDefinitionUtil.setIsOpen(definition, route.isOpen());
     }
 
     /**
