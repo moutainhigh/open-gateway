@@ -63,4 +63,15 @@ public interface BizConstants {
 
     }
 
+    /**
+     * 路由类型
+     */
+    interface ROUTE_TYPE {
+
+        byte HTTP = 1;
+
+        byte DUBBO = 0;
+
+    }
+
 }

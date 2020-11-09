@@ -7,6 +7,7 @@ import org.open.gateway.portal.exception.ServiceException;
 import org.open.gateway.portal.exception.account.*;
 import org.open.gateway.portal.exception.gateway.AuthorizedGrantTypeInvalidException;
 import org.open.gateway.portal.exception.gateway.GatewayAppNotExistsException;
+import org.open.gateway.portal.exception.gateway.RouteTypeInvalidException;
 import org.open.gateway.portal.vo.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -88,6 +89,9 @@ public class ErrorMappingConfig {
         }
         if (e instanceof AuthorizedGrantTypeInvalidException) {
             return ResultCode.GATEWAY_AUTHORIZED_GRANT_TYPE_INVALID;
+        }
+        if (e instanceof RouteTypeInvalidException) {
+            return ResultCode.GATEWAY_ROUTE_TYPE_INVALID;
         }
         throw new IllegalStateException("Unmapping exception:" + e.getClass().getName());
     }

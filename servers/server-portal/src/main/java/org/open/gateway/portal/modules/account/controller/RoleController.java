@@ -72,6 +72,7 @@ public class RoleController {
         return Response.ok();
     }
 
+    @ApiOperation("删除角色")
     @PreAuthorize("#account.hasPermission('account:role:delete:post')")
     @PostMapping(Endpoints.ROLE_DELETE)
     public Response<Void> delete(@Valid @RequestBody RoleDeleteRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws RoleNotExistsException {

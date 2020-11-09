@@ -63,7 +63,7 @@ public class GatewayAppController {
     public Response<Void> save(@Valid @RequestBody GatewayAppSaveRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws AuthorizedGrantTypeInvalidException {
         gatewayAppService.save(request.getAppCode(), request.getAppName(), request.getNote(),
                 request.getRegisterFrom(), request.getAccessTokenValidity(), request.getWebServerRedirectUri(),
-                request.getAuthorizedGrantTypes(), request.getApiIds(), account.getAccount());
+                request.getAuthorizedGrantTypes(), request.getGroupIds(), request.getApiIds(), account.getAccount());
         return Response.ok();
     }
 
@@ -79,7 +79,7 @@ public class GatewayAppController {
     @PreAuthorize("#account.hasPermission('gateway:app:disable:post')")
     @PostMapping(Endpoints.APP_DISABLE)
     public Response<Void> disable(@Valid @RequestBody GatewayAppDisableRequest request, @AuthenticationPrincipal(errorOnInvalidType = true) AccountDetails account) throws GatewayAppNotExistsException {
-        gatewayAppService.enable(request.getAppCode(), account.getAccount());
+        gatewayAppService.disable(request.getAppCode(), account.getAccount());
         return Response.ok();
     }
 

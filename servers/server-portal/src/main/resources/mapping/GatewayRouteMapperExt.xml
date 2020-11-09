@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.open.gateway.portal.persistence.mapper.GatewayRouteMapperExt">
+
+	<select id="selectByCondition" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from gateway_route
+		<where>
+			<if test="routeCode != null">
+				and route_code = #{routeCode,jdbcType=VARCHAR}
+			</if>
+			<if test="routeName != null">
+				<bind name="routeName" value="routeName + '%'"/>
+				and route_name like #{routeName,jdbcType=VARCHAR}
+			</if>
+			<if test="routeType != null">
+				and route_type = #{routeType,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectByRouteCode" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from gateway_route
+		where route_code = #{routeCode,jdbcType=VARCHAR}
+	</select>
+
+</mapper>

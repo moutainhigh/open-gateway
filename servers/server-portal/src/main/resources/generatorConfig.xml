@@ -91,11 +91,11 @@
 		<!--			   selectByExampleQueryId="false">-->
 		<!--			<generatedKey column="id" sqlStatement="JDBC"/>-->
 		<!--		</table>-->
-		<table tableName="gateway_group" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"
-			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="true"
-			   selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="JDBC"/>
-		</table>
+		<!--		<table tableName="gateway_group" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"-->
+		<!--			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="true"-->
+		<!--			   selectByExampleQueryId="false">-->
+		<!--			<generatedKey column="id" sqlStatement="JDBC"/>-->
+		<!--		</table>-->
 		<!--		<table tableName="gateway_app" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false"-->
 		<!--			   enableDeleteByExample="false" enableSelectByExample="false" enableDeleteByPrimaryKey="true"-->
 		<!--			   selectByExampleQueryId="false">-->

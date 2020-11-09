@@ -49,6 +49,10 @@ public enum ResultCode {
      */
     GATEWAY_AUTHORIZED_GRANT_TYPE_INVALID("2001", "无效的授权类型"),
     /**
+     * 无效的网关类型
+     */
+    GATEWAY_ROUTE_TYPE_INVALID("2002", "无效的网关类型"),
+    /**
      * 成功
      */
     SUCCESS("0000", "OK");

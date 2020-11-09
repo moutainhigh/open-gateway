@@ -46,13 +46,6 @@ public interface Endpoints {
     // 用户-资源删除
     String RESOURCE_DELETE = "/resource/delete";
 
-    // 网关-路由刷新
-    String GATEWAY_REFRESH_ROUTE = "/gateway/refresh/route";
-    // 网关-资源刷新
-    String GATEWAY_REFRESH_CLIENT_TOKEN = "/gateway/refresh/clientToken";
-    // 网关-限流刷新
-    String GATEWAY_REFRESH_IP_LIMIT = "/gateway/refresh/ipLimit";
-
     // 应用-分页列表
     String APP_PAGES = "/app/pages";
     // 应用-新增/修改
@@ -81,6 +74,12 @@ public interface Endpoints {
     String API_SAVE = "/api/save";
     // 接口-删除
     String API_DELETE = "/api/delete";
+    // 接口-所有分组
+    String API_GROUPS = "/api/groups";
+    // 接口-新增/修改分组
+    String API_GROUP_SAVE = "/api/group/save";
+    // 接口-删除分组
+    String API_GROUP_DELETE = "/api/group/delete";
 
     // 接口分类-列表
     String API_CLASSIFICATION = "/api/classification/list";

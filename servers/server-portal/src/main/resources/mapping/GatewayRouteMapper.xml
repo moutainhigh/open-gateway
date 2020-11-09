@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.open.gateway.portal.persistence.mapper.GatewayRouteMapperExt">
+	<resultMap id="BaseResultMap" type="org.open.gateway.portal.persistence.po.GatewayRoute">
+		<id column="id" jdbcType="INTEGER" property="id"/>
+		<result column="route_code" jdbcType="VARCHAR" property="routeCode"/>
+		<result column="route_name" jdbcType="VARCHAR" property="routeName"/>
+		<result column="route_type" jdbcType="TINYINT" property="routeType"/>
+		<result column="route_path" jdbcType="VARCHAR" property="routePath"/>
+		<result column="url" jdbcType="VARCHAR" property="url"/>
+		<result column="strip_prefix" jdbcType="TINYINT" property="stripPrefix"/>
+		<result column="status" jdbcType="TINYINT" property="status"/>
+		<result column="note" jdbcType="VARCHAR" property="note"/>
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+		<result column="create_person" jdbcType="VARCHAR" property="createPerson"/>
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+		<result column="update_person" jdbcType="VARCHAR" property="updatePerson"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+    id, route_code, route_name, route_type, route_path, url, strip_prefix, status, note, 
+    create_time, create_person, update_time, update_person
+  </sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from gateway_route
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from gateway_route
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+	<insert id="insert" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.GatewayRoute" useGeneratedKeys="true">
+    insert into gateway_route (route_code, route_name, route_type, 
+      route_path, url, strip_prefix, 
+      status, note, create_time, 
+      create_person, update_time, update_person
+      )
+    values (#{routeCode,jdbcType=VARCHAR}, #{routeName,jdbcType=VARCHAR}, #{routeType,jdbcType=TINYINT}, 
+      #{routePath,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{stripPrefix,jdbcType=TINYINT}, 
+      #{status,jdbcType=TINYINT}, #{note,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updatePerson,jdbcType=VARCHAR}
+      )
+  </insert>
+	<insert id="insertSelective" keyColumn="id" keyProperty="id"
+			parameterType="org.open.gateway.portal.persistence.po.GatewayRoute" useGeneratedKeys="true">
+		insert into gateway_route
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="routeCode != null">
+				route_code,
+			</if>
+			<if test="routeName != null">
+				route_name,
+			</if>
+			<if test="routeType != null">
+				route_type,
+			</if>
+			<if test="routePath != null">
+				route_path,
+			</if>
+			<if test="url != null">
+				url,
+			</if>
+			<if test="stripPrefix != null">
+				strip_prefix,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="note != null">
+				note,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createPerson != null">
+				create_person,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updatePerson != null">
+				update_person,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="routeCode != null">
+				#{routeCode,jdbcType=VARCHAR},
+			</if>
+			<if test="routeName != null">
+				#{routeName,jdbcType=VARCHAR},
+			</if>
+			<if test="routeType != null">
+				#{routeType,jdbcType=TINYINT},
+			</if>
+			<if test="routePath != null">
+				#{routePath,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				#{url,jdbcType=VARCHAR},
+			</if>
+			<if test="stripPrefix != null">
+				#{stripPrefix,jdbcType=TINYINT},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=TINYINT},
+			</if>
+			<if test="note != null">
+				#{note,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createPerson != null">
+				#{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updatePerson != null">
+				#{updatePerson,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="org.open.gateway.portal.persistence.po.GatewayRoute">
+		update gateway_route
+		<set>
+			<if test="routeCode != null">
+				route_code = #{routeCode,jdbcType=VARCHAR},
+			</if>
+			<if test="routeName != null">
+				route_name = #{routeName,jdbcType=VARCHAR},
+			</if>
+			<if test="routeType != null">
+				route_type = #{routeType,jdbcType=TINYINT},
+			</if>
+			<if test="routePath != null">
+				route_path = #{routePath,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				url = #{url,jdbcType=VARCHAR},
+			</if>
+			<if test="stripPrefix != null">
+				strip_prefix = #{stripPrefix,jdbcType=TINYINT},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=TINYINT},
+			</if>
+			<if test="note != null">
+				note = #{note,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createPerson != null">
+				create_person = #{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updatePerson != null">
+				update_person = #{updatePerson,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="org.open.gateway.portal.persistence.po.GatewayRoute">
+    update gateway_route
+    set route_code = #{routeCode,jdbcType=VARCHAR},
+      route_name = #{routeName,jdbcType=VARCHAR},
+      route_type = #{routeType,jdbcType=TINYINT},
+      route_path = #{routePath,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      strip_prefix = #{stripPrefix,jdbcType=TINYINT},
+      status = #{status,jdbcType=TINYINT},
+      note = #{note,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_person = #{createPerson,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_person = #{updatePerson,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

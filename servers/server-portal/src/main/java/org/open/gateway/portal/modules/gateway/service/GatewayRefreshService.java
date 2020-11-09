@@ -7,7 +7,7 @@ import java.util.Set;
  *
  * @author MIKO
  */
-public interface GatewayService {
+public interface GatewayRefreshService {
 
     /**
      * 刷新路由

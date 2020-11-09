@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.open.gateway.base.constants.MqConstants;
 import org.open.gateway.base.entity.RefreshGateway;
-import org.open.gateway.portal.modules.gateway.service.GatewayService;
+import org.open.gateway.portal.modules.gateway.service.GatewayRefreshService;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ import java.util.Set;
 @Slf4j
 @AllArgsConstructor
 @Service
-public class GatewayServiceImpl implements GatewayService {
+public class GatewayRefreshServiceImpl implements GatewayRefreshService {
 
     private final AmqpTemplate rabbitTemplate;
 
